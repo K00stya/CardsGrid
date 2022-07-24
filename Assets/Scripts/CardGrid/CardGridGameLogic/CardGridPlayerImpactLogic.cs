@@ -5,13 +5,15 @@ using UnityEngine;
 
 namespace CardGrid
 {
-    public partial class CardGridGame
+    /*
+     * In this partial, the logic of the player's attack.
+     * Mainly processes Update and its possible results during the battle.
+     */
+    public partial class CardGridGame //PlayerImpactLogic
     {
         public float SpeedRecession = 0.1f;
         public float SpeedFilling = 0.1f;
         
-        private List<CardSO> _loadedEnemies;
-        private List<CardSO> _loadedItems;
         bool _inputActive = true;
         
         //Local update variables, but cached for the glory of the garbage collector
@@ -204,39 +206,7 @@ namespace CardGrid
             impactCard.Quantity = 0;
             dragCard.gameObject.SetActive(false);
 
-            int debug = 0;
-            do
-            {
-                if (DebugLoopCount()) yield break;
-                do
-                {
-                    if (DebugLoopCount()) yield break;
-                    yield return StartCoroutine(
-                        ImpactWounded(woundeds.ToArray(),woundeds, deaths));
-                    
-                } while (woundeds.Count > 0);
-                
-                do
-                {
-                    if (DebugLoopCount()) yield break;
-                    yield return StartCoroutine(
-                        ImpactDead(deaths, woundeds, deaths));
-                    
-                } while (deaths.Count > 0);
-
-            } while (deaths.Count > 0 || woundeds.Count > 0);
-
-            bool DebugLoopCount()
-            {
-                debug++;
-                if (debug > 300)
-                {
-                    DebugSystem.DebugLog("Infinity impact loop =(", DebugSystem.Type.Error);
-                    return true;
-                }
-
-                return false;
-            }
+            yield return ReactOnImpact(deaths, woundeds);
         }
         
         void RecessionField(Card[,] cards)
@@ -294,165 +264,12 @@ namespace CardGrid
             yield return null;
         }
         
-        void RecessionInventory(Card[,] items)
-        {
-            for (int z = 0; z < items.GetLength(1); z++)
-            {
-                for (int x = 0; x < items.GetLength(0); x++)
-                {
-                    if (items[x, z].Quantity <= 0)
-                    {
-                        int newX = x + 1;
-                        int newZ = z + 1;
-                        if (newX < items.GetLength(0))
-                        {
-                            SwapPositions(items, items[x, z].Position, items[newX, z].Position);
-                        }
-                        else if (newZ < items.GetLength(1))
-                        {
-                            SwapPositions(items, items[x, z].Position, items[0, newZ].Position);
-                        }
-                    }
-                }
-            }
-        }
-        
-        IEnumerator ItemsCombinations(Card[,] items)
-        {
-            yield return null;
-        }
-        
-        /*
-        * Instead of removing an object from the inventory and creating a new one on the field,
-        * I'll just send the item from the field to the inventory, and the extra item(disabled) to the field
-         *
-        * Repeats as long as there are items in the bottom line
-         * 
-        * With a lack of resources, string comparison can also be avoided,
-        * for example, by the state of the card (InInventory or OnFiled)
-        */
-        IEnumerator TryGetNewItemsForField(Card[,] cells, Card[,] items)
-        {
-            bool newItems = false;
-            int lowerZ = cells.GetLength(1) - 1;
-            for (int x = 0; x < cells.GetLength(0); x++)
-            {
-                var card = cells[x, lowerZ];
-                foreach (var item in _loadedItems)
-                {
-                    if (item.Name == card.name)
-                    {
-                        newItems = true;
-                        break;
-                    }
-                }
-
-                if (newItems)
-                {
-                    _needRecession = true;
-                    yield return StartCoroutine(MoveInventory(x));
-
-                    card.Grid = CardGrid.Inventory;
-                    card.Position = new Vector2Int(0, 0);
-                    items[0, 0] = card;
-                    yield return MoveCardToSelfPosition(items[0, 0], BattleObjects.Inventory);
-                    break;
-                }
-            }
-
-            if (!newItems)
-            {
-                _needRecession = false;
-                foreach (var card in items)
-                {
-                    StartCoroutine(MoveCardToSelfPosition(card, BattleObjects.Inventory));
-                }
-
-                yield return new WaitForSeconds(SpeedRecession);
-            }
-
-            IEnumerator MoveInventory(int currentX)
-            {
-                for (int z = items.GetLength(1) - 1; z >= 0; z--)
-                {
-                    for (int x = items.GetLength(0) - 1; x >= 0; x--)
-                    {
-                        int newX = x + 1;
-                        int newZ = z + 1;
-                        if (newX < items.GetLength(0))
-                        {
-                            items[newX, z] = items[x, z];
-                            items[newX, z].Position = new Vector2Int(newX, z);
-                            yield return MoveCardToSelfPosition(items[newX, z], BattleObjects.Inventory);
-                        }
-                        else if (newZ < items.GetLength(1))
-                        {
-                            items[0, newZ] = items[x, z];
-                            items[0, newZ].Position = new Vector2Int(0, newZ);
-                            yield return MoveCardToSelfPosition(items[0, newZ], BattleObjects.Inventory);
-                        }
-                        else
-                        {
-                            var excessItem = items[x, z];
-                            excessItem.Grid = CardGrid.Field;
-                            excessItem.name = "";
-                            excessItem.Quantity = 0;
-                            excessItem.GameObject.gameObject.SetActive(false);
-                            excessItem.Position = new Vector2Int(currentX, lowerZ);
-                            cells[currentX, lowerZ] = excessItem;
-                        }
-                    }
-                }
-            }
-        }
-
         private IEnumerator MoveCardToSelfPosition(Card card, GridGameObject grid)
         {
             yield return card.GameObject.transform.DOMove(grid.
                 GetCellSpacePosition(card.Position), SpeedRecession);
         }
-        
-        #endregion
-        
-        IEnumerator ImpactWounded(Card[] woundeds, List<Card> newWoundeds, List<Card> newDeaths)
-        {
-            foreach (var wounded in woundeds)
-            {
-                switch (wounded.name)
-                {
-                    case "Demons":
-                        int[,] attackArray = GetImpactMap<ImpactMaps>(wounded.ImpactMap);
-                        var cards = GetImpactedCards(wounded.name, wounded.Position, attackArray);
-                        SpawnEffectOnCard(wounded);
-                        yield return new WaitForSeconds(SpawnEffectOnCards(wounded, cards));
-                        newWoundeds.AddRange(cards);
-                        ImpactDamageOnField(1, cards, ref newDeaths);
-                        break;
-                }
 
-                newWoundeds.Remove(wounded);
-            }
-        }
-
-        IEnumerator ImpactDead(List<Card> deaths, List<Card> newWoundeds, List<Card> newDeaths)
-        {
-            foreach (var dead in deaths.ToArray())
-            {
-                switch (dead.name)
-                {
-                    case "Ghost":
-                        int[,] attackArray = GetImpactMap<ImpactMaps>(dead.ImpactMap);
-                        var cards = GetImpactedCards(dead.name, dead.Position, attackArray);
-                        yield return new WaitForSeconds(SpawnEffectOnCard(dead));
-                        newWoundeds.AddRange(cards);
-                        ImpactDamageOnField(dead.StartQuantity, cards, ref newDeaths);
-                        break;
-                }
-
-                newDeaths.Remove(dead);
-            }
-        }
-        
         void ImpactDamageOnField(int damage, Card[] cards, ref List<Card> deaths)
         {
             foreach (var card in cards)
@@ -473,6 +290,8 @@ namespace CardGrid
                 card.GameObject.QuantityText.text = card.Quantity.ToString();
             }
         }
+        
+        #endregion
 
         //The X coordinates require a second dimension of the attack map
         //and so, I don't know if this is my mistake or a necessity.
@@ -556,27 +375,6 @@ namespace CardGrid
             (cards[first.x, first.y], cards[second.x, second.y])
                 = (cards[second.x, second.y], cards[first.x, first.y]);
         }
-        
-        void CheckDefeat(Card[,] items)
-        {
-            bool haveItems = false;
-            foreach (var item in items)
-            {
-                if (item.Quantity > 0)
-                {
-                    haveItems = true;
-                    break;
-                }
-            }
-
-            if (!haveItems)
-            {
-                DebugSystem.DebugLog("Defeat", DebugSystem.Type.Battle);
-                BattleUI.Defeat.SetActive(true);
-                _CommonState.InBattle = false;
-                _inputActive = false;
-            }
-        }
 
         //TODO Pool efffects
         float SpawnEffectOnCards(Card impactCard, Card[] cards)
@@ -618,6 +416,27 @@ namespace CardGrid
             }
 
             _highlightCards = new List<CardGameObject>();
+        }
+        
+        void CheckDefeat(Card[,] items)
+        {
+            bool haveItems = false;
+            foreach (var item in items)
+            {
+                if (item.Quantity > 0)
+                {
+                    haveItems = true;
+                    break;
+                }
+            }
+
+            if (!haveItems)
+            {
+                DebugSystem.DebugLog("Defeat", DebugSystem.Type.Battle);
+                BattleUI.Defeat.SetActive(true);
+                _CommonState.InBattle = false;
+                _inputActive = false;
+            }
         }
     }
 }
