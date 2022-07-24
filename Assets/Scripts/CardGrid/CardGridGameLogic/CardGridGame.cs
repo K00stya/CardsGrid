@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CardGrid
 {
@@ -35,6 +36,7 @@ namespace CardGrid
         float _chanceItemOnFiled;
         PlayerCommonState _CommonState;
         List<CardGameObject> _cardMonobehsPool;
+        Button[] LevelsButtons;
         Camera _camera;
 
         void Awake()
@@ -75,31 +77,76 @@ namespace CardGrid
             BattleUI.ToMenuOnDeafeat.onClick.AddListener(() => { GoToMenu(); });
             MenuUI.Continue.onClick.AddListener(() =>
             {
-                MenuUI.GameObject.SetActive(false);
+                ActiveBattleUI();
                 StartCoroutine(LoadBattle());
             });
-            MenuUI.NewBattleButton.onClick.AddListener(() => 
+            MenuUI.NewBattleButton.onClick.AddListener(() =>
             {
-                MenuUI.MainMenu.SetActive(false);
-                MenuUI.Levels.SetActive(true);
+                OpenLevelMenu();
             });
             MenuUI.BackToMenu.onClick.AddListener(() =>
             {
                 MenuUI.Levels.SetActive(false);
                 MenuUI.MainMenu.SetActive(true);
             });
+
+            SetLevelButtons();
+        }
+        
+        IEnumerator LoadBattle()
+        {
+            BattleState playerBattleState = _CommonState.BattleState;
+
+            yield return StartCoroutine(LoadLevelCards(playerBattleState.LevelID));
+
+            foreach (var cell in playerBattleState.Filed.Cells)
+            {
+                var monobeh = SpawnCard(cell, BattleObjects.Field);
+                cell.GameObject = monobeh;
+                monobeh.CardState = cell;
+            }
+
+            foreach (var item in playerBattleState.Inventory.Items)
+            {
+                var monobeh = SpawnCard(item, BattleObjects.Inventory);
+                item.GameObject = monobeh;
+                monobeh.CardState = item;
+            }
+        }
+
+        void OpenLevelMenu()
+        {
+            for (int i = 0; i < ActiveLevels.Length; i++)
+            {
+                if (ActiveLevels[i].Open || _CommonState.BestScore >= ActiveLevels[i].NeedScoreToOpen)
+                {
+                    LevelsButtons[i] .interactable = true;
+                }
+                else
+                {
+                    LevelsButtons[i] .interactable = false;
+                }
+            }
             
+            MenuUI.MainMenu.SetActive(false);
+            MenuUI.Levels.SetActive(true);
+        }
+
+        void SetLevelButtons()
+        {
+            LevelsButtons = new Button[ActiveLevels.Length];
             for (int i = 0; i < ActiveLevels.Length; i++)
             {
                 var levelID = i;
                 var level = ActiveLevels[i];
                 var button = Instantiate(MenuUI.StartLevel, MenuUI.Levels.transform);
+                LevelsButtons[i] = button;
                 button.gameObject.SetActive(true);
-                button.GetComponentInChildren<TextMeshProUGUI>().text = level.LevelName;
+                button.GetComponentInChildren<TextMeshProUGUI>().text =
+                    !level.Open ? $"{level.LevelName} ({level.NeedScoreToOpen})" : level.LevelName;
+                
                 button.onClick.AddListener(() =>
                     StartCoroutine(StartNewBattle(levelID)));
-
-                button.interactable = level.Open;
             }
         }
 
@@ -128,11 +175,12 @@ namespace CardGrid
         {
             DebugSystem.DebugLog("Start new battle", DebugSystem.Type.Battle);
             
-            ActiveBattleUI();
-            
             _inputActive = true;
             _CommonState.InBattle = true;
             _CommonState.BattleState.LevelID = levelID;
+            _CommonState.BattleState.Score = 0;
+            
+            ActiveBattleUI();
 
             yield return StartCoroutine(LoadLevelCards(levelID));
 
@@ -177,28 +225,9 @@ namespace CardGrid
             MenuUI.Levels.SetActive(false);
             MenuUI.GameObject.SetActive(false);
             BattleUI.Defeat.SetActive(false);
+
+            BattleUI.Score.text = _CommonState.BattleState.Score.ToString();
             BattleUI.GameObject.SetActive(true);
-        }
-
-        IEnumerator LoadBattle()
-        {
-            BattleState playerBattleState = _CommonState.BattleState;
-
-            yield return StartCoroutine(LoadLevelCards(playerBattleState.LevelID));
-
-            foreach (var cell in playerBattleState.Filed.Cells)
-            {
-                var monobeh = SpawnCard(cell, BattleObjects.Field);
-                cell.GameObject = monobeh;
-                monobeh.CardState = cell;
-            }
-
-            foreach (var item in playerBattleState.Inventory.Items)
-            {
-                var monobeh = SpawnCard(item, BattleObjects.Inventory);
-                item.GameObject = monobeh;
-                monobeh.CardState = item;
-            }
         }
 
         void GoToMenu()
@@ -206,7 +235,8 @@ namespace CardGrid
             if (!_inputActive) return;
             Save();
             MenuUI.Continue.gameObject.SetActive(_CommonState.InBattle);
-
+            BattleUI.ToMenuOnDeafeat.gameObject.SetActive(false);
+            BattleUI.GameObject.SetActive(false);
             MenuUI.GameObject.SetActive(true);
             MenuUI.MainMenu.SetActive(true);
             MenuUI.BestScore.text = _CommonState.BestScore.ToString();

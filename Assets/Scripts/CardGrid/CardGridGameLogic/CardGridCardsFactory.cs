@@ -62,6 +62,8 @@ namespace CardGrid
             {
                 Destroy(monobeh.gameObject);
             }
+            _loadedEnemies = null;
+            _loadedItems = null;
 
             _cardMonobehsPool.Clear();
         }
@@ -69,17 +71,24 @@ namespace CardGrid
         Card CreateNewRandomCard()
         {
             CardSO newCard;
+            TypeCard type;
             if (Random.Range(0, 1f) > _chanceItemOnFiled)
             {
                 newCard = _loadedEnemies[Random.Range(0, _loadedEnemies.Count)];
+                type = TypeCard.Enemy;
             }
             else
             {
-                return CreateNewRandomItem();
+                newCard = _loadedItems[Random.Range(0, _loadedItems.Count)];
+                type = TypeCard.Item;
             }
 
             int quantity = Random.Range(1, _startMaxCellQuantity + 1);
-            return new Card {name = newCard.Name, Quantity = quantity, StartQuantity = quantity};
+            return new Card {
+                name = newCard.Name,
+                Type = type,
+                Quantity = quantity,
+                StartQuantity = quantity};
         }
 
         Card CreateNewRandomItem()
@@ -94,16 +103,20 @@ namespace CardGrid
         void ReCreateCard(Card card)
         {
             CardSO newCard;
+            TypeCard type;
             if (Random.Range(0, 1f) > _chanceItemOnFiled)
             {
                 newCard = _loadedEnemies[Random.Range(0, _loadedEnemies.Count)];
+                type = TypeCard.Enemy;
             }
             else
             {
                 newCard = _loadedItems[Random.Range(0, _loadedItems.Count)];
+                type = TypeCard.Item;
             }
 
             int quantity = Random.Range(1, _startMaxCellQuantity + 1);
+            card.Type = type;
             card.Quantity = quantity;
             card.StartQuantity = quantity;
             card.GameObject.gameObject.SetActive(true);

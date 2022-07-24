@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b26851e477919349bd395d9d6a6690e, type: 3}
-  m_Name: Claws
+  m_Name: Hammer
   m_EditorClassIdentifier: 
-  Name: Claws
-  Sprite: {fileID: 21300000, guid: eac46eb2a653b6647a8c409c26b32126, type: 3}
-  ImpactMap: 0
-  Effect: {fileID: 2484946017443502368, guid: 255c4198f61d80d40bf107538f14809d, type: 3}
+  Name: Hammer
+  Sprite: {fileID: 21300000, guid: 44aef1bc814d44e4e923727f17568ca1, type: 3}
+  ImpactMap: 5
+  Effect: {fileID: 2711157171983558214, guid: 3fc1dbdb410a38943998686b02dfc3d0, type: 3}

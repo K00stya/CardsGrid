@@ -23,26 +23,17 @@ namespace CardGrid
             for (int x = 0; x < cells.GetLength(0); x++)
             {
                 var card = cells[x, lowerZ];
-                foreach (var item in _loadedItems)
-                {
-                    if (item.Name == card.name)
-                    {
-                        newItems = true;
-                        break;
-                    }
-                }
+                if (card.Type != TypeCard.Item) continue;
 
-                if (newItems)
-                {
-                    _needRecession = true;
-                    yield return StartCoroutine(MoveInventory(x));
+                newItems = true;
+                _needRecession = true;
+                yield return StartCoroutine(MoveInventory(x));
 
-                    card.Grid = CardGrid.Inventory;
-                    card.Position = new Vector2Int(0, 0);
-                    items[0, 0] = card;
-                    yield return MoveCardToSelfPosition(items[0, 0], BattleObjects.Inventory);
-                    break;
-                }
+                card.Grid = CardGrid.Inventory;
+                card.Position = new Vector2Int(0, 0);
+                items[0, 0] = card;
+                yield return MoveCardToSelfPosition(items[0, 0], BattleObjects.Inventory);
+                break;
             }
 
             if (!newItems)

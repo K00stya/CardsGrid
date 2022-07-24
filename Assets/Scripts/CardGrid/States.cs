@@ -41,6 +41,7 @@ namespace CardGrid
     public class Card
     {
         public string name;
+        public TypeCard Type;
         public CardGrid Grid;
         public Vector2Int Position;
         public int StartQuantity;
@@ -64,6 +65,12 @@ namespace CardGrid
     {
         Field,
         Inventory
+    }
+
+    public enum TypeCard
+    {
+        Enemy,
+        Item
     }
     
     #endregion

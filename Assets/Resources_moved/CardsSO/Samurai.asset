@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Samurai
   Sprite: {fileID: 21300000, guid: 9a6ce61b794ad484e83a31a2efecb4b5, type: 3}
-  ImpactMap: 5
+  ImpactMap: 0
   Effect: {fileID: 0}

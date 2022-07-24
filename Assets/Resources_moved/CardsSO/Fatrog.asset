@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b26851e477919349bd395d9d6a6690e, type: 3}
-  m_Name: Demons
+  m_Name: Fatrog
   m_EditorClassIdentifier: 
-  Name: Demons
-  Sprite: {fileID: 21300000, guid: ac7a1cfa9348db04fab468b5ada964c8, type: 3}
-  ImpactMap: 9
-  Effect: {fileID: 5108281163033673373, guid: a41a54ce81e67c8429cc9ee5eb095135, type: 3}
+  Name: Fatrog
+  Sprite: {fileID: 21300000, guid: 81dba9096d42afb49b8818a74024834f, type: 3}
+  ImpactMap: 0
+  Effect: {fileID: 0}

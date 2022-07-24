@@ -15,6 +15,8 @@ namespace CardGrid
         public float SpeedFilling = 0.1f;
         
         bool _inputActive = true;
+        Sequence _mySequence;
+        CardGameObject _swayingCard;
         
         //Local update variables, but cached for the glory of the garbage collector
         Ray _ray;
@@ -23,7 +25,8 @@ namespace CardGrid
 
         CardGameObject _dragGameObjectCard;
         CardGameObject _hitFieldCardOnDrag;
-        List<CardGameObject> _highlightCards = new List<CardGameObject>();
+        List<CardGameObject> _impactHighlightCards = new List<CardGameObject>();
+        List<CardGameObject> _infoHighlightCards = new List<CardGameObject>();
         bool _needRecession;
 
         //Not fixed because I use raycasts for get input, and I don't make changes in physics
@@ -49,20 +52,34 @@ namespace CardGrid
                     _inputActive = false;
                     StartCoroutine(EndDrag());
                 }
+
+                SetSwaying(cardGO);
             }
+            else
+            {
+                DisableHighlightInfo();
+            }
+            
+            DragAndDrop();
+        }
+
+        #region DragAndDrop
+        
+        bool RaycastIsHitCard(out CardGameObject cardMonobeh)
+        {
+            cardMonobeh = null;
+            _ray = _camera.ScreenPointToRay(Input.mousePosition);
+            _hits = Physics.RaycastAll(_ray);
+            return (_hits != null && _hits.Length > 0 &&
+                    _hits[0].collider.TryGetComponent<CardGameObject>(out cardMonobeh));
+        }
+        
+        void DragAndDrop()
+        {
 
             if (_dragGameObjectCard != null && _plane.Raycast(_ray, out var enter))
             {
                 Drag(enter);
-            }
-
-            bool RaycastIsHitCard(out CardGameObject cardMonobeh)
-            {
-                cardMonobeh = null;
-                _ray = _camera.ScreenPointToRay(Input.mousePosition);
-                _hits = Physics.RaycastAll(_ray);
-                return (_hits != null && _hits.Length > 0 &&
-                        _hits[0].collider.TryGetComponent<CardGameObject>(out cardMonobeh));
             }
         }
 
@@ -96,7 +113,7 @@ namespace CardGrid
                 //If player not drag on field we disable highlights
                 if (!dragOnField)
                 {
-                    DisableHighlight();
+                    DisableImpactHighlight();
                 }
 
                 void Highight(CardGameObject monobeh)
@@ -107,28 +124,16 @@ namespace CardGrid
                     if (firstCard.Grid == CardGrid.Inventory && secondCard.Grid == CardGrid.Field)
                     {
                         dragOnField = true;
-                        DisableHighlight();
+                        DisableImpactHighlight();
                         _hitFieldCardOnDrag = monobeh;
                         var cards = GetImpactCards(firstCard, secondCard);
                         foreach (var card in cards)
                         {
                             var highlightGO = card.GameObject;
                             highlightGO.Highlight.SetActive(true);
-                            _highlightCards.Add(highlightGO);
+                            _impactHighlightCards.Add(highlightGO);
                         }
                     }
-                }
-
-                Card[] GetImpactCards(Card itemCard, Card fieldCard)
-                {
-                    DebugSystem.DebugLog($"Item {itemCard.name}, impact on {fieldCard.name}" +
-                                         $" X:{fieldCard.Position.x} Y:{fieldCard.Position.y}",
-                        DebugSystem.Type.Battle);
-
-                    //TODO Push PickUp
-                    int[,] attackArray = GetImpactMap<ImpactMaps>(itemCard.ImpactMap);
-
-                    return GetImpactedCards(itemCard.name, fieldCard.Position, attackArray);
                 }
             }
         }
@@ -141,13 +146,13 @@ namespace CardGrid
                 yield break;
             }
 
-            if (_highlightCards.Count > 0)
+            if (_impactHighlightCards.Count > 0)
             {
                 yield return StartCoroutine(DealImpact());
             }
             else
             {
-                DisableHighlight();
+                DisableImpactHighlight();
                 var dragCard = _dragGameObjectCard.CardState;
                 if (dragCard.Grid == CardGrid.Field)
                 {
@@ -167,7 +172,7 @@ namespace CardGrid
 
         IEnumerator DealImpact()
         {
-            yield return StartCoroutine(UseItemOnFiled(_dragGameObjectCard, _highlightCards));
+            yield return StartCoroutine(UseItemOnFiled(_dragGameObjectCard, _impactHighlightCards));
             var cells = _CommonState.BattleState.Filed.Cells;
             var items = _CommonState.BattleState.Inventory.Items;
 
@@ -195,7 +200,7 @@ namespace CardGrid
             {
                 cards[i] = highlightCards[i].CardState;
             }
-            DisableHighlight();
+            DisableImpactHighlight();
 
             yield return SpawnEffectOnCards(impactCard, cards);
 
@@ -379,16 +384,22 @@ namespace CardGrid
         //TODO Pool efffects
         float SpawnEffectOnCards(Card impactCard, Card[] cards)
         {
+            bool needWait = false;
             var effect = impactCard.Effect;
             if (effect)
             {
                 foreach (var card in cards)
                 {
-                    var go = Instantiate(effect, BattleObjects.ParentEffects);
-                    go.transform.position = BattleObjects.Field.GetCellSpacePosition(card.Position);
+                    if (card.Quantity >= 0) //Target live?
+                    {
+                        var go = Instantiate(effect, BattleObjects.ParentEffects);
+                        go.transform.position = BattleObjects.Field.GetCellSpacePosition(card.Position);
+                        needWait = true;
+                    }
                 }
-
-                return effect.GetComponent<ParticleSystem>().main.duration;
+                
+                if(needWait)
+                    return effect.GetComponent<ParticleSystem>().main.duration;
             }
 
             return 0;
@@ -408,14 +419,14 @@ namespace CardGrid
             return 0;
         }
 
-        void DisableHighlight()
+        void DisableImpactHighlight()
         {
-            foreach (var highlighted in _highlightCards)
+            foreach (var highlighted in _impactHighlightCards)
             {
                 highlighted.Highlight.SetActive(false);
             }
 
-            _highlightCards = new List<CardGameObject>();
+            _impactHighlightCards = new List<CardGameObject>();
         }
         
         void CheckDefeat(Card[,] items)
@@ -437,6 +448,79 @@ namespace CardGrid
                 _CommonState.InBattle = false;
                 _inputActive = false;
             }
+        }
+
+        #endregion
+
+        #region Swaying
+
+        void SetSwaying(CardGameObject cardGO)
+        {
+            if (_inputActive && _mySequence is not {active: true} && _swayingCard != cardGO && _dragGameObjectCard == null)
+            {
+                _swayingCard = cardGO;
+                var cardTransform = cardGO.transform;
+                var startScale = cardTransform.localScale;
+                _mySequence = DOTween.Sequence();
+                _mySequence
+                    .Append(cardTransform.DORotate(new Vector3(90,6,0), .06f))
+                    .Append(cardTransform.DORotate(new Vector3(90,-6,0), .12f))
+                    .Append(cardTransform.DORotate(new Vector3(90,0,0), .06f))
+                    .Insert(0, cardTransform.DOScale(startScale * 1.2f, _mySequence.Duration()/2))
+                    .Insert(0, cardTransform.DOScale(startScale, _mySequence.Duration()/2));
+                
+                DisableHighlightInfo();
+                var cardState = cardGO.CardState;
+                if (cardState.Type == TypeCard.Enemy && cardState.Grid == CardGrid.Field)
+                {
+                    var cards = GetImpactCards(cardState);
+                    foreach (var card in cards)
+                    {
+                        var highlightGO = card.GameObject;
+                        highlightGO.Highlight.SetActive(true);
+                        _infoHighlightCards.Add(highlightGO);
+                    }
+                }
+            }
+            else if (!_inputActive)
+            {
+                DisableHighlightInfo();
+            }
+        }
+        
+        void DisableHighlightInfo()
+        {
+            foreach (var highlighted in _infoHighlightCards)
+            {
+                highlighted.Highlight.SetActive(false);
+            }
+
+            _infoHighlightCards = new List<CardGameObject>();
+        }
+        
+        #endregion
+
+        Card[] GetImpactCards(Card itemCard, Card fieldCard)
+        {
+            DebugSystem.DebugLog($"Item {itemCard.name}, impact on {fieldCard.name}" +
+                                 $" X:{fieldCard.Position.x} Y:{fieldCard.Position.y}",
+                DebugSystem.Type.PlayerInput);
+
+            //TODO Push PickUp
+            int[,] attackArray = GetImpactMap<ImpactMaps>(itemCard.ImpactMap);
+
+            return GetImpactedCards(itemCard.name, fieldCard.Position, attackArray);
+        }
+        
+        Card[] GetImpactCards(Card fieldCard)
+        {
+            DebugSystem.DebugLog($" X:{fieldCard.Position.x} Y:{fieldCard.Position.y}",
+                DebugSystem.Type.PlayerInput);
+
+            //TODO Push PickUp
+            int[,] attackArray = GetImpactMap<ImpactMaps>(fieldCard.ImpactMap);
+
+            return GetImpactedCards(fieldCard.name, fieldCard.Position, attackArray);
         }
     }
 }

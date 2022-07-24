@@ -10,6 +10,7 @@ namespace CardGrid
      */
     public partial class CardGridGame //ImpactCards
     {
+        List<Card> _reactOnImpact = new List<Card>(25);
         /*
          * First, all the abilities of wounded opponents are activated, then the abilities of the dead.
          * This cycle will be repeated until everyone's abilities are activated.
@@ -50,25 +51,38 @@ namespace CardGrid
 
                 return false;
             }
+            
+            _reactOnImpact.Clear();
         }
         
         IEnumerator ImpactWounded(Card[] woundeds, List<Card> newWoundeds, List<Card> newDeaths)
         {
             foreach (var wounded in woundeds)
             {
+                newWoundeds.Remove(wounded);
+                if(_reactOnImpact.Contains(wounded)) continue;
+                
                 switch (wounded.name)
                 {
                     case "Demons":
+                        _reactOnImpact.Add(wounded);
                         int[,] attackArray = GetImpactMap<ImpactMaps>(wounded.ImpactMap);
                         var cards = GetImpactedCards(wounded.name, wounded.Position, attackArray);
                         SpawnEffectOnCard(wounded);
                         yield return new WaitForSeconds(SpawnEffectOnCards(wounded, cards));
                         newWoundeds.AddRange(cards);
-                        ImpactDamageOnField(1, cards, ref newDeaths);
+                        ImpactDamageOnField(wounded.Quantity, cards, ref newDeaths);
+                        break;
+                    case "Hare":
+                        _reactOnImpact.Add(wounded);
+                        ImpactDamageOnField(wounded.Quantity, new [] {wounded}, ref newDeaths);
+                        yield return new WaitForSeconds(SpawnEffectOnCard(wounded));
+                        break;
+                    case "Warrior":
+                        _reactOnImpact.Add(wounded);
+                        ImpactDamageOnField(wounded.Quantity/2, new [] {wounded}, ref newDeaths);
                         break;
                 }
-
-                newWoundeds.Remove(wounded);
             }
         }
 
@@ -76,18 +90,28 @@ namespace CardGrid
         {
             foreach (var dead in deaths.ToArray())
             {
+                newDeaths.Remove(dead);
+                if(_reactOnImpact.Contains(dead)) continue;
+                
                 switch (dead.name)
                 {
                     case "Ghost":
+                        _reactOnImpact.Add(dead);
                         int[,] attackArray = GetImpactMap<ImpactMaps>(dead.ImpactMap);
                         var cards = GetImpactedCards(dead.name, dead.Position, attackArray);
                         yield return new WaitForSeconds(SpawnEffectOnCard(dead));
                         newWoundeds.AddRange(cards);
                         ImpactDamageOnField(dead.StartQuantity, cards, ref newDeaths);
                         break;
+                    case "Librarian":
+                        _reactOnImpact.Add(dead);
+                        attackArray = GetImpactMap<ImpactMaps>(dead.ImpactMap);
+                        cards = GetImpactedCards(dead.name, dead.Position, attackArray);
+                        yield return new WaitForSeconds(SpawnEffectOnCard(dead));
+                        newWoundeds.AddRange(cards);
+                        ImpactDamageOnField( -dead.StartQuantity , cards, ref newDeaths);
+                        break;
                 }
-
-                newDeaths.Remove(dead);
             }
         }
     }

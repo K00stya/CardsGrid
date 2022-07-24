@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3ba61cafb4adf5c498abe66cbbf6f7e2, type: 3}
-  m_Name: Forest
+  m_Name: VeryDeepForest
   m_EditorClassIdentifier: 
-  LevelName: Forest
-  NeedScoreToOpen: 0
-  Open: 1
-  StartMaxCellQuantity: 10
-  ChanceItemOnFiled: 0.25
+  LevelName: VeryDeepForest
+  NeedScoreToOpen: 1000
+  Open: 0
+  StartMaxCellQuantity: 20
+  ChanceItemOnFiled: 0.15
   Enemies:
   - m_AssetGUID: cd4b82fa2ef39da4eabdb9ddee4e3eaa
     m_SubObjectName: 

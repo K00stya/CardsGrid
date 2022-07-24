@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Hare
   Sprite: {fileID: 21300000, guid: 7f3d086406d4506408a36ae392064036, type: 3}
-  ImpactMap: 5
-  Effect: {fileID: 0}
+  ImpactMap: 0
+  Effect: {fileID: 6828110024082062562, guid: 1ddc67f340b135a48a43d2095291c621, type: 3}

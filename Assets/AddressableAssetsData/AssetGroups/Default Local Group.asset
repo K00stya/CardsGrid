@@ -17,32 +17,60 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 2042bcd03af416e488e6ba77c774d733
   m_SerializeEntries:
-  - m_GUID: a0072fb5655fcee44aee1e70c4d16ffd
-    m_Address: CardsSO/Librarian
+  - m_GUID: dc09ae849117878438fe7a869deb0b42
+    m_Address: Assets/Resources_moved/CardsSO/Warrior.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: 15088e049fb43e44f9aa813132691c6f
-    m_Address: CardsSO/Ghost
+  - m_GUID: 000811d3401d8184c9d0746820db9f8f
+    m_Address: Assets/Resources_moved/CardsSO/ShieldBearer.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 49adbae435c199e4099b6be173f36cb2
-    m_Address: CardsSO/Hammer
+    m_Address: Assets/Resources_moved/CardsSO/Items/Hammer.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: f849be4ab14bad44c95d083f414089c0
+    m_Address: Assets/Resources_moved/CardsSO/Fatrog.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 6b26abf2da3955e479f74152ed20a1f5
-    m_Address: CardsSO/Samurai
+    m_Address: Assets/Resources_moved/CardsSO/Samurai.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: cd4b82fa2ef39da4eabdb9ddee4e3eaa
-    m_Address: CardsSO/Demons
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 8e7246fc621502a44a64809faf34653f
-    m_Address: CardsSO/Hare
+  - m_GUID: 15088e049fb43e44f9aa813132691c6f
+    m_Address: Assets/Resources_moved/CardsSO/Ghost.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: ff93713a8033b844ab71a896f1d7e8fe
-    m_Address: CardsSO/Claws
+    m_Address: Assets/Resources_moved/CardsSO/Items/Claws.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d8292b60d18f9f1418d3c03de89945f6
+    m_Address: Assets/Resources_moved/CardsSO/Items/Book.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 5e6f399551f93e54ab7b643ac92bc65a
+    m_Address: Assets/Resources_moved/CardsSO/Items/Gun.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: b206f122974063d42a8855dd5de5704f
+    m_Address: Assets/Resources_moved/CardsSO/Items/BigSword.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 63a4c2494fe86634a881fb15dc03158f
+    m_Address: Assets/Resources_moved/CardsSO/Items/OverPower.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a0072fb5655fcee44aee1e70c4d16ffd
+    m_Address: Assets/Resources_moved/CardsSO/Librarian.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 8e7246fc621502a44a64809faf34653f
+    m_Address: Assets/Resources_moved/CardsSO/Hare.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: cd4b82fa2ef39da4eabdb9ddee4e3eaa
+    m_Address: Assets/Resources_moved/CardsSO/Demons.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

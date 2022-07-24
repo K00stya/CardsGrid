@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Librarian
   Sprite: {fileID: 21300000, guid: 713778df12bca3c4cbcdeb08014cae56, type: 3}
-  ImpactMap: 5
-  Effect: {fileID: 0}
+  ImpactMap: 9
+  Effect: {fileID: 6828110024082062562, guid: 1ddc67f340b135a48a43d2095291c621, type: 3}

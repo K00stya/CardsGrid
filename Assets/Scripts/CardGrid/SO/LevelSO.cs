@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -7,6 +5,7 @@ using UnityEngine.AddressableAssets;
 public class LevelSO : ScriptableObject
 {
     public string LevelName;
+    public int NeedScoreToOpen;
     public bool Open = false;
     [Min(1)] 
     public int StartMaxCellQuantity = 10;
