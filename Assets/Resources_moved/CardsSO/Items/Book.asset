@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Book
   m_EditorClassIdentifier: 
   Name: Book
+  Type: 1
   Sprite: {fileID: 21300000, guid: 7d9aad507d1b12849aca5e15042a5128, type: 3}
   ImpactMap: 7
   Effect: {fileID: 6828110024082062562, guid: 1ddc67f340b135a48a43d2095291c621, type: 3}

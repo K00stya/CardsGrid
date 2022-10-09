@@ -17,28 +17,16 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 2042bcd03af416e488e6ba77c774d733
   m_SerializeEntries:
-  - m_GUID: dc09ae849117878438fe7a869deb0b42
-    m_Address: Assets/Resources_moved/CardsSO/Warrior.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 000811d3401d8184c9d0746820db9f8f
-    m_Address: Assets/Resources_moved/CardsSO/ShieldBearer.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   - m_GUID: 49adbae435c199e4099b6be173f36cb2
     m_Address: Assets/Resources_moved/CardsSO/Items/Hammer.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: f849be4ab14bad44c95d083f414089c0
-    m_Address: Assets/Resources_moved/CardsSO/Fatrog.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 6b26abf2da3955e479f74152ed20a1f5
-    m_Address: Assets/Resources_moved/CardsSO/Samurai.asset
+    m_Address: Gem1.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 15088e049fb43e44f9aa813132691c6f
-    m_Address: Assets/Resources_moved/CardsSO/Ghost.asset
+    m_Address: Gem2.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: ff93713a8033b844ab71a896f1d7e8fe
@@ -61,16 +49,8 @@ MonoBehaviour:
     m_Address: Assets/Resources_moved/CardsSO/Items/OverPower.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: a0072fb5655fcee44aee1e70c4d16ffd
-    m_Address: Assets/Resources_moved/CardsSO/Librarian.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 8e7246fc621502a44a64809faf34653f
-    m_Address: Assets/Resources_moved/CardsSO/Hare.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   - m_GUID: cd4b82fa2ef39da4eabdb9ddee4e3eaa
-    m_Address: Assets/Resources_moved/CardsSO/Demons.asset
+    m_Address: Gem0.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0
