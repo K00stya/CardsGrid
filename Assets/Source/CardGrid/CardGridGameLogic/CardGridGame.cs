@@ -32,6 +32,7 @@ namespace CardGrid
     {
         public BattleGameObjects BattleObjects;
         public CommonGameSettings CurrentGameSeetings;
+        public GameObject TutorHandObj;
         public AudioSource AudioSource;
         public LevelsGroup[] CommonLevelsGroups;
         public InfiniteLevelSO[] InfiniteLevels;

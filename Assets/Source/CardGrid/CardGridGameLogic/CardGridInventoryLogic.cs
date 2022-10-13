@@ -23,11 +23,11 @@ namespace CardGrid
             for (int x = 0; x < cells.GetLength(0); x++)
             {
                 var card = cells[x, lowerZ];
-                if (card.Type != TypeCard.Item) continue;
+                if (!card.CardSO || card.CardSO.Type != TypeCard.Item) continue;
 
                 newItems = true;
-                _needRecession = true;
-                yield return StartCoroutine(MoveInventory(x));
+                _itemsRecession = true;
+                yield return MoveInventory(x);
 
                 card.Grid = CardGrid.Inventory;
                 card.Position = new Vector2Int(0, 0);
@@ -38,10 +38,10 @@ namespace CardGrid
 
             if (!newItems)
             {
-                _needRecession = false;
+                _itemsRecession = false;
                 foreach (var card in items)
                 {
-                    StartCoroutine(MoveCardToSelfPosition(card, BattleObjects.Inventory));
+                    yield return MoveCardToSelfPosition(card, BattleObjects.Inventory);
                 }
 
                 yield return new WaitForSeconds(SpeedRecession);
@@ -76,7 +76,6 @@ namespace CardGrid
                         {
                             var excessItem = items[x, z];
                             excessItem.Grid = CardGrid.Field;
-                            excessItem.Name = "";
                             excessItem.Quantity = 0;
                             excessItem.GameObject.gameObject.SetActive(false);
                             excessItem.Position = new Vector2Int(currentX, lowerZ);

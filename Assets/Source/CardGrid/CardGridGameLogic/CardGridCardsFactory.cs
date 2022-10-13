@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -27,6 +28,11 @@ namespace CardGrid
             {
                 _loadedEnemies = new List<CardSO>();
                 _loadedItems = new List<CardSO>();
+                
+                //off tutor
+                TutorHandObj.transform.DOKill();
+                TutorHandObj.SetActive(false);
+                _CommonState.CurrentTutorial = null;
                 
                 var loadedLevel = InfiniteLevels[levelID];
                 _startMaxCellQuantity = loadedLevel.StartMaxCellQuantity;
@@ -66,10 +72,11 @@ namespace CardGrid
                 var id = levelID - BattleState.CommonLevelID;
                 var level = _CommonState.Levels[id];
                 var loadedLevel = CommonLevelsGroups[level.Group].Levels[level.IdInGroup];
+                LoadTutor(loadedLevel);
                 var columnsSO = loadedLevel.Columns;
-                
+
                 _loadedMap = new List<Queue<CardState>>(columnsSO.Count);
-                
+
                 for (int i = 0; i < loadedLevel.Columns.Count; i++)
                 {
                     var row = columnsSO[i];
@@ -87,8 +94,8 @@ namespace CardGrid
                     foreach (var card in row)
                     {
                         Z++;
-                        if(card == null) continue;
-                        
+                        if (card == null) continue;
+
                         quantityCards++;
                         SubOnCardLoad(card, X, Z);
                     }
@@ -104,9 +111,9 @@ namespace CardGrid
                         OnInventoryCardLoaded(obj, card.Quantity);
                     };
                 }
-                
+
                 yield return new WaitUntil(() => quantityCards <= 0 && items <= 0);
-                
+
                 for (int i = 0; i < _loadedMap.Count; i++)
                 {
                     foreach (var card in cadsHandler[i])
@@ -122,13 +129,13 @@ namespace CardGrid
                         OnFieldCardLoaded(obj, card.Quantity, x, z);
                     };
                 }
-                
+
                 void OnFieldCardLoaded(AsyncOperationHandle<CardSO> obj, int quantity, int column, int row)
                 {
                     var card = obj.Result;
                     var cardState = new CardState();
                     cardState.CardSO = card;
-                    cardState.Type = card.Type;
+                    cardState.CardSO.Type = card.Type;
                     cardState.Quantity = quantity;
                     cardState.StartQuantity = quantity;
                     cadsHandler[column][row] = cardState;
@@ -136,7 +143,7 @@ namespace CardGrid
                     Addressables.Release(obj);
                     quantityCards--;
                 }
-                
+
                 void OnInventoryCardLoaded(AsyncOperationHandle<CardSO> obj, int quantity)
                 {
                     var card = obj.Result;
@@ -145,6 +152,23 @@ namespace CardGrid
                     Addressables.Release(obj);
                     items--;
                 }
+            }
+        }
+
+        private void LoadTutor(LevelSO loadedLevel)
+        {
+            TutorHandObj.SetActive(false);
+            TutorHandObj.transform.DOKill();
+            if (loadedLevel.TutorSequence != null)
+            {
+                _CommonState.CurrentTutorial = new TutorialSequence()
+                {
+                    Cards = new List<TutorCardInfo>(loadedLevel.TutorSequence.Cards)
+                };
+            }
+            else
+            {
+                _CommonState.CurrentTutorial = null;
             }
         }
 
@@ -190,9 +214,7 @@ namespace CardGrid
         {
             int quantity = Random.Range(1, _startMaxCellQuantity + 1);
             return new CardState {
-                Name = newCard.Name,
                 CardSO = newCard,
-                Type = newCard.Type,
                 Quantity = quantity,
                 StartQuantity = quantity};
         }
@@ -200,9 +222,7 @@ namespace CardGrid
         CardState CreateCard(CardSO newCard, int quantity)
         {
             return new CardState {
-                Name = newCard.Name,
                 CardSO = newCard,
-                Type = newCard.Type,
                 Quantity = quantity,
                 StartQuantity = quantity};
         }
@@ -214,8 +234,6 @@ namespace CardGrid
                 CardSO = _loadedItems[Random.Range(0, _loadedItems.Count)],
                 Quantity = Random.Range(1, _startMaxCellQuantity)
             };
-            card.Name = card.CardSO.Name;
-            card.Type = card.CardSO.Type;
             
             return card;
         }
@@ -238,7 +256,8 @@ namespace CardGrid
                 {
                     int quantity = 0;
                     quantity = Random.Range(1, _startMaxCellQuantity + 1);
-                    
+
+                    cardState.CardSO = newCard;
                     cardState.Quantity = quantity;
                     cardState.StartQuantity = quantity;
                     cardState.GameObject.gameObject.SetActive(true);
@@ -266,14 +285,19 @@ namespace CardGrid
 
         void SetCommonCardState(ref CardState cardState, ref CardGameObject cardGameObject, CardSO cardInfo)
         {
-            cardState.Type = cardInfo.Type;
-            cardState.Name = cardInfo.Name;
-            cardState.ImpactMap = cardInfo.ImpactMap;
             cardState.Effect = cardInfo.Effect;
 
             cardGameObject.Sprite.sprite = cardInfo.Sprite;
-            cardGameObject.QuantityText.text = cardState.Quantity.ToString();
-            cardGameObject.DebugPosition.text = cardState.Position.x.ToString() + cardState.Position.y.ToString();
+            if (cardState.CardSO.Type == TypeCard.Block)
+            {
+                cardState.Quantity = int.MaxValue;
+                cardGameObject.QuantityText.transform.parent.gameObject.SetActive(false);
+            }
+            else
+            {
+                cardGameObject.QuantityText.text = cardState.Quantity.ToString();
+            }
+            //cardGameObject.DebugPosition.text = cardState.Position.x.ToString() + cardState.Position.y.ToString();
         }
 
         CardGameObject SpawnCard(CardState cardState, GridGameObject grid)
@@ -307,7 +331,7 @@ namespace CardGrid
                 {
                     foreach (var card in loadedColumn)
                     {
-                        if (card.Name == name)
+                        if (card.CardSO.Name == name)
                         {
                             //return card;
                         }

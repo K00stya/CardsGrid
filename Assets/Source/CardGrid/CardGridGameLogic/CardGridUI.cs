@@ -217,15 +217,12 @@ namespace CardGrid
             menu.Lable.text = "Menu"; //
             menu.Image.sprite = menu.MenuSprite;
             menu.Close.gameObject.SetActive(true);
-
             menu.PlayAgain.gameObject.SetActive(true);
-            var levelID = _CommonState.BattleState.LevelID;
-            if (levelID >= BattleState.CommonLevelID)
-            {
-                //menu.NextDifficult.gameObject.SetActive(false);
-                levelID -= BattleState.CommonLevelID;
+            
+            var levelID = _CommonState.BattleState.GetRealLevelID();
+            if(_CommonState.BattleState.GetRealLevelID() < _CommonState.Levels.Length - 1)
                 menu.NextLevel.gameObject.SetActive(_CommonState.Levels[levelID].Stars > 0);
-            }
+            
             menu.gameObject.SetActive(true);
         }
 
@@ -234,15 +231,18 @@ namespace CardGrid
             menu.Lable.text = "ITEMS END"; //
             menu.Image.sprite = menu.DefeatSprite;
             menu.Close.gameObject.SetActive(false);
-
             menu.PlayAgain.gameObject.SetActive(true);
-            //menu.NextDifficult.gameObject.SetActive(false);
-            var levelID = _CommonState.BattleState.LevelID;
-            if (levelID >= BattleState.CommonLevelID)
+            
+            var levelID = _CommonState.BattleState.GetRealLevelID();
+            if (_CommonState.BattleState.GetRealLevelID() < _CommonState.Levels.Length - 1)
             {
-                levelID -= BattleState.CommonLevelID;
                 menu.NextLevel.gameObject.SetActive(_CommonState.Levels[levelID].Stars > 0);
             }
+            else
+            {
+                menu.NextLevel.gameObject.SetActive(false);
+            }
+            
             menu.gameObject.SetActive(true);
         }
 
@@ -251,10 +251,10 @@ namespace CardGrid
             menu.Lable.text = "SUCCESS"; //
             menu.Image.sprite = menu.TrophySprite;
             menu.Close.gameObject.SetActive(false);
-
-            menu.PlayAgain.gameObject.SetActive(false);
-            //menu.NextDifficult.gameObject.SetActive(true);
-            menu.NextLevel.gameObject.SetActive(true);
+            menu.PlayAgain.gameObject.SetActive(true);
+            
+            menu.NextLevel.gameObject.SetActive(_CommonState.BattleState.GetRealLevelID() < _CommonState.Levels.Length - 1);
+            
             menu.gameObject.SetActive(true);
         }
     }

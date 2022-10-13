@@ -7,11 +7,13 @@
         One,
         Row3,
         Cross3,
+        Cross2_3,
         Column3,
         Cross5,
         Cross5Diagonals5,
         Diagonals,
-        LRDiagonal,
+        L_RDiagonal,
+        R_LDiagonal,
         AllNeighboring,
         DirectNeighboring
     }
@@ -49,6 +51,13 @@
             {1, 1, 1},
             {0, 1, 0}
         };
+        
+        public static int[,] Cross2_3 =
+        {
+            {1, 0, 1},
+            {0, 1, 0},
+            {1, 0, 1}
+        };
 
         public static int[,] Cross5 =
         {
@@ -75,13 +84,18 @@
             {1, 0, 1}
         };
         
-        public static int[,] LRDiagonal =
+        public static int[,] L_RDiagonal =
         {
             {0, 0, 1},
             {0, 1, 0},
             {1, 0, 0}
         };
-        
+        public static int[,] R_LDiagonal =
+        {
+            {1, 0, 0},
+            {0, 1, 0},
+            {0, 0, 1}
+        };
         public static int[,] AllNeighboring =
         {
             {1, 1, 1},

@@ -15,6 +15,9 @@ namespace CardGrid
         public float Volume = 0.5f;
 
         public LevelState[] Levels;
+
+        [NonSerialized] 
+        public TutorialSequence CurrentTutorial;
     }
 
     public struct LevelState
@@ -45,6 +48,14 @@ namespace CardGrid
 
         public Field Filed = new Field();
         public Inventory Inventory = new Inventory();
+
+        public int GetRealLevelID()
+        {
+            if (LevelID >= CommonLevelID)
+                return LevelID - CommonLevelID;
+            else
+                return LevelID;
+        }
     }
 
     public class Field
@@ -54,9 +65,7 @@ namespace CardGrid
 
     public class CardState
     {
-        public string Name;
         public CardSO CardSO;
-        public TypeCard Type;
         public CardGrid Grid;
         public Vector2Int Position;
         public int StartQuantity;
@@ -65,8 +74,6 @@ namespace CardGrid
         //NonSerialized don't save in save system
         [NonSerialized]
         public CardGameObject GameObject;
-        [NonSerialized]
-        public Maps ImpactMap;
         [NonSerialized]
         public GameObject Effect;
     }
@@ -85,8 +92,27 @@ namespace CardGrid
     public enum TypeCard
     {
         Enemy,
-        Item
+        Item,
+        Block
     }
-    
+
+    public enum ShapeType
+    {
+        Rhomb,
+        Diamond,
+        Hexagonal,
+        Octagonal,
+        Pearl
+    }
+
+    public enum ColorType
+    {
+        Blue,
+        Green,
+        Purple,
+        Yellow,
+        Red
+    }
+
     #endregion
 }
