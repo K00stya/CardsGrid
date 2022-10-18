@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace CardGrid
 {
@@ -22,7 +20,7 @@ namespace CardGrid
          * I could not find a way to load addressable arrays, this shit is taken from official examples:
          * https://github.com/Unity-Technologies/Addressables-Sample/blob/master/Basic/Basic%20AssetReference/Assets/Scripts/ListOfReferences.cs
          */
-        IEnumerator LoadLevelCards(int levelID)
+        void LoadLevelCards(int levelID)
         {
             _impactHighlightCards.Clear();
             
@@ -40,35 +38,16 @@ namespace CardGrid
                 _startMaxCellQuantity = loadedLevel.StartMaxCellQuantity;
                 _chanceItemOnFiled = loadedLevel.ChanceItemOnFiled;
 
-                var enemies = loadedLevel.Enemies.Length;
-                var items = loadedLevel.Items.Length;
-
                 foreach (var card in loadedLevel.Enemies)
                 {
-                    card.LoadAssetAsync<CardSO>().Completed += OnEnemyLoaded;
+                    _loadedEnemies.Add(card);
                 }
 
                 foreach (var card in loadedLevel.Items)
                 {
-                    card.LoadAssetAsync<CardSO>().Completed += OnItemLoaded;
+                    _loadedItems.Add(card);
                 }
 
-                yield return new WaitUntil(() => enemies <= 0 && items <= 0);
-
-                void OnEnemyLoaded(AsyncOperationHandle<CardSO> obj)
-                {
-                    _loadedEnemies.Add(obj.Result);
-                    Addressables.Release(obj);
-                    enemies--;
-                }
-
-                void OnItemLoaded(AsyncOperationHandle<CardSO> obj)
-                {
-                    _loadedItems.Add(obj.Result);
-                    Addressables.Release(obj);
-                    items--;
-                }
-                
                 BattleUI.Score.gameObject.SetActive(true);
                 BattleUI.LeftCardsPanel.gameObject.SetActive(false);
             }
@@ -87,101 +66,46 @@ namespace CardGrid
                     var row = columnsSO[i];
                     _loadedMap.Add(new Queue<CardState>(row.Length)); //AddEmptyRow
                 }
-
-                CardState[][] fieldCadsHandler = new CardState[columnsSO.Count][];
-                int quantityCards = 0;
-                int X = -1;
+                
+                int X = 0;
                 foreach (var row in columnsSO)
                 {
-                    X++;
-                    int Z = -1;
-                    fieldCadsHandler[X] = new CardState[row.Length];
                     foreach (var card in row)
                     {
-                        Z++;
                         if (card == null) continue;
-
-                        quantityCards++;
-
-                        SubField(card, X, Z);
+                        
+                        var cardSO = card.Card;
+                        var cardState = new CardState();
+                        cardState.CardSO = cardSO;
+                        cardState.CardSO.Type =cardSO.Type;
+                        cardState.Quantity = card.Quantity;
+                        cardState.StartQuantity = card.Quantity;
+                    
+                        _loadedMap[X].Enqueue(cardState);
                     }
+                    if (_loadedMap[X].Count > BattleObjects.Field.SizeZ)
+                        BattleUI.LeftCardsPanel.Columns[X].text = (_loadedMap[X].Count - BattleObjects.Field.SizeZ).ToString();
+                    else
+                        BattleUI.LeftCardsPanel.Columns[X].text = "0";
+                    
+                    X++;
                 }
 
                 _loadedInventory = new Queue<CardState>(loadedLevel.Inventory.Length);
-                CardState[] inventoryCardsHandler = new CardState[loadedLevel.Inventory.Length];
-                int items = 0;
                 foreach (var card in loadedLevel.Inventory)
                 {
-                    SubInventory(card, items);
-                    items++;
-                }
-
-                yield return new WaitUntil(() => quantityCards <= 0 && items <= 0);
-
-                for (int i = 0; i < _loadedMap.Count; i++)
-                {
-                    foreach (var card in fieldCadsHandler[i])
-                    {
-                        _loadedMap[i].Enqueue(card);
-                    }
-
-                    if (_loadedMap[i].Count > BattleObjects.Field.SizeZ)
-                        BattleUI.LeftCardsPanel.Columns[i].text = (_loadedMap[i].Count - BattleObjects.Field.SizeZ).ToString();
-                    else
-                        BattleUI.LeftCardsPanel.Columns[i].text = "0";
-                }
-
-                for (int i = 0; i < inventoryCardsHandler.Length; i++)
-                {
-                    _loadedInventory.Enqueue(inventoryCardsHandler[i]);
-                }
-
-                void SubInventory(CardStartInfo card, int index)
-                {
-                    card.Card.LoadAssetAsync<CardSO>().Completed += (obj) =>
-                    {
-                        OnInventoryCardLoaded(obj, card.Quantity, index);
-                    };
-                }
-
-                void SubField(CardStartInfo card, int X, int Z)
-                {
-                    card.Card.LoadAssetAsync<CardSO>().Completed += (obj) =>
-                    {
-                        OnFieldCardLoaded(obj, card.Quantity, X, Z);
-                    };
+                    var cardSO = card.Card;
+                    var cardState = new CardState();
+                    cardState.CardSO = cardSO;
+                    cardState.CardSO.Type = cardSO.Type;
+                    cardState.Quantity = card.Quantity;
+                    cardState.StartQuantity = card.Quantity;
+                    
+                    _loadedInventory.Enqueue(cardState);
                 }
                 
                 BattleUI.Score.gameObject.SetActive(false);
                 BattleUI.LeftCardsPanel.gameObject.SetActive(true);
-                
-                void OnFieldCardLoaded(AsyncOperationHandle<CardSO> obj, int quantity, int column, int row)
-                {
-                    var card = obj.Result;
-                    var cardState = new CardState();
-                    cardState.CardSO = card;
-                    cardState.CardSO.Type = card.Type;
-                    cardState.Quantity = quantity;
-                    cardState.StartQuantity = quantity;
-                    
-                    fieldCadsHandler[column][row] = cardState;
-                    Addressables.Release(obj);
-                    quantityCards--;
-                }
-
-                void OnInventoryCardLoaded(AsyncOperationHandle<CardSO> obj, int quantity, int index)
-                {
-                    var card = obj.Result;
-                    var cardState = new CardState();
-                    cardState.CardSO = card;
-                    cardState.CardSO.Type = card.Type;
-                    cardState.Quantity = quantity;
-                    cardState.StartQuantity = quantity;
-                    
-                    inventoryCardsHandler[index] = cardState;
-                    Addressables.Release(obj);
-                    items--;
-                }
             }
         }
 

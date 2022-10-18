@@ -14,147 +14,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TutorSequence: {fileID: 0}
   Column1:
-  - Card:
-      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
+  - Card: {fileID: 11400000, guid: 6b59e6c53b7073e4284ec73ab2aea1e4, type: 2}
     Quantity: 1
-  - Card:
-      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    Quantity: 1
-  - Card:
-      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    Quantity: 1
-  - Card:
-      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    Quantity: 1
-  - Card:
-      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    Quantity: 1
-  - Card:
-      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
+  - Card: {fileID: 11400000, guid: 70d29b960caca4646a0708a3a7f4c370, type: 2}
     Quantity: 1
   Column2:
-  - Card:
-      m_AssetGUID: f849be4ab14bad44c95d083f414089c0
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
+  - Card: {fileID: 11400000, guid: 70d29b960caca4646a0708a3a7f4c370, type: 2}
     Quantity: 1
   Column3:
-  - Card:
-      m_AssetGUID: 0816fcf67fbc91e409280889435ce49e
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    Quantity: 1
-  - Card:
-      m_AssetGUID: f849be4ab14bad44c95d083f414089c0
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
+  - Card: {fileID: 11400000, guid: 70d29b960caca4646a0708a3a7f4c370, type: 2}
     Quantity: 1
   Column4:
-  - Card:
-      m_AssetGUID: f849be4ab14bad44c95d083f414089c0
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
+  - Card: {fileID: 11400000, guid: 0816fcf67fbc91e409280889435ce49e, type: 2}
+    Quantity: 1
+  - Card: {fileID: 11400000, guid: 5c58061af75a9fb40ac31343773d8529, type: 2}
+    Quantity: 1
+  - Card: {fileID: 11400000, guid: 0816fcf67fbc91e409280889435ce49e, type: 2}
+    Quantity: 1
+  - Card: {fileID: 11400000, guid: 0816fcf67fbc91e409280889435ce49e, type: 2}
+    Quantity: 1
+  - Card: {fileID: 11400000, guid: 7c3fa0bfcc521634abd92808503cf233, type: 2}
     Quantity: 1
   Column5:
-  - Card:
-      m_AssetGUID: f849be4ab14bad44c95d083f414089c0
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    Quantity: 1
-  - Card:
-      m_AssetGUID: f849be4ab14bad44c95d083f414089c0
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    Quantity: 1
-  - Card:
-      m_AssetGUID: e230b6442059a1d408dc090389422a82
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    Quantity: 1
-  - Card:
-      m_AssetGUID: f849be4ab14bad44c95d083f414089c0
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    Quantity: 1
-  - Card:
-      m_AssetGUID: f849be4ab14bad44c95d083f414089c0
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
+  - Card: {fileID: 11400000, guid: 7c3fa0bfcc521634abd92808503cf233, type: 2}
     Quantity: 1
   Column6:
-  - Card:
-      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    Quantity: 1
-  - Card:
-      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    Quantity: 1
-  - Card:
-      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    Quantity: 1
-  - Card:
-      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    Quantity: 1
-  - Card:
-      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    Quantity: 1
-  - Card:
-      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
+  - Card: {fileID: 11400000, guid: 7c3fa0bfcc521634abd92808503cf233, type: 2}
     Quantity: 1
   Inventory:
-  - Card:
-      m_AssetGUID: 49adbae435c199e4099b6be173f36cb2
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
+  - Card: {fileID: 11400000, guid: 49adbae435c199e4099b6be173f36cb2, type: 2}
     Quantity: 1
-  - Card:
-      m_AssetGUID: 49adbae435c199e4099b6be173f36cb2
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
+  - Card: {fileID: 11400000, guid: 49adbae435c199e4099b6be173f36cb2, type: 2}
     Quantity: 1

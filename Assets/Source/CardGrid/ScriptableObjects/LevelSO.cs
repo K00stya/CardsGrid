@@ -2,14 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace CardGrid
 {
     [Serializable]
     public class CardStartInfo
     {
-        public AssetReference Card;
+        public CardSO Card;
+        [Range(1, 10)]
         public int Quantity = 1;
     }
     

@@ -59,7 +59,7 @@ namespace CardGrid
             InfiniteLvlMenu.Continue.onClick.AddListener(() =>
             {
                 ActiveBattleUI();
-                StartCoroutine(LoadBattle());
+                LoadBattle();
             });
             InfiniteLvlMenu.NewBattleButton.onClick.AddListener(() =>
             {
@@ -140,7 +140,7 @@ namespace CardGrid
                     var levelID = i;
                     levelCell.Number.text = (levelID + 1).ToString();
                     levelCell.Button.onClick.AddListener(() =>
-                        StartCoroutine(StartNewBattle(levelID+ BattleState.CommonLevelID)));
+                        StartNewBattle(levelID+ BattleState.CommonLevelID));
 
                     levelCell.Shading.SetActive(_CommonState.Levels[i].IsOpen);
 
@@ -161,8 +161,7 @@ namespace CardGrid
                     button.GetComponentInChildren<TextMeshProUGUI>().text =
                         !level.Open ? $"{level.LevelName} ({level.NeedScoreToOpen})" : level.LevelName;
                 
-                    button.onClick.AddListener(() =>
-                        StartCoroutine(StartNewBattle(levelID)));
+                    button.onClick.AddListener(() => StartNewBattle(levelID));
                 }
             }
         }
@@ -192,14 +191,14 @@ namespace CardGrid
             });
             BattleUI.BattleMenu.NextLevel.onClick.AddListener(() =>
             {
-                StartCoroutine(StartNewBattle(_CommonState.BattleState.LevelID + 1));
+                StartNewBattle(_CommonState.BattleState.LevelID + 1);
             });
 
             void PlayAgain()
             {
                 BattleUI.BattleMenu.gameObject.SetActive(false);
                 DestroyCards();
-                StartCoroutine(StartNewBattle(_CommonState.BattleState.LevelID));
+                StartNewBattle(_CommonState.BattleState.LevelID);
             }
         }
 

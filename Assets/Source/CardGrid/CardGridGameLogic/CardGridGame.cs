@@ -103,11 +103,11 @@ namespace CardGrid
             OpenMainMenu();
         }
         
-        IEnumerator LoadBattle()
+        void LoadBattle()
         {
             BattleState playerBattleState = _CommonState.BattleState;
 
-            yield return StartCoroutine(LoadLevelCards(playerBattleState.LevelID));
+            LoadLevelCards(playerBattleState.LevelID);
 
             foreach (var cell in playerBattleState.Filed.Cells)
             {
@@ -143,7 +143,7 @@ namespace CardGrid
             AudioSource.volume = _CommonState.Volume;
         }
 
-        IEnumerator StartNewBattle(int levelID)
+        void StartNewBattle(int levelID)
         {
             DebugSystem.DebugLog("Start new battle", DebugSystem.Type.Battle);
             
@@ -154,7 +154,7 @@ namespace CardGrid
             
             ActiveBattleUI();
 
-            yield return StartCoroutine(LoadLevelCards(levelID));
+            LoadLevelCards(levelID);
 
             if (levelID < BattleState.CommonLevelID)
             {

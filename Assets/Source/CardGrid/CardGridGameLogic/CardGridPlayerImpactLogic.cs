@@ -96,8 +96,6 @@ namespace CardGrid
                 {
                     TryHighlight(_selectedCard);
                 }
-                
-                SetSwaying(cardGO);
             }
             else
             {
