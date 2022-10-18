@@ -10,6 +10,8 @@ namespace CardGrid
     {
         public TextMeshProUGUI Score;
         public Button OpenMenu;
+        public Button PlayAgain;
         public BattleMenu BattleMenu;
+        public LeftCardsPanel LeftCardsPanel;
     }
 }

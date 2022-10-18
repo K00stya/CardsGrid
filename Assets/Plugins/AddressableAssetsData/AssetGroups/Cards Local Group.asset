@@ -18,7 +18,7 @@ MonoBehaviour:
   m_GUID: 2042bcd03af416e488e6ba77c774d733
   m_SerializeEntries:
   - m_GUID: 49adbae435c199e4099b6be173f36cb2
-    m_Address: Assets/Resources_moved/CardsSO/Items/Hammer.asset
+    m_Address: Hammer
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: f849be4ab14bad44c95d083f414089c0
@@ -30,7 +30,7 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 5e6f399551f93e54ab7b643ac92bc65a
-    m_Address: Assets/Resources_moved/CardsSO/Items/Gun.asset
+    m_Address: SwordLeft_Right
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: cd4b82fa2ef39da4eabdb9ddee4e3eaa
@@ -94,15 +94,15 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 2ae43fdea755a0846ab543e792cd446d
-    m_Address: Assets/Resources_moved/CardsSO/Items/Swords.asset
+    m_Address: Sword
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 9b819fbcca4a462478d8e1f14ce912c2
-    m_Address: Assets/Resources_moved/CardsSO/Items/SwordRight.asset
+    m_Address: SwordRight_Left
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 0c8aec5e3c552f743bf122600ea686d9
-    m_Address: Assets/Resources_moved/CardsSO/Items/Bomb.asset
+    m_Address: Bomb
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 70d29b960caca4646a0708a3a7f4c370
@@ -139,6 +139,14 @@ MonoBehaviour:
     m_SerializedLabels: []
   - m_GUID: 693fe5e35581c8a45aa6b1d4c598344a
     m_Address: Gem5Yellow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e212ebbc875fbc94590996063524da91
+    m_Address: SwordVertical
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c3572808e8cf27047bac9b13bf149d63
+    m_Address: SwordHorizontal
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

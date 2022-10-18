@@ -13,7 +13,7 @@ namespace CardGrid
     public partial class CardGridGame //CardsFactory
     {
         List<Queue<CardState>> _loadedMap;
-        Queue<CardSO> _loadedInventory;
+        Queue<CardState> _loadedInventory;
 
         List<CardSO> _loadedEnemies;
         List<CardSO> _loadedItems;
@@ -24,6 +24,8 @@ namespace CardGrid
          */
         IEnumerator LoadLevelCards(int levelID)
         {
+            _impactHighlightCards.Clear();
+            
             if (levelID < BattleState.CommonLevelID)
             {
                 _loadedEnemies = new List<CardSO>();
@@ -66,6 +68,9 @@ namespace CardGrid
                     Addressables.Release(obj);
                     items--;
                 }
+                
+                BattleUI.Score.gameObject.SetActive(true);
+                BattleUI.LeftCardsPanel.gameObject.SetActive(false);
             }
             else
             {
@@ -83,53 +88,73 @@ namespace CardGrid
                     _loadedMap.Add(new Queue<CardState>(row.Length)); //AddEmptyRow
                 }
 
-                CardState[][] cadsHandler = new CardState[columnsSO.Count][];
+                CardState[][] fieldCadsHandler = new CardState[columnsSO.Count][];
                 int quantityCards = 0;
                 int X = -1;
                 foreach (var row in columnsSO)
                 {
                     X++;
                     int Z = -1;
-                    cadsHandler[X] = new CardState[row.Length];
+                    fieldCadsHandler[X] = new CardState[row.Length];
                     foreach (var card in row)
                     {
                         Z++;
                         if (card == null) continue;
 
                         quantityCards++;
-                        SubOnCardLoad(card, X, Z);
+
+                        SubField(card, X, Z);
                     }
                 }
 
+                _loadedInventory = new Queue<CardState>(loadedLevel.Inventory.Length);
+                CardState[] inventoryCardsHandler = new CardState[loadedLevel.Inventory.Length];
                 int items = 0;
-                _loadedInventory = new Queue<CardSO>(loadedLevel.Inventory.Length);
                 foreach (var card in loadedLevel.Inventory)
                 {
+                    SubInventory(card, items);
                     items++;
-                    card.Card.LoadAssetAsync<CardSO>().Completed += (obj) =>
-                    {
-                        OnInventoryCardLoaded(obj, card.Quantity);
-                    };
                 }
 
                 yield return new WaitUntil(() => quantityCards <= 0 && items <= 0);
 
                 for (int i = 0; i < _loadedMap.Count; i++)
                 {
-                    foreach (var card in cadsHandler[i])
+                    foreach (var card in fieldCadsHandler[i])
                     {
                         _loadedMap[i].Enqueue(card);
                     }
+
+                    if (_loadedMap[i].Count > BattleObjects.Field.SizeZ)
+                        BattleUI.LeftCardsPanel.Columns[i].text = (_loadedMap[i].Count - BattleObjects.Field.SizeZ).ToString();
+                    else
+                        BattleUI.LeftCardsPanel.Columns[i].text = "0";
                 }
 
-                void SubOnCardLoad(CardStartInfo card, int x, int z)
+                for (int i = 0; i < inventoryCardsHandler.Length; i++)
+                {
+                    _loadedInventory.Enqueue(inventoryCardsHandler[i]);
+                }
+
+                void SubInventory(CardStartInfo card, int index)
                 {
                     card.Card.LoadAssetAsync<CardSO>().Completed += (obj) =>
                     {
-                        OnFieldCardLoaded(obj, card.Quantity, x, z);
+                        OnInventoryCardLoaded(obj, card.Quantity, index);
                     };
                 }
 
+                void SubField(CardStartInfo card, int X, int Z)
+                {
+                    card.Card.LoadAssetAsync<CardSO>().Completed += (obj) =>
+                    {
+                        OnFieldCardLoaded(obj, card.Quantity, X, Z);
+                    };
+                }
+                
+                BattleUI.Score.gameObject.SetActive(false);
+                BattleUI.LeftCardsPanel.gameObject.SetActive(true);
+                
                 void OnFieldCardLoaded(AsyncOperationHandle<CardSO> obj, int quantity, int column, int row)
                 {
                     var card = obj.Result;
@@ -138,17 +163,22 @@ namespace CardGrid
                     cardState.CardSO.Type = card.Type;
                     cardState.Quantity = quantity;
                     cardState.StartQuantity = quantity;
-                    cadsHandler[column][row] = cardState;
-                    //_loadedMap[column].Enqueue(card);
+                    
+                    fieldCadsHandler[column][row] = cardState;
                     Addressables.Release(obj);
                     quantityCards--;
                 }
 
-                void OnInventoryCardLoaded(AsyncOperationHandle<CardSO> obj, int quantity)
+                void OnInventoryCardLoaded(AsyncOperationHandle<CardSO> obj, int quantity, int index)
                 {
                     var card = obj.Result;
-                    card.StartQuantity = quantity;
-                    _loadedInventory.Enqueue(card);
+                    var cardState = new CardState();
+                    cardState.CardSO = card;
+                    cardState.CardSO.Type = card.Type;
+                    cardState.Quantity = quantity;
+                    cardState.StartQuantity = quantity;
+                    
+                    inventoryCardsHandler[index] = cardState;
                     Addressables.Release(obj);
                     items--;
                 }
@@ -157,6 +187,7 @@ namespace CardGrid
 
         private void LoadTutor(LevelSO loadedLevel)
         {
+            _handMoving = false;
             TutorHandObj.SetActive(false);
             TutorHandObj.transform.DOKill();
             if (loadedLevel.TutorSequence != null)
@@ -279,14 +310,18 @@ namespace CardGrid
 
                     cardState.GameObject.gameObject.SetActive(true);
                     SetCommonCardState(ref cardState, ref cardState.GameObject, newCard);
+
+                    BattleUI.LeftCardsPanel.Columns[row].text = _loadedMap[row].Count.ToString();
+                }
+                else
+                {
+                    BattleUI.LeftCardsPanel.Columns[row].text = 0.ToString();
                 }
             }
         }
 
         void SetCommonCardState(ref CardState cardState, ref CardGameObject cardGameObject, CardSO cardInfo)
         {
-            cardState.Effect = cardInfo.Effect;
-
             cardGameObject.Sprite.sprite = cardInfo.Sprite;
             if (cardState.CardSO.Type == TypeCard.Block)
             {

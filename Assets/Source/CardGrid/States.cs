@@ -74,8 +74,6 @@ namespace CardGrid
         //NonSerialized don't save in save system
         [NonSerialized]
         public CardGameObject GameObject;
-        [NonSerialized]
-        public GameObject Effect;
     }
     
     public class Inventory

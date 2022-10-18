@@ -66,8 +66,10 @@ namespace CardGrid
 
         void Start()
         {
+            Debug.Log(Screen.width);
+            Debug.Log(Screen.height);
             //Try load save
-            if (ES3.KeyExists(SaveName))
+            if (ES3.KeyExists(SaveName) && !CurrentGameSeetings.NewSaveOnStart)
             {
                 LoadSave();
             }
@@ -125,6 +127,7 @@ namespace CardGrid
         void LoadSave()
         {
             _CommonState = ES3.Load<PlayerCommonState>(SaveName);
+
             if (_CommonState == null)
             {
                 DebugSystem.DebugLog("Save can't be load. New save active.", DebugSystem.Type.SaveSystem);
@@ -237,7 +240,7 @@ namespace CardGrid
                 }
             }
             
-            void SpawnInventory(out CardState[,] cards, CardGrid gridType, Queue<CardSO> mapField)
+            void SpawnInventory(out CardState[,] cards, CardGrid gridType, Queue<CardState> mapField)
             {
                 GridGameObject gridGameObject;
                 if (gridType == CardGrid.Field)
@@ -260,7 +263,7 @@ namespace CardGrid
                         if (mapField.Count > 0)
                         {
                             var card = mapField.Dequeue();
-                            cell = CreateCard(card, card.StartQuantity);
+                            cell = card;
                         }
                         else
                         {

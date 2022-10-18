@@ -13,6 +13,8 @@ public class CardSO : ScriptableObject
     public ShapeType Shape;
     public ColorType ColorType;
     public Sprite Sprite;
+    public Texture2D ShapeSprite;
     public Maps ImpactMap;
     public GameObject Effect;
+    public GameObject ShapeEffect;
 }

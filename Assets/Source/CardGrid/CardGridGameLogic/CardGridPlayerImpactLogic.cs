@@ -81,10 +81,22 @@ namespace CardGrid
                             _selectedCard.Highlight.SetActive(true);
                         }
                     }
+                    
+                    //Return item if unpress on input not active
+                    if (_dragGameObjectCard != null && !_inputActive)
+                    {
+                        ReturnDragCard(_dragGameObjectCard);
+                        _dragGameObjectCard = null;
+                    }
 
                     StartCoroutine(EndDrag(_dragGameObjectCard));
                 }
-
+                
+                if (_selectedCard != null)
+                {
+                    TryHighlight(_selectedCard);
+                }
+                
                 SetSwaying(cardGO);
             }
             else
@@ -101,11 +113,6 @@ namespace CardGrid
                 DisableHighlightInfo();
             }
 
-            if (_selectedCard != null)
-            {
-                TryHighlight(_selectedCard);
-            }
-            
             DragAndDrop();
             
             TutorHand();
@@ -173,8 +180,10 @@ namespace CardGrid
             foreach (var obj in _hits)
             {
                 var monobeh = obj.collider.GetComponent<CardGameObject>();
+                
                 if (!monobeh || activeCard == monobeh)
                     continue;
+                
                 if (_hitFieldCardOnDrag == monobeh)
                 {
                     dragOnField = true;
@@ -187,6 +196,7 @@ namespace CardGrid
             //If player not drag on field we disable highlights
             if (!dragOnField)
             {
+                _hitFieldCardOnDrag = null;
                 DisableImpactHighlight();
             }
 
@@ -323,7 +333,7 @@ namespace CardGrid
             }
             DisableImpactHighlight();
 
-            yield return SpawnEffectOnCards(impactCardState, cards);
+            yield return SpawnEffectOnCards(impactCardState, cards, true);
 
             List<CardState> deaths = new List<CardState>();
             List<CardState> woundeds = new List<CardState>(cards);
@@ -369,6 +379,7 @@ namespace CardGrid
 
         IEnumerator Filling(CardState[,] cards)
         {
+            bool needWait = false;
             for (int z = cards.GetLength(1) - 1; z >= 0; z--)
             {
                 for (int x = 0; x < cards.GetLength(0); x++)
@@ -376,23 +387,16 @@ namespace CardGrid
                     if (cards[x, z].Quantity <= 0)
                     {
                         ReCreateCard(ref cards[x, z], x);
+                        needWait = true;
                         yield return MoveCardToSelfPosition(cards[x, z], BattleObjects.Field);
                     }
                 }
-                //for smoothness
-                yield return new WaitForSeconds(0.1f);
             }
-
-            yield return new WaitForSeconds(SpeedFilling);
-        }
-        
-        IEnumerator CellsCombinations(CardState[,] cards)
-        {
-            yield return null;
         }
         
         private IEnumerator MoveCardToSelfPosition(CardState cardState, GridGameObject grid)
         {
+            if(cardState.GameObject == _dragGameObjectCard) yield break;
             yield return cardState.GameObject.transform.DOMove(grid.
                 GetCellSpacePosition(cardState.Position), SpeedRecession);
         }
@@ -524,10 +528,19 @@ namespace CardGrid
         }
 
         //TODO Pool efffects
-        float SpawnEffectOnCards(CardState impactCardState, CardState[] cards)
+        float SpawnEffectOnCards(CardState impactCardState, CardState[] cards, bool color)
         {
             bool needWait = false;
-            var effect = impactCardState.Effect;
+            GameObject effect;
+            if (color)
+            {
+                effect= impactCardState.CardSO.Effect;
+            }
+            else
+            {
+                effect = impactCardState.CardSO.ShapeEffect;
+            }
+
             if (effect)
             {
                 foreach (var card in cards)
@@ -535,7 +548,18 @@ namespace CardGrid
                     if (card.Quantity >= 0) //Target live?
                     {
                         var go = Instantiate(effect, BattleObjects.ParentEffects);
-                        go.transform.position = BattleObjects.Field.GetCellSpacePosition(card.Position);
+                        
+                        if (go.TryGetComponent<ShapeEffect>(out var shape))
+                        {
+                            shape.SetShape(impactCardState.CardSO.ShapeSprite);
+                        }
+                        else if (go.TryGetComponent<ColorEffect>(out var sparks))
+                        {
+                            sparks.SetColor(impactCardState.CardSO.ColorType);
+                        }
+                        
+                        go.transform.position = BattleObjects.Field.GetCellSpacePosition(card.Position)
+                                                + new Vector3(0,2f,0);
                         needWait = true;
                     }
                 }
@@ -549,7 +573,7 @@ namespace CardGrid
 
         float SpawnEffectOnCard(CardState cardState)
         {
-            var effect = cardState.Effect;
+            var effect = cardState.CardSO.Effect;
             if (effect)
             {
                 var go = Instantiate(effect, BattleObjects.ParentEffects);

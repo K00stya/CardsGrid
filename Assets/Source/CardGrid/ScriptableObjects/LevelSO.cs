@@ -10,7 +10,7 @@ namespace CardGrid
     public class CardStartInfo
     {
         public AssetReference Card;
-        public int Quantity;
+        public int Quantity = 1;
     }
     
     [CreateAssetMenu (fileName = "Level ")]

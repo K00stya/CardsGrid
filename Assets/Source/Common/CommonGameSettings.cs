@@ -10,6 +10,8 @@ namespace CardGrid
     [CreateAssetMenu(menuName = "CardGrid/Settings", fileName = "GameSettings")]
     public class CommonGameSettings : ScriptableObject
     {
+        public bool NewSaveOnStart;
+        
         public DebugSettings Debug;
         public FrontSettings Front;
 

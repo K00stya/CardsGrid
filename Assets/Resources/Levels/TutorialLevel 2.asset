@@ -1,0 +1,196 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db9a3e0392c403143aea3f453f0ce0ef, type: 3}
+  m_Name: TutorialLevel 2
+  m_EditorClassIdentifier: 
+  TutorSequence: {fileID: 11400000, guid: c9a7ff5f29a17344798405e02dbdafcc, type: 2}
+  Column1:
+  - Card:
+      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  Column2:
+  - Card:
+      m_AssetGUID: f849be4ab14bad44c95d083f414089c0
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 15088e049fb43e44f9aa813132691c6f
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 6f597476f8dd0a24c9e0ac4a824c626a
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: cd4b82fa2ef39da4eabdb9ddee4e3eaa
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  Column3:
+  - Card:
+      m_AssetGUID: f849be4ab14bad44c95d083f414089c0
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 15088e049fb43e44f9aa813132691c6f
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 6f597476f8dd0a24c9e0ac4a824c626a
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: cd4b82fa2ef39da4eabdb9ddee4e3eaa
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 791fbaa184a823741a3f0df780a2e241
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  Column4: []
+  Column5:
+  - Card:
+      m_AssetGUID: cbd1fc2916d177a4bb776fba78625380
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 658ceb3feeb33854ebacc86ea7c0c337
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 6f597476f8dd0a24c9e0ac4a824c626a
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 46363136644e6194a9e1d1c2f8182f18
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 5c58061af75a9fb40ac31343773d8529
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  Column6:
+  - Card:
+      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 0f66f15822a4e6c47aa6b5e73f2eccd3
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  Inventory:
+  - Card:
+      m_AssetGUID: 49adbae435c199e4099b6be173f36cb2
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 49adbae435c199e4099b6be173f36cb2
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1
+  - Card:
+      m_AssetGUID: 49adbae435c199e4099b6be173f36cb2
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Quantity: 1

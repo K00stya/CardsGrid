@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.Plastic.Newtonsoft.Json.Serialization;
 using UnityEngine;
 
 namespace CardGrid
@@ -18,54 +17,55 @@ namespace CardGrid
         {
             _enemiesRecession = false;
 
-            //vertical
-            for (int x = BattleObjects.Field.SizeX - 1; x >= 0; x--)
-            {
-                if (_enemiesRecession) yield break;
-                yield return CheckVertical(CheckShape, x);
-                yield return Accept();
-
-                yield return CheckVertical(CheckColor, x);
-                yield return Accept();
-            }
-            
             //horizontal
             for (int z = BattleObjects.Field.SizeZ - 1; z >= 0; z--)
             {
                 if (_enemiesRecession) yield break;
-                yield return CheckHorizontal(CheckShape, z);
-                yield return Accept();
 
-                yield return CheckHorizontal(CheckColor, z);
-                yield return Accept();
+                yield return CheckHorizontal(CheckColor, z, true);
+                yield return Accept(true);
+                
+                yield return CheckHorizontal(CheckShape, z, false);
+                yield return Accept(false);
+            }
+            
+            //vertical
+            for (int x = 0; x < BattleObjects.Field.SizeX ; x++)
+            {
+                if (_enemiesRecession) yield break;
+                yield return CheckVertical(CheckColor, x, true);
+                yield return Accept(true);
+                
+                yield return CheckVertical(CheckShape, x, false);
+                yield return Accept(false);
             }
         }
             
-        IEnumerator CheckVertical(Checking check, int x)
+        IEnumerator CheckVertical(Checking check, int x, bool color)
         {
             cards.Clear();
             for (int z = BattleObjects.Field.SizeZ - 1; z >= 0; z--)
             {
-                yield return CheckCell(check, x, z);
+                yield return CheckCell(check, x, z, color);
             }
         }
 
-        IEnumerator CheckHorizontal(Checking check, int z)
+        IEnumerator CheckHorizontal(Checking check, int z, bool color)
         {
             cards.Clear();
             for (int x = BattleObjects.Field.SizeX - 1; x >= 0; x--)
             {
-                yield return CheckCell(check, x, z);
+                yield return CheckCell(check, x, z, color);
             }
         }
         
-        IEnumerator CheckCell(Checking check, int x,int z)
+        IEnumerator CheckCell(Checking check, int x, int z, bool color)
         {
             if (_enemiesRecession) yield break;
             var cell = _CommonState.BattleState.Filed.Cells[x, z];
             if (cell.CardSO == null || cell.Quantity <= 0 || cell.CardSO.Type != TypeCard.Enemy)
             {
-                yield return Accept();
+                yield return Accept(color);
                 cards.Clear();
                 yield break;
             }
@@ -76,7 +76,7 @@ namespace CardGrid
             }
             else
             {
-                yield return Accept();
+                yield return Accept(color);
                 cards.Clear();
                 cards.Enqueue(cell);
             }
@@ -92,11 +92,11 @@ namespace CardGrid
             return card1.CardSO.ColorType == card2.CardSO.ColorType;
         }
             
-        IEnumerator Accept()
+        IEnumerator Accept(bool color)
         {
             if (cards.Count > 2)
             {
-                yield return new WaitForSeconds(SpawnEffectOnCards(cards.Peek(), cards.ToArray()));
+                yield return new WaitForSeconds(SpawnEffectOnCards(cards.Peek(), cards.ToArray(), color));
                 ImpactDamageOnField(cards.ToArray());
                 _enemiesRecession = true;
                 yield break;
@@ -162,7 +162,7 @@ namespace CardGrid
                         int[,] attackArray = GetImpactMap<ImpactMaps>(wounded.CardSO.ImpactMap);
                         var cards = GetImpactedCards(wounded.CardSO.Name, wounded.Position, attackArray);
                         SpawnEffectOnCard(wounded);
-                        yield return new WaitForSeconds(SpawnEffectOnCards(wounded, cards));
+                        //yield return new WaitForSeconds(SpawnEffectOnCards(wounded, cards));
                         newWoundeds.AddRange(cards);
                         ImpactDamageOnField(wounded.Quantity, cards, ref newDeaths);
                         break;

@@ -23,6 +23,7 @@ namespace CardGrid
             for (int x = 0; x < cells.GetLength(0); x++)
             {
                 var card = cells[x, lowerZ];
+                
                 if (!card.CardSO || card.CardSO.Type != TypeCard.Item) continue;
 
                 newItems = true;
