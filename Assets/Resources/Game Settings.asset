@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a519cf0ff8b540cb9d7c1e7bcf3f78c3, type: 3}
   m_Name: Game Settings
   m_EditorClassIdentifier: 
-  NewSaveOnStart: 0
+  NewSaveOnStart: 1
   Debug:
     DebugsChannels:
     - name: Battle

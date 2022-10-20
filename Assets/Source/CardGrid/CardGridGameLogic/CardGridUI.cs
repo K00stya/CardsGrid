@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +18,7 @@ namespace CardGrid
 
         public void OpenMainMenu()
         {
+            UpdateMainMenuStars();
             MainMenu.gameObject.SetActive(true);
             
             LevelsMenu.gameObject.SetActive(false);
@@ -37,7 +39,8 @@ namespace CardGrid
             });
             MainMenu.OpenInfiniteMenu.onClick.AddListener(()=>
             {
-                OpenInfiniteMenu();
+                //OpenInfiniteMenu();
+                StartNewBattle(0);
             });
             MainMenu.VolumeSlider.onValueChanged.AddListener(value =>
             {
@@ -71,8 +74,6 @@ namespace CardGrid
 
         void LoadUI()
         {
-            UpdateMainMenuStars();
-
             MainMenu.VolumeSlider.SetValueWithoutNotify(_CommonState.Volume);
             MainMenu.LanguageDropdown.SetValueWithoutNotify((int) _CommonState.Language);
             
@@ -105,11 +106,12 @@ namespace CardGrid
 
         void OpenLevelsMenu()
         {
-            UpdateStars();
+            UpdateLevelsMenuStars();
+            UpdateLevelButtonsStars();
             LevelsMenu.gameObject.SetActive(true);
         }
 
-        void UpdateStars()
+        void UpdateLevelButtonsStars()
         {
             for (int i = 0; i < _CommonState.Levels.Length; i++)
             {
@@ -122,7 +124,7 @@ namespace CardGrid
         void SetLevelsButtons()
         {
             Common();
-            Infinite();
+            //Infinite();
             
             void Common()
             {
@@ -204,6 +206,8 @@ namespace CardGrid
 
         void UpdateMainMenuStars()
         {
+            MainMenu.MaxScore.text = _CommonState.BestScore.ToString();
+            
             var maxStars = _CommonState.Levels.Length;
             int currentStars = 0;
             foreach (var level in _CommonState.Levels)
@@ -213,6 +217,19 @@ namespace CardGrid
             }
 
             MainMenu.StarsQuantity.text = currentStars.ToString() + "/" + maxStars.ToString();
+        } 
+        
+        void UpdateLevelsMenuStars()
+        {
+            var maxStars = _CommonState.Levels.Length;
+            int currentStars = 0;
+            foreach (var level in _CommonState.Levels)
+            {
+                if (level.Complete)
+                    currentStars++;
+            }
+
+            LevelsMenu.StarsQuantity.text = currentStars.ToString() + "/" + maxStars.ToString();
         }
 
         void ActiveBattleUI()
@@ -229,7 +246,8 @@ namespace CardGrid
 
         void GoToMenu()
         {
-            if (!_inputActive) return;
+            StopAllCoroutines();
+            DOTween.KillAll();
             Save();
             UpdateMainMenuStars();
             InfiniteLvlMenu.Continue.gameObject.SetActive(false);

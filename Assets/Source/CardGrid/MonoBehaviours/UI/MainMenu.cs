@@ -8,6 +8,7 @@ public class MainMenu : MonoBehaviour
 {
     public TextMeshProUGUI StarsQuantity;
     public Button OpenLevels;
+    public TextMeshProUGUI MaxScore;
     public Button OpenInfiniteMenu;
     
     public Slider VolumeSlider;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -32,7 +33,6 @@ namespace CardGrid
     {
         public BattleGameObjects BattleObjects;
         public CommonGameSettings CurrentGameSeetings;
-        public GameObject TutorHandObj;
         public AudioSource AudioSource;
         public LevelsGroup[] CommonLevelsGroups;
         public InfiniteLevelSO[] InfiniteLevels;
@@ -146,6 +146,8 @@ namespace CardGrid
         void StartNewBattle(int levelID)
         {
             DebugSystem.DebugLog("Start new battle", DebugSystem.Type.Battle);
+            StopAllCoroutines();
+            DOTween.KillAll();
             
             _inputActive = true;
             _CommonState.InBattle = true;

@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db9a3e0392c403143aea3f453f0ce0ef, type: 3}
   m_Name: TutorialLevel 1
   m_EditorClassIdentifier: 
-  TutorSequence: {fileID: 0}
+  TutorSequence: {fileID: 11400000, guid: ed0600c47317aa848998a0214354cbbd, type: 2}
   Column1:
   - Card: {fileID: 11400000, guid: f849be4ab14bad44c95d083f414089c0, type: 2}
     Quantity: 1
   Column2:
-  - Card: {fileID: 11400000, guid: 70d29b960caca4646a0708a3a7f4c370, type: 2}
+  - Card: {fileID: 11400000, guid: 6f597476f8dd0a24c9e0ac4a824c626a, type: 2}
     Quantity: 1
   - Card: {fileID: 11400000, guid: f849be4ab14bad44c95d083f414089c0, type: 2}
     Quantity: 1

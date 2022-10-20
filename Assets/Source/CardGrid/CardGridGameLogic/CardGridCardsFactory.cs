@@ -111,7 +111,7 @@ namespace CardGrid
 
         private void LoadTutor(LevelSO loadedLevel)
         {
-            _handMoving = false;
+            _tutorActive = false;
             TutorHandObj.SetActive(false);
             TutorHandObj.transform.DOKill();
             if (loadedLevel.TutorSequence != null)

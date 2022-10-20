@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef8fa38d2e3a2c34ba9e045a5a986252, type: 3}
-  m_Name: TutorSequence 1
+  m_Name: TutorSequence 2_1
   m_EditorClassIdentifier: 
   Cards:
   - AnyItem: 1
     ItemPosition: {x: 0, y: 0}
-    FieldPosition: {x: 3, y: 5}
-  - AnyItem: 1
-    ItemPosition: {x: 0, y: 0}
-    FieldPosition: {x: 4, y: 3}
+    FieldPosition: {x: 0, y: 3}
   - AnyItem: 1
     ItemPosition: {x: 0, y: 0}
     FieldPosition: {x: 3, y: 5}
+  - AnyItem: 1
+    ItemPosition: {x: 0, y: 0}
+    FieldPosition: {x: 5, y: 3}

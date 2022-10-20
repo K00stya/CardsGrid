@@ -33,7 +33,7 @@ namespace CardGrid
         List<CardGameObject> _infoHighlightCards = new List<CardGameObject>();
         bool _itemsRecession;
         bool _enemiesRecession;
-        bool _handMoving;
+        bool _tutorActive;
         private bool _playerPressed;
 
         //Not fixed because I use raycasts for get input, and I don't make changes in physics
@@ -114,34 +114,6 @@ namespace CardGrid
             DragAndDrop();
             
             TutorHand();
-        }
-
-        void TutorHand()
-        {
-            if (!_inputActive || _CommonState.CurrentTutorial == null || _CommonState.CurrentTutorial.Cards.Count == 0)
-            {
-                TutorHandObj.SetActive(false);
-                _handMoving = false;
-                TutorHandObj.transform.DOKill();
-                return;
-            }
-
-            if (!_handMoving && _CommonState.CurrentTutorial != null && _CommonState.CurrentTutorial.Cards.Count > 0)
-            {
-                TutorHandObj.SetActive(true);
-                var tutor = _CommonState.CurrentTutorial.Cards.First();
-                var firstPos = BattleObjects.Inventory.GetCellSpacePosition(tutor.ItemPosition);
-                var secondPos = BattleObjects.Field.GetCellSpacePosition(tutor.FieldPosition);
-                _handMoving = true;
-                MoveTutorHandBetween(firstPos, secondPos);
-            }
-        }
-
-        void MoveTutorHandBetween(Vector3 firstPos, Vector3 secondPos)
-        {
-            TutorHandObj.transform.position = firstPos + new Vector3(-0.7f,1f,0.5f);
-            TutorHandObj.transform.DOMove(secondPos + new Vector3(-0.7f,1f,0.5f), 2f).OnComplete(() =>
-                MoveTutorHandBetween(firstPos, secondPos));
         }
 
         #region DragAndDrop

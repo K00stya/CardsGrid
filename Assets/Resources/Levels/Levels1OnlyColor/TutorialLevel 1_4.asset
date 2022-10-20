@@ -10,13 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db9a3e0392c403143aea3f453f0ce0ef, type: 3}
-  m_Name: TutorialLevel 1_3_ColorNoTutor
+  m_Name: TutorialLevel 1_4
   m_EditorClassIdentifier: 
   TutorSequence: {fileID: 0}
   Column1:
   - Card: {fileID: 11400000, guid: 6b59e6c53b7073e4284ec73ab2aea1e4, type: 2}
     Quantity: 1
   - Card: {fileID: 11400000, guid: 70d29b960caca4646a0708a3a7f4c370, type: 2}
+    Quantity: 1
+  - Card: {fileID: 11400000, guid: 658ceb3feeb33854ebacc86ea7c0c337, type: 2}
+    Quantity: 1
+  - Card: {fileID: 11400000, guid: 658ceb3feeb33854ebacc86ea7c0c337, type: 2}
+    Quantity: 1
+  - Card: {fileID: 11400000, guid: 70d29b960caca4646a0708a3a7f4c370, type: 2}
+    Quantity: 1
+  - Card: {fileID: 11400000, guid: 15088e049fb43e44f9aa813132691c6f, type: 2}
     Quantity: 1
   Column2:
   - Card: {fileID: 11400000, guid: 70d29b960caca4646a0708a3a7f4c370, type: 2}
@@ -41,7 +49,19 @@ MonoBehaviour:
   Column6:
   - Card: {fileID: 11400000, guid: 7c3fa0bfcc521634abd92808503cf233, type: 2}
     Quantity: 1
+  - Card: {fileID: 11400000, guid: 15088e049fb43e44f9aa813132691c6f, type: 2}
+    Quantity: 1
+  - Card: {fileID: 11400000, guid: 2c33a331fb6cf0743a80391508a7e96c, type: 2}
+    Quantity: 1
+  - Card: {fileID: 11400000, guid: 15088e049fb43e44f9aa813132691c6f, type: 2}
+    Quantity: 1
+  - Card: {fileID: 11400000, guid: 15088e049fb43e44f9aa813132691c6f, type: 2}
+    Quantity: 1
   Inventory:
+  - Card: {fileID: 11400000, guid: 49adbae435c199e4099b6be173f36cb2, type: 2}
+    Quantity: 1
+  - Card: {fileID: 11400000, guid: 49adbae435c199e4099b6be173f36cb2, type: 2}
+    Quantity: 1
   - Card: {fileID: 11400000, guid: 49adbae435c199e4099b6be173f36cb2, type: 2}
     Quantity: 1
   - Card: {fileID: 11400000, guid: 49adbae435c199e4099b6be173f36cb2, type: 2}
