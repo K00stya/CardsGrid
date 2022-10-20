@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b26851e477919349bd395d9d6a6690e, type: 3}
   m_Name: SwordRight_Left
   m_EditorClassIdentifier: 
-  Name: SwordRight_Left
+  Name: SwordLeft_Right
   StartQuantity: 4
   Type: 1
   Shape: 0
   ColorType: 0
-  Sprite: {fileID: 21300000, guid: 363c9daa00af6af44bff748cb3657561, type: 3}
-  ImpactMap: 10
+  Sprite: {fileID: 21300000, guid: a68afeca57b43f447b54e981cb7ef8fa, type: 3}
+  ImpactMap: 9
   Effect: {fileID: 2484946017443502368, guid: 255c4198f61d80d40bf107538f14809d, type: 3}

@@ -17,12 +17,12 @@ namespace CardGrid
     public class LevelSO : ScriptableObject
     {
         public TutorialSequence TutorSequence;
-        public CardStartInfo[] Column1 = new CardStartInfo[6];
-        public CardStartInfo[] Column2 = new CardStartInfo[6];
-        public CardStartInfo[] Column3 = new CardStartInfo[6];
-        public CardStartInfo[] Column4 = new CardStartInfo[6];
-        public CardStartInfo[] Column5 = new CardStartInfo[6];
-        public CardStartInfo[] Column6 = new CardStartInfo[6];
+        public CardStartInfo[] Column1;
+        public CardStartInfo[] Column2;
+        public CardStartInfo[] Column3;
+        public CardStartInfo[] Column4;
+        public CardStartInfo[] Column5;
+        public CardStartInfo[] Column6;
         public CardStartInfo[] Inventory;
 
         public List<CardStartInfo[]> Columns;

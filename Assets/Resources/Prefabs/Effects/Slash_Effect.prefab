@@ -14459,8 +14459,8 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2484946017443502368}
   serializedVersion: 8
-  lengthInSec: 0.3
-  simulationSpeed: 1
+  lengthInSec: 0.6
+  simulationSpeed: 2
   stopAction: 0
   cullingMode: 1
   ringBufferMode: 0
@@ -14534,7 +14534,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.2
+      scalar: 0.1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -19378,6 +19378,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CFXR _SLASH_
       objectReference: {fileID: 0}
+    - target: {fileID: 1091063724817414509, guid: 019faff12646bd8438ea56e8e7861fd8, type: 3}
+      propertyPath: simulationSpeed
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2545661807140970597, guid: 019faff12646bd8438ea56e8e7861fd8, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
@@ -19386,8 +19390,20 @@ PrefabInstance:
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4395235297488222014, guid: 019faff12646bd8438ea56e8e7861fd8, type: 3}
+      propertyPath: simulationSpeed
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4643285697221921548, guid: 019faff12646bd8438ea56e8e7861fd8, type: 3}
       propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5062748656242189630, guid: 019faff12646bd8438ea56e8e7861fd8, type: 3}
+      propertyPath: simulationSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5260377069723258196, guid: 019faff12646bd8438ea56e8e7861fd8, type: 3}
+      propertyPath: simulationSpeed
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5521348480582962083, guid: 019faff12646bd8438ea56e8e7861fd8, type: 3}
@@ -19450,6 +19466,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5946483000019242260, guid: 019faff12646bd8438ea56e8e7861fd8, type: 3}
+      propertyPath: simulationSpeed
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8426074756672741653, guid: 019faff12646bd8438ea56e8e7861fd8, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
@@ -19460,6 +19480,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8504599634291131180, guid: 019faff12646bd8438ea56e8e7861fd8, type: 3}
       propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025660922098761659, guid: 019faff12646bd8438ea56e8e7861fd8, type: 3}
+      propertyPath: simulationSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9214593331450991000, guid: 019faff12646bd8438ea56e8e7861fd8, type: 3}
+      propertyPath: simulationSpeed
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

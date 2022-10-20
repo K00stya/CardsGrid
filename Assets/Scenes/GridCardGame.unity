@@ -12619,6 +12619,18 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 46b67cc7a3cc762458b49d9ad7edfa30, type: 2}
     - {fileID: 11400000, guid: 46f64f8ed607b3245a26c48e16352c4a, type: 2}
     QuantityStarsToOpen: 5
+  - Levels:
+    - {fileID: 11400000, guid: 8b3ebaf0e483de84e9b4c0a46edc72be, type: 2}
+    - {fileID: 11400000, guid: 55fd778391711cf4a8e3ede961bf44d3, type: 2}
+    - {fileID: 11400000, guid: 0842c8b4bc63c254580496f68ee9440b, type: 2}
+    - {fileID: 11400000, guid: 11dce2a95c57e7a4cb133e24c0e7ebfe, type: 2}
+    QuantityStarsToOpen: 5
+  - Levels:
+    - {fileID: 11400000, guid: 7564ee74833276243bf1bc670af2ee0b, type: 2}
+    - {fileID: 11400000, guid: ec325c4bdf47a374a87344907e404b20, type: 2}
+    - {fileID: 11400000, guid: 5a5210ae23bcf6d41ab526757cc730b3, type: 2}
+    - {fileID: 11400000, guid: 7897cc9c185894748a4679e3fcd1ecb3, type: 2}
+    QuantityStarsToOpen: 5
   InfiniteLevels:
   - {fileID: 11400000, guid: 25594a3a1f722c847be519de9a1fd566, type: 2}
   SpeedRecession: 0.1

@@ -303,7 +303,6 @@ namespace CardGrid
             }
             DisableImpactHighlight();
 
-            yield return SpawnEffectOnCards(impactCardState, cards, true);
 
             List<CardState> deaths = new List<CardState>();
             List<CardState> woundeds = new List<CardState>(cards);
@@ -312,6 +311,7 @@ namespace CardGrid
             impactCardState.Quantity = 0;
             dragCard.gameObject.SetActive(false);
 
+            yield return new WaitForSeconds(SpawnEffectOnCards(impactCardState, cards, true));
             //yield return ReactOnImpact(deaths, woundeds);
         }
         
