@@ -154,7 +154,6 @@ namespace CardGrid
                         levelCell.Star.sprite = LevelsMenu.Star;
                 }
             }
-
             
             void Common_V1()
             {

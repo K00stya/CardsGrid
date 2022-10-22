@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Gem4Blue
   m_EditorClassIdentifier: 
   Name: Gem4Blue
+  CardType: 23
   StartQuantity: 0
   Type: 0
   Shape: 3

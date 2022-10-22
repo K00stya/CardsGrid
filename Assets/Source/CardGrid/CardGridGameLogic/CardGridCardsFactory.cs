@@ -55,68 +55,72 @@ namespace CardGrid
             {
                 var id = levelID - BattleState.CommonLevelID;
                 //LoadLevel1(id);
-
-                var fieldInfo = typeof(LevelsMaps).GetField("Levels");
-                var levels = (Level[])fieldInfo.GetValue(null);
-                var level = levels[id];
-
-                TutorCardInfo[] Tutor = level.Tutor;
-                (CT, int)[,] Field = level.Field;
-                (CT, int)[] Inventory  = level.Inventory;
-
-                //LoadTutor(loadedLevel);
-
-                _loadedMap = new List<Queue<CardState>>(Field.GetLength(0));
-
-                for (int x = 0; x < Field.GetLength(0); x++)
-                {
-                    _loadedMap.Add(new Queue<CardState>(Field.GetLength(1))); //AddEmptyRow
-                }
-                
-                for (int x = 0; x < Field.GetLength(0) ; x++)
-                {
-                    //up side revers
-                    for (int z = Field.GetLength(1) - 1; z >= 0; z--)
-                    {
-                        var cardSO = GetCardSO(Field[z, x].Item1); //z ,x revers
-                        if(cardSO == null) continue;
-
-                        var cardState = new CardState();
-                        cardState.CardSO = cardSO;
-                        cardState.CardSO.Type = cardSO.Type;
-                        var quantity = Field[x, z].Item2;
-                        if (quantity <= 0)
-                            quantity = 1;
-                        cardState.Quantity = quantity;
-                        cardState.StartQuantity = quantity;
-
-                        _loadedMap[x].Enqueue(cardState);
-                    }
-
-                    if (_loadedMap[x].Count > BattleObjects.Field.SizeZ)
-                        BattleUI.LeftCardsPanel.Columns[x].text =
-                            (_loadedMap[x].Count - BattleObjects.Field.SizeZ).ToString();
-                    else
-                        BattleUI.LeftCardsPanel.Columns[x].text = "0";
-                }
-
-                _loadedInventory = new Queue<CardState>(Inventory.Length);
-                for (int x = 0; x < Inventory.Length; x++)
-                {
-                    var cardSO = GetCardSO(Inventory[x].Item1);
-                    if(cardSO == null) continue;
-                    
-                    var cardState = new CardState();
-                    cardState.CardSO = cardSO;
-                    cardState.CardSO.Type = cardSO.Type;
-                    cardState.Quantity = Inventory[x].Item2;
-                    cardState.StartQuantity = Inventory[x].Item2;
-
-                    _loadedInventory.Enqueue(cardState);
-                }
+                LoadLevel(id);
 
                 BattleUI.Score.gameObject.SetActive(false);
                 BattleUI.LeftCardsPanel.gameObject.SetActive(true);
+            }
+        }
+
+        void LoadLevel(int id)
+        {
+            var fieldInfo = typeof(LevelsMaps).GetField("Levels");
+            var levels = (Level[]) fieldInfo.GetValue(null);
+            var level = levels[id];
+
+            TutorCardInfo[] Tutor = level.Tutor;
+            (CT, int)[,] Field = level.Field;
+            (CT, int)[] Inventory = level.Inventory;
+
+            //LoadTutor(loadedLevel);
+
+            _loadedMap = new List<Queue<CardState>>(Field.GetLength(0));
+
+            for (int x = 0; x < Field.GetLength(0); x++)
+            {
+                _loadedMap.Add(new Queue<CardState>(Field.GetLength(1))); //AddEmptyRow
+            }
+
+            for (int x = 0; x < Field.GetLength(0); x++)
+            {
+                //up side revers
+                for (int z = Field.GetLength(1) - 1; z >= 0; z--)
+                {
+                    var cardSO = GetCardSO(Field[z, x].Item1); //z ,x revers
+                    if (cardSO == null) continue;
+
+                    var cardState = new CardState();
+                    cardState.CardSO = cardSO;
+                    cardState.CardSO.Type = cardSO.Type;
+                    var quantity = Field[x, z].Item2;
+                    if (quantity <= 0)
+                        quantity = 1;
+                    cardState.Quantity = quantity;
+                    cardState.StartQuantity = quantity;
+
+                    _loadedMap[x].Enqueue(cardState);
+                }
+
+                if (_loadedMap[x].Count > BattleObjects.Field.SizeZ)
+                    BattleUI.LeftCardsPanel.Columns[x].text =
+                        (_loadedMap[x].Count - BattleObjects.Field.SizeZ).ToString();
+                else
+                    BattleUI.LeftCardsPanel.Columns[x].text = "0";
+            }
+
+            _loadedInventory = new Queue<CardState>(Inventory.Length);
+            for (int x = 0; x < Inventory.Length; x++)
+            {
+                var cardSO = GetCardSO(Inventory[x].Item1);
+                if (cardSO == null) continue;
+
+                var cardState = new CardState();
+                cardState.CardSO = cardSO;
+                cardState.CardSO.Type = cardSO.Type;
+                cardState.Quantity = Inventory[x].Item2;
+                cardState.StartQuantity = Inventory[x].Item2;
+
+                _loadedInventory.Enqueue(cardState);
             }
         }
 

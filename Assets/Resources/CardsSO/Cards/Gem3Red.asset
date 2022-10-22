@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Gem3Red
   m_EditorClassIdentifier: 
   Name: Gem3Red
+  CardType: 21
   StartQuantity: 0
   Type: 0
   Shape: 2

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Gem2Green
   m_EditorClassIdentifier: 
   Name: Gem2Green
-  CardType: 6
+  CardType: 14
   StartQuantity: 0
   Type: 0
   Shape: 1

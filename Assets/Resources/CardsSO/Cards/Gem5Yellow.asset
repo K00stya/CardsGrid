@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Gem5Yellow
   m_EditorClassIdentifier: 
   Name: Gem5Yellow
+  CardType: 32
   StartQuantity: 0
   Type: 0
   Shape: 4

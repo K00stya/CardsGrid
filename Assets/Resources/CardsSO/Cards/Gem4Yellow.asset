@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Gem4Yellow
   m_EditorClassIdentifier: 
   Name: Gem4Yellow
+  CardType: 27
   StartQuantity: 0
   Type: 0
   Shape: 3

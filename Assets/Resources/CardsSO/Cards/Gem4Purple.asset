@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Gem4Purple
   m_EditorClassIdentifier: 
   Name: Gem4Purple
+  CardType: 25
   StartQuantity: 0
   Type: 0
   Shape: 3
