@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b26851e477919349bd395d9d6a6690e, type: 3}
-  m_Name: Gem3Blue
+  m_Name: Blue3Gem
   m_EditorClassIdentifier: 
   Name: Gem3Blue
   CardType: 18

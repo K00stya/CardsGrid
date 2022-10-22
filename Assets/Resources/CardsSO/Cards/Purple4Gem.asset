@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b26851e477919349bd395d9d6a6690e, type: 3}
-  m_Name: Gem1Blue
+  m_Name: Purple4Gem
   m_EditorClassIdentifier: 
-  Name: Gem1Blue
-  CardType: 8
+  Name: Gem4Purple
+  CardType: 25
   StartQuantity: 0
   Type: 0
-  Shape: 0
-  ColorType: 0
-  Sprite: {fileID: 21300000, guid: a06eab84004cccd4ca7443fa958fe141, type: 3}
-  ShapeSprite: {fileID: 2800000, guid: cf4034e6384b04b4792a779d19b3d59e, type: 3}
+  Shape: 3
+  ColorType: 2
+  Sprite: {fileID: 21300000, guid: b29c4632a4f0b41438064c6fe4807f03, type: 3}
+  ShapeSprite: {fileID: 2800000, guid: ed563a7e2769c334ba0b93657d2a757f, type: 3}
   ImpactMap: 0
   Effect: {fileID: 8163684771574148739, guid: 86410a9595efac247ae1067b102d5721, type: 3}
   ShapeEffect: {fileID: 6792422011593997659, guid: 71c5e5ed3ca77844a8d79121f7ebe000, type: 3}

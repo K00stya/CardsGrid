@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CardGrid
@@ -17,7 +18,7 @@ namespace CardGrid
         public LevelState[] Levels;
 
         [NonSerialized] 
-        public TutorialSequence CurrentTutorial;
+        public List<TutorCardInfo> CurrentTutorial = new List<TutorCardInfo>();
     }
 
     public struct LevelState

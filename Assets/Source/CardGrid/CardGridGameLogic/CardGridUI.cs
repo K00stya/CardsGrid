@@ -133,14 +133,21 @@ namespace CardGrid
                 var levels = (Level[])fieldInfo.GetValue(null);
                 
                 ButtonsGroup = new Transform[levels.Length];
-                for (int i = 0; i < levels.Length; i++)
+                int groups = 0;
+                foreach (var level in levels)
+                {
+                    if (level.Group > groups)
+                        groups = level.Group;
+                }
+                
+                for (int i = 0; i < groups; i++)
                 {
                     ButtonsGroup[i] = Instantiate(LevelsMenu.LevelGroup, LevelsMenu.LevelsContent.transform);
                 }
 
                 for (int i = 0; i < levels.Length; i++)
                 {
-                    var group = levels[i].Group;
+                    var group = levels[i].Group - 1;
                     var levelCell = Instantiate(LevelsMenu.LevelButton, ButtonsGroup[group]);
                     LevelsCells.Add(levelCell); 
                     var levelID = i;

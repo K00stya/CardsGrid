@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b26851e477919349bd395d9d6a6690e, type: 3}
-  m_Name: Gem5Green
+  m_Name: Green3Gem
   m_EditorClassIdentifier: 
-  Name: Gem5Geen
-  CardType: 29
+  Name: Gem3Green
+  CardType: 19
   StartQuantity: 0
   Type: 0
-  Shape: 4
+  Shape: 2
   ColorType: 1
-  Sprite: {fileID: 21300000, guid: ecf376df4c3ec6f46bf6e509417ef7dc, type: 3}
-  ShapeSprite: {fileID: 2800000, guid: d8a8cf96df4a45445bb3985d82ee9621, type: 3}
+  Sprite: {fileID: 21300000, guid: b338aa3d841170048b129666db623e59, type: 3}
+  ShapeSprite: {fileID: 2800000, guid: dc03dbd8e2c55624488372d3715e77b7, type: 3}
   ImpactMap: 0
   Effect: {fileID: 8163684771574148739, guid: 86410a9595efac247ae1067b102d5721, type: 3}
   ShapeEffect: {fileID: 6792422011593997659, guid: 71c5e5ed3ca77844a8d79121f7ebe000, type: 3}

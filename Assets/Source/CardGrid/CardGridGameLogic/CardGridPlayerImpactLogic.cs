@@ -193,9 +193,9 @@ namespace CardGrid
 
         bool IsItemDoesNotContradictTutor(CardState card)
         {
-            if (_CommonState.CurrentTutorial != null && _CommonState.CurrentTutorial.Cards.Count > 0)
+            if (_CommonState.CurrentTutorial != null && _CommonState.CurrentTutorial.Count > 0)
             {
-                var tutorCards = _CommonState.CurrentTutorial.Cards.First();
+                var tutorCards = _CommonState.CurrentTutorial.First();
                 
                 if (tutorCards.AnyItem)
                     return true;
@@ -208,9 +208,9 @@ namespace CardGrid
 
         bool IsEnemyInTutorAndRemove(CardState cardState)
         {
-            if (_CommonState.CurrentTutorial != null && _CommonState.CurrentTutorial.Cards.Count > 0)
+            if (_CommonState.CurrentTutorial != null && _CommonState.CurrentTutorial.Count > 0)
             {
-                var tutorCards = _CommonState.CurrentTutorial.Cards.First();
+                var tutorCards = _CommonState.CurrentTutorial.First();
                 if (tutorCards.FieldPosition == cardState.Position)
                 {
                     return true;
@@ -243,8 +243,8 @@ namespace CardGrid
                 IsEnemyInTutorAndRemove(_hitFieldCardOnDrag.CardState) && 
                 IsItemDoesNotContradictTutor(drag.CardState))
             {
-                if (_CommonState.CurrentTutorial && _CommonState.CurrentTutorial.Cards.Count > 0)
-                    _CommonState.CurrentTutorial.Cards.RemoveAt(0);
+                if (_CommonState.CurrentTutorial.Count > 0)
+                    _CommonState.CurrentTutorial.RemoveAt(0);
                 
                 yield return DealImpact(drag);
                 

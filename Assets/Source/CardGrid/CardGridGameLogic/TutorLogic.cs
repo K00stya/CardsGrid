@@ -11,7 +11,7 @@ namespace CardGrid
         
         void TutorHand()
         {
-            if (!_inputActive || _CommonState.CurrentTutorial == null || _CommonState.CurrentTutorial.Cards.Count == 0)
+            if (!_inputActive || _CommonState.CurrentTutorial.Count == 0)
             {
                 TutorHandObj.SetActive(false);
                 Highlight.gameObject.SetActive(false);
@@ -20,9 +20,9 @@ namespace CardGrid
                 return;
             }
 
-            if (_CommonState.CurrentTutorial != null && _CommonState.CurrentTutorial.Cards.Count > 0)
+            if (_CommonState.CurrentTutorial.Count > 0)
             {
-                var tutor = _CommonState.CurrentTutorial.Cards.First();
+                var tutor = _CommonState.CurrentTutorial.First();
                 var firstPos = BattleObjects.Inventory.GetCellSpacePosition(tutor.ItemPosition);
                 var secondPos = BattleObjects.Field.GetCellSpacePosition(tutor.FieldPosition);
                 if (!_tutorActive)

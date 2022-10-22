@@ -68,31 +68,31 @@ namespace CardGrid
             var levels = (Level[]) fieldInfo.GetValue(null);
             var level = levels[id];
 
-            TutorCardInfo[] Tutor = level.Tutor;
-            (CT, int)[,] Field = level.Field;
-            (CT, int)[] Inventory = level.Inventory;
+            TutorCardInfo[] tutor = level.Tutor;
+            (CT, int)[,] field = level.Field;
+            (CT, int)[] inventory = level.Inventory;
 
-            //LoadTutor(loadedLevel);
+            LoadTutor(tutor);
 
-            _loadedMap = new List<Queue<CardState>>(Field.GetLength(0));
+            _loadedMap = new List<Queue<CardState>>(field.GetLength(1));
 
-            for (int x = 0; x < Field.GetLength(0); x++)
+            for (int x = 0; x < field.GetLength(1); x++)
             {
-                _loadedMap.Add(new Queue<CardState>(Field.GetLength(1))); //AddEmptyRow
+                _loadedMap.Add(new Queue<CardState>(field.GetLength(0))); //AddEmptyRow
             }
 
-            for (int x = 0; x < Field.GetLength(0); x++)
+            for (int x = 0; x < field.GetLength(1); x++)
             {
                 //up side revers
-                for (int z = Field.GetLength(1) - 1; z >= 0; z--)
+                for (int z = field.GetLength(0) - 1; z >= 0; z--)
                 {
-                    var cardSO = GetCardSO(Field[z, x].Item1); //z ,x revers
+                    var cardSO = GetCardSO(field[z, x].Item1); //z ,x revers
                     if (cardSO == null) continue;
 
                     var cardState = new CardState();
                     cardState.CardSO = cardSO;
                     cardState.CardSO.Type = cardSO.Type;
-                    var quantity = Field[x, z].Item2;
+                    var quantity = field[z, x].Item2;
                     if (quantity <= 0)
                         quantity = 1;
                     cardState.Quantity = quantity;
@@ -108,17 +108,17 @@ namespace CardGrid
                     BattleUI.LeftCardsPanel.Columns[x].text = "0";
             }
 
-            _loadedInventory = new Queue<CardState>(Inventory.Length);
-            for (int x = 0; x < Inventory.Length; x++)
+            _loadedInventory = new Queue<CardState>(inventory.Length);
+            for (int x = 0; x < inventory.Length; x++)
             {
-                var cardSO = GetCardSO(Inventory[x].Item1);
+                var cardSO = GetCardSO(inventory[x].Item1);
                 if (cardSO == null) continue;
 
                 var cardState = new CardState();
                 cardState.CardSO = cardSO;
                 cardState.CardSO.Type = cardSO.Type;
-                cardState.Quantity = Inventory[x].Item2;
-                cardState.StartQuantity = Inventory[x].Item2;
+                cardState.Quantity = inventory[x].Item2;
+                cardState.StartQuantity = inventory[x].Item2;
 
                 _loadedInventory.Enqueue(cardState);
             }
@@ -128,7 +128,7 @@ namespace CardGrid
         {
             var level = _CommonState.Levels[id];
             var loadedLevel = CommonLevelsGroups[level.Group].Levels[level.IdInGroup];
-            LoadTutor(loadedLevel);
+            //LoadTutor(loadedLevel);
             var columnsSO = loadedLevel.Columns;
 
             _loadedMap = new List<Queue<CardState>>(columnsSO.Count);
@@ -182,17 +182,14 @@ namespace CardGrid
             BattleUI.LeftCardsPanel.gameObject.SetActive(true);
         }
 
-        private void LoadTutor(LevelSO loadedLevel)
+        private void LoadTutor(TutorCardInfo[] tutor)
         {
             _tutorActive = false;
             TutorHandObj.SetActive(false);
             TutorHandObj.transform.DOKill();
-            if (loadedLevel.TutorSequence != null)
+            if (tutor != null)
             {
-                _CommonState.CurrentTutorial = new TutorialSequence()
-                {
-                    Cards = new List<TutorCardInfo>(loadedLevel.TutorSequence.Cards)
-                };
+                _CommonState.CurrentTutorial = new List<TutorCardInfo>(tutor);
             }
             else
             {
