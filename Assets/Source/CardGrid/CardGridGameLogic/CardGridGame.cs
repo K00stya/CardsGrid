@@ -36,6 +36,9 @@ namespace CardGrid
         public AudioSource AudioSource;
         public LevelsGroup[] CommonLevelsGroups;
         public InfiniteLevelSO[] InfiniteLevels;
+        
+        public CardSO[] Enemies;
+        public CardSO[] Items;
 
         const string SaveName = "CardGrid";
 
@@ -78,23 +81,39 @@ namespace CardGrid
             {
                 _CommonState = new PlayerCommonState();
                 int quantityLevels = 0;
-                for (int i = 0; i < CommonLevelsGroups.Length; i++)
-                {
-                    quantityLevels += CommonLevelsGroups[i].Levels.Length;
-                }
+                
+                // for (int i = 0; i < CommonLevelsGroups.Length; i++)
+                // {
+                //     quantityLevels += CommonLevelsGroups[i].Levels.Length;
+                // }
+                
+                //V2
+                var levels = (Level[])typeof(LevelsMaps).GetField("Levels").GetValue(null);
+                quantityLevels += levels.Length;
 
                 _CommonState.Levels = new LevelState[quantityLevels];
+
                 int levelIndex = 0;
-                for (int i = 0; i < CommonLevelsGroups.Length; i++)
+                for (int i = 0; i < levels.Length; i++)
                 {
-                    for (int j = 0; j < CommonLevelsGroups[i].Levels.Length; j++)
-                    {
-                        _CommonState.Levels[levelIndex] = new LevelState();
-                        _CommonState.Levels[levelIndex].Group = i; //NumberGroup
-                        _CommonState.Levels[levelIndex].IdInGroup = j;
-                        levelIndex++;
-                    }
+                    _CommonState.Levels[levelIndex] = new LevelState();
+                    _CommonState.Levels[levelIndex].Group = i;
+                    //_CommonState.Levels[levelIndex].IdInGroup = levels[i].Group;
+                    levelIndex++;
                 }
+                
+                // int levelIndex = 0;
+                // for (int i = 0; i < CommonLevelsGroups.Length; i++)
+                // {
+                //     for (int j = 0; j < CommonLevelsGroups[i].Levels.Length; j++)
+                //     {
+                //         _CommonState.Levels[levelIndex] = new LevelState();
+                //         _CommonState.Levels[levelIndex].Group = i; //NumberGroup
+                //         _CommonState.Levels[levelIndex].IdInGroup = j;
+                //         levelIndex++;
+                //     }
+                // }
+
                 DebugSystem.DebugLog("Save no exist. First active.", DebugSystem.Type.SaveSystem);
             }
 

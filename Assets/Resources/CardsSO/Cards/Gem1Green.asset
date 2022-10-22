@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Gem1Green
   m_EditorClassIdentifier: 
   Name: Gem1Green
+  CardType: 3
   StartQuantity: 0
   Type: 0
   Shape: 0

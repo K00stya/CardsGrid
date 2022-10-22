@@ -15,6 +15,6 @@ namespace CardGrid
     [CreateAssetMenu (fileName = "TutorSequence ")]
     public class TutorialSequence : ScriptableObject
     {
-        public List<TutorCardInfo> Cards;
+        public List<TutorCardInfo> Cards = new();
     }
 }

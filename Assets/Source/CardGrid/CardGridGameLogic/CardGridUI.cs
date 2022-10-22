@@ -123,10 +123,40 @@ namespace CardGrid
         //TODO Stars on level button
         void SetLevelsButtons()
         {
-            Common();
+            //Common_V1();
             //Infinite();
+            Common();
             
             void Common()
+            {
+                var fieldInfo = typeof(LevelsMaps).GetField("Levels");
+                var levels = (Level[])fieldInfo.GetValue(null);
+                
+                ButtonsGroup = new Transform[levels.Length];
+                for (int i = 0; i < levels.Length; i++)
+                {
+                    ButtonsGroup[i] = Instantiate(LevelsMenu.LevelGroup, LevelsMenu.LevelsContent.transform);
+                }
+
+                for (int i = 0; i < levels.Length; i++)
+                {
+                    var group = levels[i].Group;
+                    var levelCell = Instantiate(LevelsMenu.LevelButton, ButtonsGroup[group]);
+                    LevelsCells.Add(levelCell); 
+                    var levelID = i;
+                    levelCell.Number.text = (levelID + 1).ToString();
+                    levelCell.Button.onClick.AddListener(() =>
+                        StartNewBattle(levelID+ BattleState.CommonLevelID));
+
+                    levelCell.Shading.SetActive(_CommonState.Levels[i].IsOpen);
+
+                    if(_CommonState.Levels[i].Complete)
+                        levelCell.Star.sprite = LevelsMenu.Star;
+                }
+            }
+
+            
+            void Common_V1()
             {
                 ButtonsGroup = new Transform[CommonLevelsGroups.Length];
                 for (int i = 0; i < CommonLevelsGroups.Length; i++)

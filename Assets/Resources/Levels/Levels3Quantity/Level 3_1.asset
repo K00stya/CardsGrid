@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db9a3e0392c403143aea3f453f0ce0ef, type: 3}
   m_Name: Level 3_1
   m_EditorClassIdentifier: 
-  TutorSequence: {fileID: 0}
+  TutorSequence: {fileID: 11400000, guid: 175e9b25297a54141b439290b8384e19, type: 2}
   Column1:
   - Card: {fileID: 11400000, guid: f849be4ab14bad44c95d083f414089c0, type: 2}
     Quantity: 1

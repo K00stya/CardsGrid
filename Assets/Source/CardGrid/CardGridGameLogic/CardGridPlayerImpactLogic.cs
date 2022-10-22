@@ -129,7 +129,7 @@ namespace CardGrid
 
         void DragAndDrop()
         {
-            if (_dragGameObjectCard != null && _plane.Raycast(_ray, out var enter) && IsItemDoesNotContradictTutor())
+            if (_dragGameObjectCard != null && _plane.Raycast(_ray, out var enter) && IsItemDoesNotContradictTutor(_dragGameObjectCard.CardState))
             {
                 DebugSystem.DebugLog($"Drag card {_dragGameObjectCard.CardState.CardSO.Name}",
                     DebugSystem.Type.PlayerInput);
@@ -191,7 +191,7 @@ namespace CardGrid
             }
         }
 
-        bool IsItemDoesNotContradictTutor()
+        bool IsItemDoesNotContradictTutor(CardState card)
         {
             if (_CommonState.CurrentTutorial != null && _CommonState.CurrentTutorial.Cards.Count > 0)
             {
@@ -200,8 +200,7 @@ namespace CardGrid
                 if (tutorCards.AnyItem)
                     return true;
 
-                var currentCard = _dragGameObjectCard.CardState;
-                return tutorCards.ItemPosition == currentCard.Position;
+                return tutorCards.ItemPosition == card.Position;
             }
 
             return true;
@@ -214,7 +213,6 @@ namespace CardGrid
                 var tutorCards = _CommonState.CurrentTutorial.Cards.First();
                 if (tutorCards.FieldPosition == cardState.Position)
                 {
-                    _CommonState.CurrentTutorial.Cards.RemoveAt(0);
                     return true;
                 }
                 return false;
@@ -241,9 +239,15 @@ namespace CardGrid
             _dragGameObjectCard = null;
             _inputActive = false;
 
-            if (_impactHighlightCards.Count > 0 && IsEnemyInTutorAndRemove(_hitFieldCardOnDrag.CardState))
+            if (_impactHighlightCards.Count > 0 &&
+                IsEnemyInTutorAndRemove(_hitFieldCardOnDrag.CardState) && 
+                IsItemDoesNotContradictTutor(drag.CardState))
             {
+                if (_CommonState.CurrentTutorial && _CommonState.CurrentTutorial.Cards.Count > 0)
+                    _CommonState.CurrentTutorial.Cards.RemoveAt(0);
+                
                 yield return DealImpact(drag);
+                
                 _playerPressed = false;
             }
             else

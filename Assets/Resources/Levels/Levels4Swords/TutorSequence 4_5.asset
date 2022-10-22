@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef8fa38d2e3a2c34ba9e045a5a986252, type: 3}
-  m_Name: TutorSequence 4_3
+  m_Name: TutorSequence 4_5
   m_EditorClassIdentifier: 
   Cards:
   - AnyItem: 0
