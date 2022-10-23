@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using TMPro;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace CardGrid
 {
@@ -38,6 +35,7 @@ namespace CardGrid
         
         public CardSO[] Enemies;
         public CardSO[] Items;
+        public ParticleSystem[] Effects;
         
         public AudioSource BattleAudioSource;
         public AudioSource MusicAudioSource;
@@ -57,6 +55,7 @@ namespace CardGrid
 
         void Awake()
         {
+            Application.targetFrameRate = 30;
             _camera = Camera.main;
             DebugSystem.Settings = CurrentGameSeetings.Debug;
 
@@ -79,12 +78,12 @@ namespace CardGrid
             Debug.Log(Screen.width);
             Debug.Log(Screen.height);
             //Try load save
-            if (ES3.KeyExists(SaveName) && !CurrentGameSeetings.NewSaveOnStart)
-            {
-                LoadSave();
-            }
+            // if (ES3.KeyExists(SaveName) && !CurrentGameSeetings.NewSaveOnStart)
+            // {
+            //     LoadSave();
+            // }
             //New save
-            else
+            //else
             {
                 _CommonState = new PlayerCommonState();
                 int quantityLevels = 0;
@@ -331,9 +330,9 @@ namespace CardGrid
 
         void Save()
         {
-            DebugSystem.DebugLog("Save on pause/out", DebugSystem.Type.SaveSystem);
-            Debug.Log(_CommonState);
-            ES3.Save(SaveName, _CommonState);
+            //DebugSystem.DebugLog("Save on pause/out", DebugSystem.Type.SaveSystem);
+            //Debug.Log(_CommonState);
+            //ES3.Save(SaveName, _CommonState);
         }
 
         #if UNITY_EDITOR

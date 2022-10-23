@@ -12,7 +12,7 @@ namespace CardGrid
      */
     public partial class CardGridGame //PlayerImpactLogic
     {
-        public float SpeedRecession = 0.1f;
+        public float SpeedRecession = 0.3f;
         public float SpeedFilling = 0.1f;
         
         bool _inputActive = true;
@@ -373,6 +373,7 @@ namespace CardGrid
                     }
                 }
             }
+            Debug.Log("FillingEnd");
         }
         
         private IEnumerator MoveCardToSelfPosition(CardState cardState, GridGameObject grid)
@@ -515,7 +516,7 @@ namespace CardGrid
             GameObject effect;
             if (color)
             {
-                effect= impactCardState.CardSO.Effect;
+                effect = impactCardState.CardSO.Effect;
             }
             else
             {
@@ -565,6 +566,11 @@ namespace CardGrid
 
             return 0;
         }
+
+        // GameObject GetEffect(string name)
+        // {
+        //     
+        // }
 
         void DisableImpactHighlight()
         {

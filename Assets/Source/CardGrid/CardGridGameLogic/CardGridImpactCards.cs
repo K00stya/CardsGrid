@@ -22,52 +22,107 @@ namespace CardGrid
             {
                 if (_enemiesRecession) yield break;
 
-                yield return CheckHorizontal(CheckColor, z, true);
-                yield return Accept(true);
+                CheckHorizontal(CheckColor, z, true);
+                if(Accept())
+                {
+                    BattleAudioSource.clip = ColorSound;
+                    BattleAudioSource.Play();
                 
-                yield return CheckHorizontal(CheckShape, z, false);
-                yield return Accept(false);
+                    yield return new WaitForSeconds(SpawnEffectOnCards(cards.Peek(), cards.ToArray(), true));
+                    ImpactDamageOnField(cards.ToArray());
+                    _enemiesRecession = true;
+                
+                    Debug.Log("Accept");
+                    yield break;
+                }
+                
+                if (_enemiesRecession) yield break;
+                
+                CheckHorizontal(CheckShape, z, false);
+                if(Accept())
+                {
+                    BattleAudioSource.clip = ShapeSound;
+                    BattleAudioSource.Play();
+                
+                    yield return new WaitForSeconds(SpawnEffectOnCards(cards.Peek(), cards.ToArray(), false));
+                    ImpactDamageOnField(cards.ToArray());
+                    _enemiesRecession = true;
+                
+                    Debug.Log("Accept");
+                    yield break;
+                }
             }
             
             //vertical
             for (int x = 0; x < BattleObjects.Field.SizeX ; x++)
             {
                 if (_enemiesRecession) yield break;
-                yield return CheckVertical(CheckColor, x, true);
-                yield return Accept(true);
                 
-                yield return CheckVertical(CheckShape, x, false);
-                yield return Accept(false);
+                CheckVertical(CheckColor, x, true);
+                if(Accept())
+                {
+                    BattleAudioSource.clip = ColorSound;
+                    BattleAudioSource.Play();
+                
+                    yield return new WaitForSeconds(SpawnEffectOnCards(cards.Peek(), cards.ToArray(), true));
+                    ImpactDamageOnField(cards.ToArray());
+                    _enemiesRecession = true;
+                
+                    Debug.Log("Accept");
+                    yield break;
+                }
+                
+                if (_enemiesRecession) yield break;
+                
+                CheckVertical(CheckShape, x, false);
+                if(Accept())
+                {
+                    BattleAudioSource.clip = ShapeSound;
+                    BattleAudioSource.Play();
+                
+                    yield return new WaitForSeconds(SpawnEffectOnCards(cards.Peek(), cards.ToArray(), false));
+                    ImpactDamageOnField(cards.ToArray());
+                    _enemiesRecession = true;
+                
+                    Debug.Log("Accept");
+                    yield break;
+                }
             }
         }
             
-        IEnumerator CheckVertical(Checking check, int x, bool color)
+        void CheckVertical(Checking check, int x, bool color)
         {
             cards.Clear();
             for (int z = BattleObjects.Field.SizeZ - 1; z >= 0; z--)
             {
-                yield return CheckCell(check, x, z, color);
+                if (_enemiesRecession) return;
+                CheckCell(check, x, z, color);
             }
         }
 
-        IEnumerator CheckHorizontal(Checking check, int z, bool color)
+        void CheckHorizontal(Checking check, int z, bool color)
         {
             cards.Clear();
             for (int x = BattleObjects.Field.SizeX - 1; x >= 0; x--)
             {
-                yield return CheckCell(check, x, z, color);
+                if (_enemiesRecession) return;
+                CheckCell(check, x, z, color);
             }
         }
         
-        IEnumerator CheckCell(Checking check, int x, int z, bool color)
+        void CheckCell(Checking check, int x, int z, bool color)
         {
-            if (_enemiesRecession) yield break;
+            Debug.Log("CheckCell");
             var cell = _CommonState.BattleState.Filed.Cells[x, z];
             if (cell.CardSO == null || cell.Quantity <= 0 || cell.CardSO.Type != TypeCard.Enemy)
             {
-                yield return Accept(color);
+                if (Accept())
+                {
+                    _enemiesRecession = true;
+                    return;
+                }
                 cards.Clear();
-                yield break;
+                return;
             }
                 
             if (cards.Count > 0 && check(cards.Peek(), cell))
@@ -76,7 +131,11 @@ namespace CardGrid
             }
             else
             {
-                yield return Accept(color);
+                if (Accept())
+                {
+                    _enemiesRecession = true;
+                    return;
+                }
                 cards.Clear();
                 cards.Enqueue(cell);
             }
@@ -92,21 +151,9 @@ namespace CardGrid
             return card1.CardSO.ColorType == card2.CardSO.ColorType;
         }
             
-        IEnumerator Accept(bool color)
+        bool Accept()
         {
-            if (cards.Count > 2)
-            {
-                if (color)
-                    BattleAudioSource.clip = ColorSound;
-                else
-                    BattleAudioSource.clip = ShapeSound;
-                BattleAudioSource.Play();
-                
-                yield return new WaitForSeconds(SpawnEffectOnCards(cards.Peek(), cards.ToArray(), color));
-                ImpactDamageOnField(cards.ToArray());
-                _enemiesRecession = true;
-                yield break;
-            }
+            return (cards.Count > 2);
         }
 
         List<CardState> _reactOnImpact = new List<CardState>(25);

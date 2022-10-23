@@ -2789,7 +2789,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &421731790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12640,35 +12640,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BattleObjects: {fileID: 303293576}
   CurrentGameSeetings: {fileID: 11400000, guid: a7ea9e75b1ce3b942a2daa53433d69dd, type: 2}
-  CommonLevelsGroups:
-  - Levels:
-    - {fileID: 11400000, guid: b9d822e31e7b3ea42b0b30615d17320e, type: 2}
-    - {fileID: 11400000, guid: 12960d864e00cb14ca47f3ab1cea8ce8, type: 2}
-    - {fileID: 11400000, guid: 2486abeb8130dfa4ebc5d7a877a172c3, type: 2}
-    - {fileID: 11400000, guid: 1f07fcf0577a34b40a6206968b9fe74f, type: 2}
-    - {fileID: 11400000, guid: 18b4d5f816d94fa4cbc9b5db24b03b72, type: 2}
-    QuantityStarsToOpen: 0
-  - Levels:
-    - {fileID: 11400000, guid: 3671dcb0414b14347ae411eef34f00bd, type: 2}
-    - {fileID: 11400000, guid: 46b67cc7a3cc762458b49d9ad7edfa30, type: 2}
-    - {fileID: 11400000, guid: 46f64f8ed607b3245a26c48e16352c4a, type: 2}
-    QuantityStarsToOpen: 5
-  - Levels:
-    - {fileID: 11400000, guid: 8b3ebaf0e483de84e9b4c0a46edc72be, type: 2}
-    - {fileID: 11400000, guid: 55fd778391711cf4a8e3ede961bf44d3, type: 2}
-    - {fileID: 11400000, guid: 0842c8b4bc63c254580496f68ee9440b, type: 2}
-    - {fileID: 11400000, guid: 11dce2a95c57e7a4cb133e24c0e7ebfe, type: 2}
-    QuantityStarsToOpen: 5
-  - Levels:
-    - {fileID: 11400000, guid: 7564ee74833276243bf1bc670af2ee0b, type: 2}
-    - {fileID: 11400000, guid: ec325c4bdf47a374a87344907e404b20, type: 2}
-    - {fileID: 11400000, guid: 5a5210ae23bcf6d41ab526757cc730b3, type: 2}
-    - {fileID: 11400000, guid: 7897cc9c185894748a4679e3fcd1ecb3, type: 2}
-    - {fileID: 11400000, guid: 9c250700ad5394840809894e928536e5, type: 2}
-    QuantityStarsToOpen: 5
-  - Levels:
-    - {fileID: 11400000, guid: 2eb23f78920c500488f1b644f360c565, type: 2}
-    QuantityStarsToOpen: 5
+  CommonLevelsGroups: []
   InfiniteLevels:
   - {fileID: 11400000, guid: 25594a3a1f722c847be519de9a1fd566, type: 2}
   Enemies:
@@ -12706,6 +12678,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5e6f399551f93e54ab7b643ac92bc65a, type: 2}
   - {fileID: 11400000, guid: 2ae43fdea755a0846ab543e792cd446d, type: 2}
   - {fileID: 11400000, guid: e212ebbc875fbc94590996063524da91, type: 2}
+  Effects: []
   BattleAudioSource: {fileID: 501956950}
   MusicAudioSource: {fileID: 0}
   MenuAudioSource: {fileID: 1808470226}
