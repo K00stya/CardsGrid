@@ -17,4 +17,5 @@ public class CardSO : ScriptableObject
     public Maps ImpactMap;
     public GameObject Effect;
     public GameObject ShapeEffect;
+    public AudioClip SoundEffect;
 }

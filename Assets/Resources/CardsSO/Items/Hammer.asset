@@ -23,3 +23,4 @@ MonoBehaviour:
   ImpactMap: 1
   Effect: {fileID: 2711157171983558214, guid: 3fc1dbdb410a38943998686b02dfc3d0, type: 3}
   ShapeEffect: {fileID: 0}
+  SoundEffect: {fileID: 8300000, guid: 51b01f381b712f44892773e88910db43, type: 3}

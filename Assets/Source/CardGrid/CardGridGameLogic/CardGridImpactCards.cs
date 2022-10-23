@@ -96,6 +96,12 @@ namespace CardGrid
         {
             if (cards.Count > 2)
             {
+                if (color)
+                    BattleAudioSource.clip = ColorSound;
+                else
+                    BattleAudioSource.clip = ShapeSound;
+                BattleAudioSource.Play();
+                
                 yield return new WaitForSeconds(SpawnEffectOnCards(cards.Peek(), cards.ToArray(), color));
                 ImpactDamageOnField(cards.ToArray());
                 _enemiesRecession = true;

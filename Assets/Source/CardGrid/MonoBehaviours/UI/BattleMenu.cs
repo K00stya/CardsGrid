@@ -20,6 +20,7 @@ namespace CardGrid
         public Button PlayAgain;
         public Button NextDifficult;
         public Button NextLevel;
+        public Button LevelMenu;
         public Button ToMenu;
     }
 }

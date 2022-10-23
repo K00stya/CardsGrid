@@ -15,6 +15,8 @@ namespace CardGrid
         Transform[] ButtonsGroup;
         Button[] InfiniteLevelsButtons;
         List<LevelCell> LevelsCells = new();
+        
+        public AudioClip ClickSound;
 
         public void OpenMainMenu()
         {
@@ -30,44 +32,52 @@ namespace CardGrid
         {
             MainMenu.LanguageDropdown.onValueChanged.AddListener(language =>
             {
+                PlayClickSound();
                 ChangeLanguage(language);
             });
             
             MainMenu.OpenLevels.onClick.AddListener(() =>
             {
+                PlayClickSound();
                 OpenLevelsMenu();
             });
             MainMenu.OpenInfiniteMenu.onClick.AddListener(()=>
             {
                 //OpenInfiniteMenu();
+                PlayClickSound();
                 StartNewBattle(0);
             });
             MainMenu.VolumeSlider.onValueChanged.AddListener(value =>
             {
+                PlayClickSound();
                 _CommonState.Volume = value;
+                MenuAudioSource.volume = value;
+                BattleAudioSource.volume = value;
             });
 
             
             LevelsMenu.BackToMenu.onClick.AddListener(() =>
             {
+                PlayClickSound();
                 GoToMenu();
             });
             InfiniteLvlMenu.BackToMenu.onClick.AddListener(() =>
             {
+                PlayClickSound();
                 GoToMenu();
             });
 
             SetBattleUI();
             
-            InfiniteLvlMenu.Continue.onClick.AddListener(() =>
-            {
-                ActiveBattleUI();
-                LoadBattle();
-            });
-            InfiniteLvlMenu.NewBattleButton.onClick.AddListener(() =>
-            {
-                OpenInfiniteLevelsMenu();
-            });
+            // InfiniteLvlMenu.Continue.onClick.AddListener(() =>
+            // {
+            //     ActiveBattleUI();
+            //     LoadBattle();
+            // });
+            // InfiniteLvlMenu.NewBattleButton.onClick.AddListener(() =>
+            // {
+            //     OpenInfiniteLevelsMenu();
+            // });
             
             SetLevelsButtons();
         }
@@ -153,7 +163,10 @@ namespace CardGrid
                     var levelID = i;
                     levelCell.Number.text = (levelID + 1).ToString();
                     levelCell.Button.onClick.AddListener(() =>
-                        StartNewBattle(levelID+ BattleState.CommonLevelID));
+                    {
+                        PlayClickSound();
+                        StartNewBattle(levelID + BattleState.CommonLevelID);
+                    });
 
                     levelCell.Shading.SetActive(_CommonState.Levels[i].IsOpen);
 
@@ -208,28 +221,41 @@ namespace CardGrid
         {
             BattleUI.OpenMenu.onClick.AddListener(() =>
             {
+                PlayClickSound();
                 OpenMenu(BattleUI.BattleMenu);
             });
             BattleUI.PlayAgain.onClick.AddListener(() =>
             {
+                PlayClickSound();
                 PlayAgain();
             });
             
             BattleUI.BattleMenu.PlayAgain.onClick.AddListener(() =>
             {
+                PlayClickSound();
                 PlayAgain();
             });
             BattleUI.BattleMenu.ToMenu.onClick.AddListener(() =>
             {
+                PlayClickSound();
                 GoToMenu();
             });
             BattleUI.BattleMenu.Close.onClick.AddListener(() =>
             {
+                PlayClickSound();
                 BattleUI.BattleMenu.gameObject.SetActive(false);
             });
             BattleUI.BattleMenu.NextLevel.onClick.AddListener(() =>
             {
+                PlayClickSound();
+                EndBattle();
                 StartNewBattle(_CommonState.BattleState.LevelID + 1);
+            });
+            BattleUI.BattleMenu.LevelMenu.onClick.AddListener(() =>
+            {
+                PlayClickSound();
+                EndBattle();
+                OpenLevelsMenu();
             });
 
             void PlayAgain()
@@ -275,6 +301,8 @@ namespace CardGrid
             InfiniteLvlMenu.gameObject.SetActive(false);
             InfiniteLvlMenu.LevelsContent.SetActive(false);
             BattleUI.BattleMenu.gameObject.SetActive(false);
+            BattleUI.BattleMenu.LevelMenu.gameObject.SetActive(
+                _CommonState.BattleState.LevelID >= BattleState.CommonLevelID);
 
             BattleUI.gameObject.SetActive(true);
             BattleUI.Score.text = _CommonState.BattleState.Score.ToString();
@@ -282,16 +310,13 @@ namespace CardGrid
 
         void GoToMenu()
         {
-            StopAllCoroutines();
-            DOTween.KillAll();
-            Save();
+            EndBattle();
             UpdateMainMenuStars();
             InfiniteLvlMenu.Continue.gameObject.SetActive(false);
             BattleUI.gameObject.SetActive(false);
             LevelsMenu.gameObject.SetActive(false);
             InfiniteLvlMenu.gameObject.SetActive(false);
             InfiniteLvlMenu.BestScore.text = _CommonState.BestScore.ToString();
-            DestroyAndUnloadCards();
             
             MainMenu.gameObject.SetActive(true);
         }
@@ -343,6 +368,20 @@ namespace CardGrid
             menu.NextLevel.gameObject.SetActive(levelID < _CommonState.Levels.Length - 1);
             
             menu.gameObject.SetActive(true);
+        }
+
+        void EndBattle()
+        {
+            StopAllCoroutines();
+            DOTween.KillAll();
+            Save();
+            DestroyAndUnloadCards();
+        }
+
+        void PlayClickSound()
+        {
+            MenuAudioSource.clip = ClickSound;
+            MenuAudioSource.Play();
         }
     }
 }

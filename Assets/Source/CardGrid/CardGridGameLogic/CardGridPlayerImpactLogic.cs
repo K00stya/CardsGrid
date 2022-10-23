@@ -315,6 +315,13 @@ namespace CardGrid
             impactCardState.Quantity = 0;
             dragCard.gameObject.SetActive(false);
 
+            //sound effect
+            if (impactCardState.CardSO.SoundEffect != null)
+            {
+                BattleAudioSource.clip = impactCardState.CardSO.SoundEffect;
+                BattleAudioSource.Play();
+            }
+            //visual effect
             yield return new WaitForSeconds(SpawnEffectOnCards(impactCardState, cards, true));
             //yield return ReactOnImpact(deaths, woundeds);
         }
@@ -584,6 +591,10 @@ namespace CardGrid
             if (!enemiesExist)
             {
                 DebugSystem.DebugLog("Win", DebugSystem.Type.Battle);
+                
+                MenuAudioSource.clip = WinSound;
+                MenuAudioSource.Play();
+                
                 int id = _CommonState.BattleState.LevelID;
                 if (_CommonState.BattleState.LevelID >= BattleState.CommonLevelID)
                 {
@@ -613,6 +624,10 @@ namespace CardGrid
             if (!haveItems)
             {
                 DebugSystem.DebugLog("Defeat", DebugSystem.Type.Battle);
+                
+                MenuAudioSource.clip = DefeateSound;
+                MenuAudioSource.Play();
+                
                 OpenDefeat(BattleUI.BattleMenu);
                 _CommonState.InBattle = false;
                 _inputActive = false;

@@ -32,7 +32,7 @@ namespace CardGrid
                 //off tutor
                 TutorHandObj.transform.DOKill();
                 TutorHandObj.SetActive(false);
-                _CommonState.CurrentTutorial = null;
+                _CommonState.CurrentTutorial = new List<TutorCardInfo>();
                 
                 var loadedLevel = InfiniteLevels[levelID];
                 _startMaxCellQuantity = loadedLevel.StartMaxCellQuantity;
@@ -193,7 +193,7 @@ namespace CardGrid
             }
             else
             {
-                _CommonState.CurrentTutorial = null;
+                _CommonState.CurrentTutorial = new List<TutorCardInfo>();
             }
         }
 

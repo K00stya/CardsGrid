@@ -33,12 +33,19 @@ namespace CardGrid
     {
         public BattleGameObjects BattleObjects;
         public CommonGameSettings CurrentGameSeetings;
-        public AudioSource AudioSource;
         public LevelsGroup[] CommonLevelsGroups;
         public InfiniteLevelSO[] InfiniteLevels;
         
         public CardSO[] Enemies;
         public CardSO[] Items;
+        
+        public AudioSource BattleAudioSource;
+        public AudioSource MusicAudioSource;
+        public AudioSource MenuAudioSource;
+        public AudioClip WinSound;
+        public AudioClip DefeateSound;
+        public AudioClip ColorSound;
+        public AudioClip ShapeSound;
 
         const string SaveName = "CardGrid";
 
@@ -159,7 +166,8 @@ namespace CardGrid
 
             LoadUI();
 
-            AudioSource.volume = _CommonState.Volume;
+            MenuAudioSource.volume = _CommonState.Volume;
+            BattleAudioSource.volume = _CommonState.Volume;
         }
 
         void StartNewBattle(int levelID)
