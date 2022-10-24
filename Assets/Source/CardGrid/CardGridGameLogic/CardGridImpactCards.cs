@@ -15,8 +15,6 @@ namespace CardGrid
         
         IEnumerator CheckMach3()
         {
-            _enemiesRecession = false;
-
             //horizontal
             for (int z = BattleObjects.Field.SizeZ - 1; z >= 0; z--)
             {
@@ -31,8 +29,6 @@ namespace CardGrid
                     yield return new WaitForSeconds(SpawnEffectOnCards(cards.Peek(), cards.ToArray(), true));
                     ImpactDamageOnField(cards.ToArray());
                     _enemiesRecession = true;
-                
-                    Debug.Log("Accept");
                     yield break;
                 }
                 
@@ -47,8 +43,6 @@ namespace CardGrid
                     yield return new WaitForSeconds(SpawnEffectOnCards(cards.Peek(), cards.ToArray(), false));
                     ImpactDamageOnField(cards.ToArray());
                     _enemiesRecession = true;
-                
-                    Debug.Log("Accept");
                     yield break;
                 }
             }
@@ -67,8 +61,6 @@ namespace CardGrid
                     yield return new WaitForSeconds(SpawnEffectOnCards(cards.Peek(), cards.ToArray(), true));
                     ImpactDamageOnField(cards.ToArray());
                     _enemiesRecession = true;
-                
-                    Debug.Log("Accept");
                     yield break;
                 }
                 
@@ -83,8 +75,6 @@ namespace CardGrid
                     yield return new WaitForSeconds(SpawnEffectOnCards(cards.Peek(), cards.ToArray(), false));
                     ImpactDamageOnField(cards.ToArray());
                     _enemiesRecession = true;
-                
-                    Debug.Log("Accept");
                     yield break;
                 }
             }
@@ -112,7 +102,6 @@ namespace CardGrid
         
         void CheckCell(Checking check, int x, int z, bool color)
         {
-            Debug.Log("CheckCell");
             var cell = _CommonState.BattleState.Filed.Cells[x, z];
             if (cell.CardSO == null || cell.Quantity <= 0 || cell.CardSO.Type != TypeCard.Enemy)
             {

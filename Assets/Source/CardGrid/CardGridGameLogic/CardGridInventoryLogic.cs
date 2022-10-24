@@ -33,7 +33,8 @@ namespace CardGrid
                 card.Grid = CardGrid.Inventory;
                 card.Position = new Vector2Int(0, 0);
                 items[0, 0] = card;
-                yield return MoveCardToSelfPosition(items[0, 0], BattleObjects.Inventory);
+                MoveCardToSelfPosition(items[0, 0], BattleObjects.Inventory);
+                yield return new WaitForSeconds(SpeedRecession);
                 break;
             }
 
@@ -42,7 +43,7 @@ namespace CardGrid
                 _itemsRecession = false;
                 foreach (var card in items)
                 {
-                    yield return MoveCardToSelfPosition(card, BattleObjects.Inventory);
+                    MoveCardToSelfPosition(card, BattleObjects.Inventory);
                 }
 
                 yield return new WaitForSeconds(SpeedRecession);
@@ -65,13 +66,15 @@ namespace CardGrid
                         {
                             items[newX, z] = items[x, z];
                             items[newX, z].Position = new Vector2Int(newX, z);
-                            yield return MoveCardToSelfPosition(items[newX, z], BattleObjects.Inventory);
+                            MoveCardToSelfPosition(items[newX, z], BattleObjects.Inventory);
+                            yield return new WaitForSeconds(SpeedRecession);
                         }
                         else if (newZ < items.GetLength(1))
                         {
                             items[0, newZ] = items[x, z];
                             items[0, newZ].Position = new Vector2Int(0, newZ);
-                            yield return MoveCardToSelfPosition(items[0, newZ], BattleObjects.Inventory);
+                            MoveCardToSelfPosition(items[0, newZ], BattleObjects.Inventory);
+                            yield return new WaitForSeconds(SpeedRecession);
                         }
                         else
                         {

@@ -13,7 +13,6 @@ namespace CardGrid
     public partial class CardGridGame //PlayerImpactLogic
     {
         public float SpeedRecession = 0.3f;
-        public float SpeedFilling = 0.1f;
         
         bool _inputActive = true;
         Sequence _mySequence;
@@ -282,7 +281,10 @@ namespace CardGrid
 
             do
             {
-                yield return RecessionField(cells);
+                _enemiesRecession = false;
+
+                RecessionField(cells);
+                
                 yield return Filling(cells);
 
                 yield return CheckMach3();
@@ -306,8 +308,7 @@ namespace CardGrid
                 cards[i] = highlightCards[i].CardState;
             }
             DisableImpactHighlight();
-
-
+            
             List<CardState> deaths = new List<CardState>();
             List<CardState> woundeds = new List<CardState>(cards);
 
@@ -327,7 +328,7 @@ namespace CardGrid
         }
         
         //optimization
-        IEnumerator RecessionField(CardState[,] cards)
+        void RecessionField(CardState[,] cards)
         {
             for (int i = 0; i < cards.GetLength(1); i++)
             {
@@ -343,43 +344,46 @@ namespace CardGrid
                     }
                 }
             }
-
-            foreach (var card in cards)
-            {
-                if (card.Quantity <= 0)
-                {
-                    card.GameObject.transform.position = 
-                        BattleObjects.Field.GetSpawnPosition(card.Position.x);
-                }
-                else
-                {
-                    yield return MoveCardToSelfPosition(card, BattleObjects.Field);
-                }
-            }
         }
 
         IEnumerator Filling(CardState[,] cards)
         {
-            bool needWait = false;
             for (int z = cards.GetLength(1) - 1; z >= 0; z--)
             {
                 for (int x = 0; x < cards.GetLength(0); x++)
                 {
-                    if (cards[x, z].Quantity <= 0)
+                    var cardState = cards[x, z];
+                    if (cardState.Quantity <= 0)
                     {
-                        ReCreateCard(ref cards[x, z], x);
-                        needWait = true;
-                        yield return MoveCardToSelfPosition(cards[x, z], BattleObjects.Field);
+                        ReCreateCard(ref cardState, x);
+                        
+                        if (cardState.Quantity <= 0)
+                        {
+                            cardState.GameObject.transform.position =
+                                BattleObjects.Field.GetSpawnPosition(cards[x, z].Position.x);
+                        }
+                        else
+                        {
+                            _enemiesRecession = true;
+                        }
+                    }
+                    else
+                    {
+                        if (Vector3.Distance(BattleObjects.Field.GetCellSpacePosition(cardState.Position),
+                                cardState.GameObject.transform.position) > 0.1f)
+                        {
+                            MoveCardToSelfPosition(cardState, BattleObjects.Field);
+                            yield return new WaitForSeconds(SpeedRecession);
+                        }
                     }
                 }
             }
-            Debug.Log("FillingEnd");
         }
         
-        private IEnumerator MoveCardToSelfPosition(CardState cardState, GridGameObject grid)
+        void MoveCardToSelfPosition(CardState cardState, GridGameObject grid)
         {
-            if(cardState.GameObject == _dragGameObjectCard) yield break;
-            yield return cardState.GameObject.transform.DOMove(grid.
+            if(cardState.GameObject == _dragGameObjectCard) return;
+            cardState.GameObject.transform.DOMove(grid.
                 GetCellSpacePosition(cardState.Position), SpeedRecession);
         }
 
