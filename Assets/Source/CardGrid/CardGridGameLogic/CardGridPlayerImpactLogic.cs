@@ -282,7 +282,7 @@ namespace CardGrid
             do
             {
                 _enemiesRecession = false;
-
+                
                 RecessionField(cells);
                 
                 yield return Filling(cells);
@@ -309,10 +309,10 @@ namespace CardGrid
             }
             DisableImpactHighlight();
             
-            List<CardState> deaths = new List<CardState>();
-            List<CardState> woundeds = new List<CardState>(cards);
+            //List<CardState> deaths = new List<CardState>();
+            //List<CardState> woundeds = new List<CardState>(cards);
 
-            ImpactDamageOnField(impactCardState.Quantity, cards, ref deaths);
+            ImpactDamageOnField(impactCardState.Quantity, cards); //ref deaths);
             impactCardState.Quantity = 0;
             dragCard.gameObject.SetActive(false);
 
@@ -348,36 +348,33 @@ namespace CardGrid
 
         IEnumerator Filling(CardState[,] cards)
         {
+            bool needWait = false;
             for (int z = cards.GetLength(1) - 1; z >= 0; z--)
             {
                 for (int x = 0; x < cards.GetLength(0); x++)
                 {
-                    var cardState = cards[x, z];
-                    if (cardState.Quantity <= 0)
+                    var card = cards[x, z];
+                    if (card.Quantity <= 0)
                     {
-                        ReCreateCard(ref cardState, x);
-                        
-                        if (cardState.Quantity <= 0)
-                        {
-                            cardState.GameObject.transform.position =
-                                BattleObjects.Field.GetSpawnPosition(cards[x, z].Position.x);
-                        }
-                        else
-                        {
-                            _enemiesRecession = true;
-                        }
+                        card.GameObject.transform.position =
+                            BattleObjects.Field.GetSpawnPosition(cards[x, z].Position.x);
+                        ReCreateCard(ref cards[x, z], x);
+                        MoveCardToSelfPosition(cards[x, z], BattleObjects.Field);
+                        needWait = true;
                     }
                     else
                     {
-                        if (Vector3.Distance(BattleObjects.Field.GetCellSpacePosition(cardState.Position),
-                                cardState.GameObject.transform.position) > 0.1f)
+                        if (Vector3.Distance(BattleObjects.Field.GetCellSpacePosition(card.Position),
+                                card.GameObject.transform.position) > 0.1f)
                         {
-                            MoveCardToSelfPosition(cardState, BattleObjects.Field);
-                            yield return new WaitForSeconds(SpeedRecession);
+                            MoveCardToSelfPosition(card, BattleObjects.Field);
+                            needWait = true;
                         }
                     }
                 }
             }
+            if(needWait)
+                yield return new WaitForSeconds(SpeedRecession);
         }
         
         void MoveCardToSelfPosition(CardState cardState, GridGameObject grid)
@@ -386,7 +383,27 @@ namespace CardGrid
             cardState.GameObject.transform.DOMove(grid.
                 GetCellSpacePosition(cardState.Position), SpeedRecession);
         }
+        
+        void ImpactDamageOnField(int damage, CardState[] cards)
+        {
+            foreach (var card in cards)
+            {
+                card.Quantity -= damage;
+                if (card.Quantity <= 0)
+                {
+                    card.GameObject.gameObject.SetActive(false);
+                    
+                    _CommonState.BattleState.Score += card.StartQuantity;
+                    BattleUI.Score.text = _CommonState.BattleState.Score.ToString();
+                    if (_CommonState.BattleState.Score > _CommonState.BestScore)
+                        _CommonState.BestScore = _CommonState.BattleState.Score;
+                    continue;
+                }
 
+                card.GameObject.QuantityText.text = card.Quantity.ToString();
+            }
+        }
+        
         void ImpactDamageOnField(int damage, CardState[] cards, ref List<CardState> deaths)
         {
             foreach (var card in cards)
@@ -394,7 +411,7 @@ namespace CardGrid
                 card.Quantity -= damage;
                 if (card.Quantity <= 0)
                 {
-                    deaths.Add(card);
+                    //deaths.Add(card);
                     card.GameObject.gameObject.SetActive(false);
                     
                     _CommonState.BattleState.Score += card.StartQuantity;

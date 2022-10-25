@@ -24,17 +24,17 @@ namespace CardGrid
             {
                 var card = cells[x, lowerZ];
                 
-                if (!card.CardSO || card.CardSO.Type != TypeCard.Item) continue;
+                if (!card.CardSO || card.CardSO.Type != TypeCard.Item) 
+                    continue;
 
                 newItems = true;
                 _itemsRecession = true;
-                yield return MoveInventory(x);
+                MoveInventory(x);
 
                 card.Grid = CardGrid.Inventory;
                 card.Position = new Vector2Int(0, 0);
                 items[0, 0] = card;
                 MoveCardToSelfPosition(items[0, 0], BattleObjects.Inventory);
-                yield return new WaitForSeconds(SpeedRecession);
                 break;
             }
 
@@ -54,7 +54,7 @@ namespace CardGrid
              * If the row has ended, it moves to the bottom.
              * If the row is already lower, then the item is excess and the empty card is removed to the field.
              */
-            IEnumerator MoveInventory(int currentX)
+            void MoveInventory(int currentX)
             {
                 for (int z = items.GetLength(1) - 1; z >= 0; z--)
                 {
@@ -67,14 +67,12 @@ namespace CardGrid
                             items[newX, z] = items[x, z];
                             items[newX, z].Position = new Vector2Int(newX, z);
                             MoveCardToSelfPosition(items[newX, z], BattleObjects.Inventory);
-                            yield return new WaitForSeconds(SpeedRecession);
                         }
                         else if (newZ < items.GetLength(1))
                         {
                             items[0, newZ] = items[x, z];
                             items[0, newZ].Position = new Vector2Int(0, newZ);
                             MoveCardToSelfPosition(items[0, newZ], BattleObjects.Inventory);
-                            yield return new WaitForSeconds(SpeedRecession);
                         }
                         else
                         {
