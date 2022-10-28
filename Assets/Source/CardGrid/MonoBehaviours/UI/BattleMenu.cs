@@ -22,5 +22,6 @@ namespace CardGrid
         public Button NextLevel;
         public Button LevelMenu;
         public Button ToMenu;
+        public Slider VolumeSlider;
     }
 }

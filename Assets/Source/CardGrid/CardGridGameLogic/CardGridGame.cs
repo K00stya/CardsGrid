@@ -48,6 +48,7 @@ namespace CardGrid
         const string SaveName = "CardGrid";
 
         int _startMaxCellQuantity;
+        public float StandardChanceItemOnField = 0.1f;
         float _chanceItemOnFiled;
         PlayerCommonState _CommonState;
         List<CardGameObject> _cardMonobehsPool;
@@ -104,7 +105,11 @@ namespace CardGrid
                 {
                     _CommonState.Levels[levelIndex] = new LevelState();
                     _CommonState.Levels[levelIndex].Group = i;
-                    //_CommonState.Levels[levelIndex].IdInGroup = levels[i].Group;
+
+                    var level = levels[i];
+                    _CommonState.Levels[levelIndex].CollectColors = level.CollectColors;
+                    _CommonState.Levels[levelIndex].NeedSpawnNewRandom = level.NeedSpawnNewRandom;
+                    
                     levelIndex++;
                 }
                 

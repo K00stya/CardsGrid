@@ -48,21 +48,27 @@ namespace CardGrid
                     _loadedItems.Add(card);
                 }
 
+                for (int i = 0; i < BattleUI.Requires.Length; i++)
+                {
+                    BattleUI.Requires[i].gameObject.SetActive(false);
+                }
                 BattleUI.Score.gameObject.SetActive(true);
                 BattleUI.LeftCardsPanel.gameObject.SetActive(false);
             }
             else
             {
+                _chanceItemOnFiled = StandardChanceItemOnField;
+
                 var id = levelID - BattleState.CommonLevelID;
                 //LoadLevel1(id);
-                LoadLevel(id);
+                var level =LoadLevel(id);
 
                 BattleUI.Score.gameObject.SetActive(false);
-                BattleUI.LeftCardsPanel.gameObject.SetActive(true);
+                BattleUI.LeftCardsPanel.gameObject.SetActive(!level.NeedSpawnNewRandom);
             }
         }
 
-        void LoadLevel(int id)
+        Level LoadLevel(int id)
         {
             var fieldInfo = typeof(LevelsMaps).GetField("Levels");
             var levels = (Level[]) fieldInfo.GetValue(null);
@@ -71,9 +77,38 @@ namespace CardGrid
             TutorCardInfo[] tutor = level.Tutor;
             (CT, int)[,] field = level.Field;
             (CT, int)[] inventory = level.Inventory;
+            
+            //new array, no reference
+            _CommonState.BattleState.CollectColors = 
+                new (ColorType, int)[level.CollectColors.Length];
+            for (int j = 0; j < level.CollectColors.Length; j++)
+            {
+                _CommonState.BattleState.CollectColors[j] = 
+                    (level.CollectColors[j].Item1, level.CollectColors[j].Item2);
+            }
 
             LoadTutor(tutor);
+            LoadField(field, level.NeedSpawnNewRandom);
+            Inventory(inventory);
 
+            int i = 0;
+            foreach (var color in level.CollectColors)
+            {
+                BattleUI.Requires[i].GemSprite.sprite = BattleUI.GetColorSprite(color.Item1);
+                BattleUI.Requires[i].Quantity.text = color.Item2.ToString();
+                i++;
+            }
+            
+            for (; i < BattleUI.Requires.Length; i++)
+            {
+                BattleUI.Requires[i].gameObject.SetActive(false);
+            }
+
+            return level;
+        }
+
+        private void LoadField((CT, int)[,] field, bool spawnNewRandom)
+        {
             _loadedMap = new List<Queue<CardState>>(field.GetLength(1));
 
             for (int x = 0; x < field.GetLength(1); x++)
@@ -87,11 +122,25 @@ namespace CardGrid
                 for (int z = field.GetLength(0) - 1; z >= 0; z--)
                 {
                     var cardSO = GetCardSO(field[z, x].Item1); //z ,x revers
-                    if (cardSO == null) continue;
+                    CardState cardState;
+                    if (cardSO == null)
+                    {
+                        if (spawnNewRandom)
+                        {
+                            cardState = CreateNewRandomCard();
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        cardState = new CardState();
+                        cardState.CardSO = cardSO;
+                        cardState.CardSO.Type = cardSO.Type;
+                    }
 
-                    var cardState = new CardState();
-                    cardState.CardSO = cardSO;
-                    cardState.CardSO.Type = cardSO.Type;
                     var quantity = field[z, x].Item2;
                     if (quantity <= 0)
                         quantity = 1;
@@ -107,7 +156,10 @@ namespace CardGrid
                 else
                     BattleUI.LeftCardsPanel.Columns[x].text = "0";
             }
+        }
 
+        private void Inventory((CT, int)[] inventory)
+        {
             _loadedInventory = new Queue<CardState>(inventory.Length);
             for (int x = 0; x < inventory.Length; x++)
             {
@@ -124,63 +176,63 @@ namespace CardGrid
             }
         }
 
-        void LoadLevel_V1(int id)
-        {
-            var level = _CommonState.Levels[id];
-            var loadedLevel = CommonLevelsGroups[level.Group].Levels[level.IdInGroup];
-            //LoadTutor(loadedLevel);
-            var columnsSO = loadedLevel.Columns;
-
-            _loadedMap = new List<Queue<CardState>>(columnsSO.Count);
-
-            for (int i = 0; i < loadedLevel.Columns.Count; i++)
-            {
-                var row = columnsSO[i];
-                _loadedMap.Add(new Queue<CardState>(row.Length)); //AddEmptyRow
-            }
-
-            int X = 0;
-            foreach (var row in columnsSO)
-            {
-                foreach (var card in row)
-                {
-                    if (card == null) continue;
-
-                    var cardSO = card.Card;
-                    var cardState = new CardState();
-                    cardState.CardSO = cardSO;
-                    cardState.CardSO.Type = cardSO.Type;
-                    cardState.Quantity = card.Quantity;
-                    cardState.StartQuantity = card.Quantity;
-
-                    _loadedMap[X].Enqueue(cardState);
-                }
-
-                if (_loadedMap[X].Count > BattleObjects.Field.SizeZ)
-                    BattleUI.LeftCardsPanel.Columns[X].text =
-                        (_loadedMap[X].Count - BattleObjects.Field.SizeZ).ToString();
-                else
-                    BattleUI.LeftCardsPanel.Columns[X].text = "0";
-
-                X++;
-            }
-
-            _loadedInventory = new Queue<CardState>(loadedLevel.Inventory.Length);
-            foreach (var card in loadedLevel.Inventory)
-            {
-                var cardSO = card.Card;
-                var cardState = new CardState();
-                cardState.CardSO = cardSO;
-                cardState.CardSO.Type = cardSO.Type;
-                cardState.Quantity = card.Quantity;
-                cardState.StartQuantity = card.Quantity;
-
-                _loadedInventory.Enqueue(cardState);
-            }
-
-            BattleUI.Score.gameObject.SetActive(false);
-            BattleUI.LeftCardsPanel.gameObject.SetActive(true);
-        }
+        // void LoadLevel_V1(int id)
+        // {
+        //     var level = _CommonState.Levels[id];
+        //     var loadedLevel = CommonLevelsGroups[level.Group].Levels[level.IdInGroup];
+        //     //LoadTutor(loadedLevel);
+        //     var columnsSO = loadedLevel.Columns;
+        //
+        //     _loadedMap = new List<Queue<CardState>>(columnsSO.Count);
+        //
+        //     for (int i = 0; i < loadedLevel.Columns.Count; i++)
+        //     {
+        //         var row = columnsSO[i];
+        //         _loadedMap.Add(new Queue<CardState>(row.Length)); //AddEmptyRow
+        //     }
+        //
+        //     int X = 0;
+        //     foreach (var row in columnsSO)
+        //     {
+        //         foreach (var card in row)
+        //         {
+        //             if (card == null) continue;
+        //
+        //             var cardSO = card.Card;
+        //             var cardState = new CardState();
+        //             cardState.CardSO = cardSO;
+        //             cardState.CardSO.Type = cardSO.Type;
+        //             cardState.Quantity = card.Quantity;
+        //             cardState.StartQuantity = card.Quantity;
+        //
+        //             _loadedMap[X].Enqueue(cardState);
+        //         }
+        //
+        //         if (_loadedMap[X].Count > BattleObjects.Field.SizeZ)
+        //             BattleUI.LeftCardsPanel.Columns[X].text =
+        //                 (_loadedMap[X].Count - BattleObjects.Field.SizeZ).ToString();
+        //         else
+        //             BattleUI.LeftCardsPanel.Columns[X].text = "0";
+        //
+        //         X++;
+        //     }
+        //
+        //     _loadedInventory = new Queue<CardState>(loadedLevel.Inventory.Length);
+        //     foreach (var card in loadedLevel.Inventory)
+        //     {
+        //         var cardSO = card.Card;
+        //         var cardState = new CardState();
+        //         cardState.CardSO = cardSO;
+        //         cardState.CardSO.Type = cardSO.Type;
+        //         cardState.Quantity = card.Quantity;
+        //         cardState.StartQuantity = card.Quantity;
+        //
+        //         _loadedInventory.Enqueue(cardState);
+        //     }
+        //
+        //     BattleUI.Score.gameObject.SetActive(false);
+        //     BattleUI.LeftCardsPanel.gameObject.SetActive(true);
+        // }
 
         private void LoadTutor(TutorCardInfo[] tutor)
         {
@@ -225,11 +277,11 @@ namespace CardGrid
             CardSO newCard;
             if (Random.Range(0, 1f) > _chanceItemOnFiled)
             {
-                newCard = _loadedEnemies[Random.Range(0, _loadedEnemies.Count)];
+                newCard = Enemies[Random.Range(1, Enemies.Length)];
             }
             else
             {
-                newCard = _loadedItems[Random.Range(0, _loadedItems.Count)];
+                newCard = Items[Random.Range(0, Items.Length)];
             }
 
             return CreateCard(newCard);
@@ -256,7 +308,7 @@ namespace CardGrid
         {
             var card = new CardState
             {
-                CardSO = _loadedItems[Random.Range(0, _loadedItems.Count)],
+                CardSO = Items[Random.Range(0, Items.Length)],
                 Quantity = Random.Range(1, _startMaxCellQuantity)
             };
             
@@ -266,15 +318,16 @@ namespace CardGrid
         void ReCreateCard(ref CardState cardState, int row)
         {
             CardSO newCard;
-            if (_CommonState.BattleState.LevelID < BattleState.CommonLevelID)
+            if (_CommonState.BattleState.LevelID < BattleState.CommonLevelID ||
+                _CommonState.GetCurrentLevel().NeedSpawnNewRandom)
             {
                 if (Random.Range(0, 1f) > _chanceItemOnFiled)
                 {
-                    newCard = _loadedEnemies[Random.Range(0, _loadedEnemies.Count)];
+                    newCard = Enemies[Random.Range(1, Enemies.Length)];
                 }
                 else
                 {
-                    newCard = _loadedItems[Random.Range(0, _loadedItems.Count)];
+                    newCard = Items[Random.Range(0, Items.Length)];
                 }
 
                 if (newCard != null)

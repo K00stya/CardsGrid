@@ -47,6 +47,14 @@ namespace CardGrid
                 PlayClickSound();
                 StartNewBattle(0);
             });
+            
+            BattleUI.BattleMenu.VolumeSlider.onValueChanged.AddListener(value =>
+            {
+                PlayClickSound();
+                _CommonState.Volume = value;
+                MenuAudioSource.volume = value;
+                BattleAudioSource.volume = value;
+            });
             MainMenu.VolumeSlider.onValueChanged.AddListener(value =>
             {
                 PlayClickSound();
@@ -84,6 +92,7 @@ namespace CardGrid
 
         void LoadUI()
         {
+            BattleUI.BattleMenu.VolumeSlider.SetValueWithoutNotify(_CommonState.Volume);
             MainMenu.VolumeSlider.SetValueWithoutNotify(_CommonState.Volume);
             MainMenu.LanguageDropdown.SetValueWithoutNotify((int) _CommonState.Language);
             
@@ -317,6 +326,10 @@ namespace CardGrid
             LevelsMenu.gameObject.SetActive(false);
             InfiniteLvlMenu.gameObject.SetActive(false);
             InfiniteLvlMenu.BestScore.text = _CommonState.BestScore.ToString();
+            for (int i = 0; i < BattleUI.Requires.Length; i++)
+            {
+                BattleUI.Requires[i].gameObject.SetActive(false);
+            }
             
             MainMenu.gameObject.SetActive(true);
         }

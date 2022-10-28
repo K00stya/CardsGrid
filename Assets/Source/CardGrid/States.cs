@@ -19,15 +19,22 @@ namespace CardGrid
 
         [NonSerialized] 
         public List<TutorCardInfo> CurrentTutorial = new List<TutorCardInfo>();
+
+        public LevelState GetCurrentLevel()
+        {
+            return Levels[BattleState.GetRealLevelID()];
+        }
     }
 
     public struct LevelState
     {
         public bool IsOpen;
         public int Group;
-        public int IdInGroup;
         public int Stars;
         public bool Complete;
+        public (ColorType, int)[] CollectColors;
+        public (ShapeType, int)[] CollectShape;
+        public bool NeedSpawnNewRandom;
     }
 
     public enum Language
@@ -46,6 +53,7 @@ namespace CardGrid
         public int Score;
         public int Health;
         public int Money;
+        public (ColorType, int)[] CollectColors;
 
         public Field Filed = new Field();
         public Inventory Inventory = new Inventory();
@@ -71,6 +79,7 @@ namespace CardGrid
         public Vector2Int Position;
         public int StartQuantity;
         public int Quantity;
+        public int Chains;
 
         //NonSerialized don't save in save system
         [NonSerialized]

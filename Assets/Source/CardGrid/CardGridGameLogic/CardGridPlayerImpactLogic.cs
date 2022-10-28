@@ -388,40 +388,9 @@ namespace CardGrid
         {
             foreach (var card in cards)
             {
-                card.Quantity -= damage;
-                if (card.Quantity <= 0)
-                {
-                    card.GameObject.gameObject.SetActive(false);
-                    
-                    _CommonState.BattleState.Score += card.StartQuantity;
-                    BattleUI.Score.text = _CommonState.BattleState.Score.ToString();
-                    if (_CommonState.BattleState.Score > _CommonState.BestScore)
-                        _CommonState.BestScore = _CommonState.BattleState.Score;
-                    continue;
-                }
-
-                card.GameObject.QuantityText.text = card.Quantity.ToString();
-            }
-        }
-        
-        void ImpactDamageOnField(int damage, CardState[] cards, ref List<CardState> deaths)
-        {
-            foreach (var card in cards)
-            {
-                card.Quantity -= damage;
-                if (card.Quantity <= 0)
-                {
-                    //deaths.Add(card);
-                    card.GameObject.gameObject.SetActive(false);
-                    
-                    _CommonState.BattleState.Score += card.StartQuantity;
-                    BattleUI.Score.text = _CommonState.BattleState.Score.ToString();
-                    if (_CommonState.BattleState.Score > _CommonState.BestScore)
-                        _CommonState.BestScore = _CommonState.BattleState.Score;
-                    continue;
-                }
-
-                card.GameObject.QuantityText.text = card.Quantity.ToString();
+                CollectColorAndShape(card);
+                
+                Damage(card);
             }
         }
         
@@ -429,20 +398,64 @@ namespace CardGrid
         {
             foreach (var card in cards)
             {
-                card.Quantity -= card.Quantity;
-                if (card.Quantity <= 0)
-                {
-                    card.GameObject.gameObject.SetActive(false);
-                    
-                    _CommonState.BattleState.Score += card.StartQuantity;
-                    BattleUI.Score.text = _CommonState.BattleState.Score.ToString();
-                    if (_CommonState.BattleState.Score > _CommonState.BestScore)
-                        _CommonState.BestScore = _CommonState.BattleState.Score;
-                    continue;
-                }
+                CollectColorAndShape(card);
 
-                card.GameObject.QuantityText.text = card.Quantity.ToString();
+                Damage(card);
             }
+        }
+
+        private void Damage(CardState card)
+        {
+            card.Quantity -= card.Quantity;
+            if (card.Quantity <= 0)
+            {
+                card.GameObject.gameObject.SetActive(false);
+
+                _CommonState.BattleState.Score += card.StartQuantity;
+                BattleUI.Score.text = _CommonState.BattleState.Score.ToString();
+                if (_CommonState.BattleState.Score > _CommonState.BestScore)
+                    _CommonState.BestScore = _CommonState.BattleState.Score;
+                return;
+            }
+
+            card.GameObject.QuantityText.text = card.Quantity.ToString();
+        }
+
+        void CollectColorAndShape(CardState card)
+        {
+            var state = _CommonState.BattleState;
+            if (state.CollectColors == null || state.CollectColors.Length <= 0)
+                return;
+                
+            bool win = true;
+                
+            for (int i = 0; i < state.CollectColors.Length; i++)
+            {
+                if (card.CardSO.ColorType == state.CollectColors[i].Item1)
+                {
+                    state.CollectColors[i].Item2 -= 1;
+                    if (state.CollectColors[i].Item2 <= 0)
+                    {
+                        state.CollectColors[i].Item2 = 0;
+                    }
+                    else
+                    {
+                        win = false;
+                    }
+
+                    BattleUI.Requires[i].Quantity.text = state.CollectColors[i].Item2.ToString();
+                }
+                else
+                {
+                    if (state.CollectColors[i].Item2 > 0)
+                    {
+                        win = false;
+                    }
+                }
+            }
+                
+            if(win)
+                Win();
         }
         
         #endregion
@@ -617,24 +630,7 @@ namespace CardGrid
 
             if (!enemiesExist)
             {
-                DebugSystem.DebugLog("Win", DebugSystem.Type.Battle);
-                
-                MenuAudioSource.clip = WinSound;
-                MenuAudioSource.Play();
-                
-                int id = _CommonState.BattleState.LevelID;
-                if (_CommonState.BattleState.LevelID >= BattleState.CommonLevelID)
-                {
-                    id = _CommonState.BattleState.LevelID - BattleState.CommonLevelID;
-                }
-
-                _CommonState.Levels[id].Complete = true;
-
-                if (_CommonState.BattleState.LevelStar > _CommonState.Levels[id].Stars)
-                {
-                    _CommonState.Levels[id].Stars++;
-                }
-                OpenWin(BattleUI.BattleMenu);
+                Win();
                 return;
             }
             
@@ -650,15 +646,44 @@ namespace CardGrid
 
             if (!haveItems)
             {
-                DebugSystem.DebugLog("Defeat", DebugSystem.Type.Battle);
-                
-                MenuAudioSource.clip = DefeateSound;
-                MenuAudioSource.Play();
-                
-                OpenDefeat(BattleUI.BattleMenu);
-                _CommonState.InBattle = false;
-                _inputActive = false;
+                Defeat();
             }
+        }
+
+        void Win()
+        {
+            DebugSystem.DebugLog("Win", DebugSystem.Type.Battle);
+            StopAllCoroutines();
+            DOTween.KillAll();
+                
+            MenuAudioSource.clip = WinSound;
+            MenuAudioSource.Play();
+                
+            int id = _CommonState.BattleState.LevelID;
+            if (_CommonState.BattleState.LevelID >= BattleState.CommonLevelID)
+            {
+                id = _CommonState.BattleState.LevelID - BattleState.CommonLevelID;
+            }
+
+            _CommonState.Levels[id].Complete = true;
+
+            if (_CommonState.BattleState.LevelStar > _CommonState.Levels[id].Stars)
+            {
+                _CommonState.Levels[id].Stars++;
+            }
+            OpenWin(BattleUI.BattleMenu);
+        }
+
+        void Defeat()
+        {
+            DebugSystem.DebugLog("Defeat", DebugSystem.Type.Battle);
+                
+            MenuAudioSource.clip = DefeateSound;
+            MenuAudioSource.Play();
+                
+            OpenDefeat(BattleUI.BattleMenu);
+            _CommonState.InBattle = false;
+            _inputActive = false;
         }
 
         #endregion
@@ -732,6 +757,28 @@ namespace CardGrid
             int[,] attackArray = GetImpactMap<ImpactMaps>(fieldCardState.CardSO.ImpactMap);
 
             return GetImpactedCards(fieldCardState.CardSO.Name, fieldCardState.Position, attackArray);
+        }
+        
+        //death wounded NO USE
+        void ImpactDamageOnField(int damage, CardState[] cards, ref List<CardState> deaths)
+        {
+            foreach (var card in cards)
+            {
+                card.Quantity -= damage;
+                if (card.Quantity <= 0)
+                {
+                    //deaths.Add(card);
+                    card.GameObject.gameObject.SetActive(false);
+                    
+                    _CommonState.BattleState.Score += card.StartQuantity;
+                    BattleUI.Score.text = _CommonState.BattleState.Score.ToString();
+                    if (_CommonState.BattleState.Score > _CommonState.BestScore)
+                        _CommonState.BestScore = _CommonState.BattleState.Score;
+                    continue;
+                }
+
+                card.GameObject.QuantityText.text = card.Quantity.ToString();
+            }
         }
     }
 }
