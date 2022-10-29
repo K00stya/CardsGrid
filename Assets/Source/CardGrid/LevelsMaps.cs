@@ -47,7 +47,6 @@ namespace CardGrid
         Y5,
         
         Bl,
-        Ch
     }
 
     public class Level
@@ -802,21 +801,25 @@ namespace CardGrid
                 Array.Empty<TutorCardInfo>(),
 
                 new (CT, int)[]  {
-                    (CT.Ha, 1),(CT.Ha, 1),(CT.Ha, 1),(CT.Ha, 1),(CT.Ha, 1)},
+                    (CT.Sw, 1),(CT.SLR, 1),(CT.SRL, 1),(CT.Bo, 1),(CT.Ha, 1),
+                    (CT.Sw, 1),(CT.SLR, 1),(CT.SRL, 1),(CT.Bo, 1),(CT.Ha, 1)
+                },
 
                 new (CT, int)[,]
                 {
                     {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
                     {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Y4, 1), (CT.R2, 1), (CT.R2, 1), (CT.Y4, 1), (CT.B1, 1),},
-                    {(CT.Em, 1), (CT.R5, 1), (CT.Y3, 1), (CT.Y3, 1), (CT.R5, 1), (CT.Em, 1),},
-                    {(CT.Bl, 1), (CT.Em, 1), (CT.R5, 1), (CT.R5, 1), (CT.Em, 1), (CT.Bl, 1),},
+                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
+                    {(CT.R4, 1), (CT.R4, 1), (CT.Y2, 1), (CT.R4, 1), (CT.R4, 1), (CT.Y2, 1),},
+                    {(CT.B5, 1), (CT.B5, 1), (CT.Y2, 1), (CT.B5, 1), (CT.B5, 1), (CT.Y2, 1),},
+                    {(CT.G1, 1), (CT.G1, 1), (CT.R3, 1), (CT.R3, 1), (CT.G1, 1), (CT.G1, 1),},
                 },
                 
                 new (ColorType, int)[]
                 {
-                    (ColorType.Yellow, 5),
-                    (ColorType.Red, 5)
+                    (ColorType.Red, 10),
+                    (ColorType.Blue, 10),
+                    (ColorType.Green, 10)
                 },
                 
                 true,
@@ -826,9 +829,9 @@ namespace CardGrid
                     {0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0},
-                    {1, 2, 1, 1, 2, 1},
-                    {1, 1, 2, 2, 1, 1},
+                    {1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1},
                 }
             ),
             

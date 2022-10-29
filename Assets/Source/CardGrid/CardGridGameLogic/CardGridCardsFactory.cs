@@ -61,7 +61,7 @@ namespace CardGrid
 
                 var id = levelID - BattleState.CommonLevelID;
                 //LoadLevel1(id);
-                var level =LoadLevel(id);
+                var level = LoadLevel(id);
 
                 BattleUI.Score.gameObject.SetActive(false);
                 BattleUI.LeftCardsPanel.gameObject.SetActive(!level.NeedSpawnNewRandom);
@@ -88,7 +88,7 @@ namespace CardGrid
             }
 
             LoadTutor(tutor);
-            LoadField(field, level.NeedSpawnNewRandom);
+            LoadField(field, level);
             Inventory(inventory);
 
             int i = 0;
@@ -96,6 +96,7 @@ namespace CardGrid
             {
                 BattleUI.Requires[i].GemSprite.sprite = BattleUI.GetColorSprite(color.Item1);
                 BattleUI.Requires[i].Quantity.text = color.Item2.ToString();
+                BattleUI.Requires[i].gameObject.SetActive(true);
                 i++;
             }
             
@@ -107,7 +108,7 @@ namespace CardGrid
             return level;
         }
 
-        private void LoadField((CT, int)[,] field, bool spawnNewRandom)
+        private void LoadField((CT, int)[,] field, Level level)
         {
             _loadedMap = new List<Queue<CardState>>(field.GetLength(1));
 
@@ -116,6 +117,7 @@ namespace CardGrid
                 _loadedMap.Add(new Queue<CardState>(field.GetLength(0))); //AddEmptyRow
             }
 
+            var chainMap = level.ChainMap;
             for (int x = 0; x < field.GetLength(1); x++)
             {
                 //up side revers
@@ -125,7 +127,7 @@ namespace CardGrid
                     CardState cardState;
                     if (cardSO == null)
                     {
-                        if (spawnNewRandom)
+                        if (level.NeedSpawnNewRandom)
                         {
                             cardState = CreateNewRandomCard();
                         }
@@ -146,6 +148,11 @@ namespace CardGrid
                         quantity = 1;
                     cardState.Quantity = quantity;
                     cardState.StartQuantity = quantity;
+                    if(chainMap != null)
+                        if (chainMap.GetLength(0) > z && chainMap.GetLength(1) > x)
+                        {
+                            cardState.Chains = chainMap[z, x];
+                        }
 
                     _loadedMap[x].Enqueue(cardState);
                 }
@@ -394,6 +401,11 @@ namespace CardGrid
             if(cardState.CardSO != null)
                 SetCommonCardState(ref cardState, ref cardGameObject, cardState.CardSO);
             _cardMonobehsPool.Add(cardGameObject);
+
+            for (int i = 0; i < cardGameObject.Chains.Length; i++)
+            {
+                cardGameObject.Chains[i].SetActive(cardState.Chains > i);
+            }
 
             return cardGameObject;
         }

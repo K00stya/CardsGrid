@@ -388,9 +388,7 @@ namespace CardGrid
         {
             foreach (var card in cards)
             {
-                CollectColorAndShape(card);
-                
-                Damage(card);
+                Damage(card, damage);
             }
         }
         
@@ -398,27 +396,37 @@ namespace CardGrid
         {
             foreach (var card in cards)
             {
-                CollectColorAndShape(card);
-
-                Damage(card);
+                Damage(card, card.Quantity);
             }
         }
 
-        private void Damage(CardState card)
+        private void Damage(CardState card, int damage)
         {
-            card.Quantity -= card.Quantity;
-            if (card.Quantity <= 0)
+            if (card.Chains > 0)
             {
-                card.GameObject.gameObject.SetActive(false);
-
-                _CommonState.BattleState.Score += card.StartQuantity;
-                BattleUI.Score.text = _CommonState.BattleState.Score.ToString();
-                if (_CommonState.BattleState.Score > _CommonState.BestScore)
-                    _CommonState.BestScore = _CommonState.BattleState.Score;
-                return;
+                card.Chains--;
+                
+                for (int i = 0; i < card.GameObject.Chains.Length; i++)
+                {
+                    card.GameObject.Chains[i].SetActive(card.Chains > i);
+                }
             }
+            else
+            {
+                card.Quantity -= damage;
+                if (card.Quantity <= 0)
+                {
+                    card.GameObject.gameObject.SetActive(false);
 
-            card.GameObject.QuantityText.text = card.Quantity.ToString();
+                    _CommonState.BattleState.Score += card.StartQuantity;
+                    BattleUI.Score.text = _CommonState.BattleState.Score.ToString();
+                    if (_CommonState.BattleState.Score > _CommonState.BestScore)
+                        _CommonState.BestScore = _CommonState.BattleState.Score;
+                    CollectColorAndShape(card);
+                    return;
+                }
+                card.GameObject.QuantityText.text = card.Quantity.ToString();
+            }
         }
 
         void CollectColorAndShape(CardState card)
