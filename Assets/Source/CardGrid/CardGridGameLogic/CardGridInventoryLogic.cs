@@ -29,7 +29,7 @@ namespace CardGrid
 
                 newItems = true;
                 _itemsRecession = true;
-                MoveInventory(x);
+                MoveInventoryAndField(x, cells, items);
 
                 card.Grid = CardGrid.Inventory;
                 card.Position = new Vector2Int(0, 0);
@@ -48,41 +48,42 @@ namespace CardGrid
 
                 yield return new WaitForSeconds(SpeedRecession);
             }
-
-            /*
+        }
+        
+        /*
              * When a new item is added, all cards move to the right.
              * If the row has ended, it moves to the bottom.
              * If the row is already lower, then the item is excess and the empty card is removed to the field.
              */
-            void MoveInventory(int currentX)
+        void MoveInventoryAndField(int currentX, CardState[,] cells, CardState[,] items)
+        {
+            int lowerZ = cells.GetLength(1) - 1;
+            for (int z = items.GetLength(1) - 1; z >= 0; z--)
             {
-                for (int z = items.GetLength(1) - 1; z >= 0; z--)
+                for (int x = items.GetLength(0) - 1; x >= 0; x--)
                 {
-                    for (int x = items.GetLength(0) - 1; x >= 0; x--)
+                    int newX = x + 1;
+                    int newZ = z + 1;
+                    if (newX < items.GetLength(0))
                     {
-                        int newX = x + 1;
-                        int newZ = z + 1;
-                        if (newX < items.GetLength(0))
-                        {
-                            items[newX, z] = items[x, z];
-                            items[newX, z].Position = new Vector2Int(newX, z);
-                            MoveCardToSelfPosition(items[newX, z], BattleObjects.Inventory);
-                        }
-                        else if (newZ < items.GetLength(1))
-                        {
-                            items[0, newZ] = items[x, z];
-                            items[0, newZ].Position = new Vector2Int(0, newZ);
-                            MoveCardToSelfPosition(items[0, newZ], BattleObjects.Inventory);
-                        }
-                        else
-                        {
-                            var excessItem = items[x, z];
-                            excessItem.Grid = CardGrid.Field;
-                            excessItem.Quantity = 0;
-                            excessItem.GameObject.gameObject.SetActive(false);
-                            excessItem.Position = new Vector2Int(currentX, lowerZ);
-                            cells[currentX, lowerZ] = excessItem;
-                        }
+                        items[newX, z] = items[x, z];
+                        items[newX, z].Position = new Vector2Int(newX, z);
+                        MoveCardToSelfPosition(items[newX, z], BattleObjects.Inventory);
+                    }
+                    else if (newZ < items.GetLength(1))
+                    {
+                        items[0, newZ] = items[x, z];
+                        items[0, newZ].Position = new Vector2Int(0, newZ);
+                        MoveCardToSelfPosition(items[0, newZ], BattleObjects.Inventory);
+                    }
+                    else
+                    {
+                        var excessItem = items[x, z];
+                        excessItem.Grid = CardGrid.Field;
+                        excessItem.Quantity = 0;
+                        excessItem.GameObject.gameObject.SetActive(false);
+                        excessItem.Position = new Vector2Int(currentX, lowerZ);
+                        cells[currentX, lowerZ] = excessItem;
                     }
                 }
             }
@@ -115,10 +116,48 @@ namespace CardGrid
                 }
             }
         }
-        
-        IEnumerator ItemsCombinations(CardState[,] items)
+
+        void AddItemInInventory(CardState card)
         {
-            yield return null;
+            var items = _CommonState.BattleState.Inventory.Items;
+
+            MoveInventory(items);
+
+            card.Grid = CardGrid.Inventory;
+            card.Position = new Vector2Int(0, 0);
+            card.GameObject = items[0, 0].GameObject;
+            card.GameObject.CardState = card;
+            card.GameObject.Sprite.sprite = card.CardSO.Sprite;
+            card.GameObject.QuantityText.text = card.Quantity.ToString();
+            card.GameObject.gameObject.SetActive(true);
+            items[0, 0] = card;
+
+            card.GameObject.transform.position = BattleObjects.Inventory.GetCellSpacePosition(new Vector2(-1,0));
+        }
+
+        void MoveInventory(CardState[,] items)
+        {
+            var card = items[items.GetLength(0) - 1, items.GetLength(1) - 1]; 
+            for (int z = items.GetLength(1) - 1; z >= 0; z--)
+            {
+                for (int x = items.GetLength(0) - 1; x >= 0; x--)
+                {
+                    int newX = x + 1;
+                    int newZ = z + 1;
+                    if (newX < items.GetLength(0))
+                    {
+                        items[newX, z] = items[x, z];
+                        items[newX, z].Position = new Vector2Int(newX, z);
+                    }
+                    else if (newZ < items.GetLength(1))
+                    {
+                        items[0, newZ] = items[x, z];
+                        items[0, newZ].Position = new Vector2Int(0, newZ);
+                    }
+                }
+            }
+            
+            items[0, 0] = card;
         }
     }
 }

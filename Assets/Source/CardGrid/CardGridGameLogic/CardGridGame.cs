@@ -53,6 +53,8 @@ namespace CardGrid
         PlayerCommonState _CommonState;
         List<CardGameObject> _cardMonobehsPool;
         Camera _camera;
+        bool WithShape = false;
+        bool WithQuantity = false;
 
         void Awake()
         {
@@ -183,7 +185,7 @@ namespace CardGrid
             _inputActive = true;
             _CommonState.InBattle = true;
             _CommonState.BattleState.LevelID = levelID;
-            _CommonState.BattleState.Score = 0;
+            _CommonState.BattleState.LevelProgress = 0;
             
             ActiveBattleUI();
 
@@ -192,10 +194,10 @@ namespace CardGrid
             if (levelID < BattleState.CommonLevelID)
             {
                 //Spawn new filed
-                SpawnRandomField(out _CommonState.BattleState.Filed.Cells, CardGrid.Field, CreateNewRandomCard);
+                SpawnRandomField(out _CommonState.BattleState.Filed.Cells, CardGrid.Field, CreateNewRandomCard, false);
 
                 //Spawn new inventory
-                SpawnRandomField(out _CommonState.BattleState.Inventory.Items, CardGrid.Inventory, CreateNewRandomItem);
+                SpawnRandomField(out _CommonState.BattleState.Inventory.Items, CardGrid.Inventory, CreateNewRandomItem, true);
             }
             else
             {
@@ -203,7 +205,7 @@ namespace CardGrid
                 SpawnInventory(out _CommonState.BattleState.Inventory.Items, CardGrid.Inventory, _loadedInventory);
             }
 
-            void SpawnRandomField(out CardState[,] cards, CardGrid gridType, Func<CardState> createCard)
+            void SpawnRandomField(out CardState[,] cards, CardGrid gridType, Func<CardState> createCard, bool half)
             {
                 GridGameObject gridGameObject;
                 if (gridType == CardGrid.Field)
@@ -221,7 +223,16 @@ namespace CardGrid
                     for (int x = 0; x < gridGameObject.SizeX; x++)
                     {
                         //Get card
-                        var cell = createCard();
+                        CardState cell;
+                        if (half && z > 0)
+                        {
+                            cell = new CardState();
+                        }
+                        else
+                        {
+                            cell = createCard();
+                        }
+                        
                         cell.Grid = gridType;
                         cell.Position = new Vector2Int(x, z);
                         cards[x, z] = cell;

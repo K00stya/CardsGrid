@@ -8,7 +8,6 @@ public class CardSO : ScriptableObject
 {
     public string Name;
     public CT CardType;
-    public int StartQuantity;
     public TypeCard Type;
     public ShapeType Shape;
     public ColorType ColorType;

@@ -17,9 +17,9 @@ namespace CardGrid
                    new Vector3(fieldPosition.x + fieldPosition.x * OffsetX, 0, -(fieldPosition.y + fieldPosition.y * OffsetZ));
         }
 
-        public Vector3 GetSpawnPosition(int x)
+        public Vector3 GetSpawnPosition(int x, int upOffset)
         {
-            return transform.position + new Vector3(x + x * OffsetX, 0, -(-3 * OffsetZ));
+            return transform.position + new Vector3(x + x * OffsetX, 0, -(-3 + upOffset * OffsetZ));
         }
 
         void OnDrawGizmos()

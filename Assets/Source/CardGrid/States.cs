@@ -49,10 +49,9 @@ namespace CardGrid
     {
         public const int CommonLevelID = 100;
         public int LevelID;
-        public int LevelStar;
-        public int Score;
-        public int Health;
-        public int Money;
+        public int NumberLevel = 1;
+        public int LevelProgress;
+        public int MaxLevelProgress = 10;
         public (ColorType, int)[] CollectColors;
 
         public Field Filed = new Field();
@@ -77,7 +76,6 @@ namespace CardGrid
         public CardSO CardSO;
         public CardGrid Grid;
         public Vector2Int Position;
-        public int StartQuantity;
         public int Quantity;
         public int Chains;
 

@@ -52,7 +52,7 @@ namespace CardGrid
                 {
                     BattleUI.Requires[i].gameObject.SetActive(false);
                 }
-                BattleUI.Score.gameObject.SetActive(true);
+                BattleUI.LevelProgress.gameObject.SetActive(true);
                 BattleUI.LeftCardsPanel.gameObject.SetActive(false);
             }
             else
@@ -63,7 +63,7 @@ namespace CardGrid
                 //LoadLevel1(id);
                 var level = LoadLevel(id);
 
-                BattleUI.Score.gameObject.SetActive(false);
+                BattleUI.LevelProgress.gameObject.SetActive(false);
                 BattleUI.LeftCardsPanel.gameObject.SetActive(!level.NeedSpawnNewRandom);
             }
         }
@@ -89,7 +89,7 @@ namespace CardGrid
 
             LoadTutor(tutor);
             LoadField(field, level);
-            Inventory(inventory);
+            LoadInventory(inventory);
 
             int i = 0;
             foreach (var color in level.CollectColors)
@@ -147,7 +147,6 @@ namespace CardGrid
                     if (quantity <= 0)
                         quantity = 1;
                     cardState.Quantity = quantity;
-                    cardState.StartQuantity = quantity;
                     if(chainMap != null)
                         if (chainMap.GetLength(0) > z && chainMap.GetLength(1) > x)
                         {
@@ -165,7 +164,7 @@ namespace CardGrid
             }
         }
 
-        private void Inventory((CT, int)[] inventory)
+        private void LoadInventory((CT, int)[] inventory)
         {
             _loadedInventory = new Queue<CardState>(inventory.Length);
             for (int x = 0; x < inventory.Length; x++)
@@ -177,70 +176,11 @@ namespace CardGrid
                 cardState.CardSO = cardSO;
                 cardState.CardSO.Type = cardSO.Type;
                 cardState.Quantity = inventory[x].Item2;
-                cardState.StartQuantity = inventory[x].Item2;
 
                 _loadedInventory.Enqueue(cardState);
             }
         }
-
-        // void LoadLevel_V1(int id)
-        // {
-        //     var level = _CommonState.Levels[id];
-        //     var loadedLevel = CommonLevelsGroups[level.Group].Levels[level.IdInGroup];
-        //     //LoadTutor(loadedLevel);
-        //     var columnsSO = loadedLevel.Columns;
-        //
-        //     _loadedMap = new List<Queue<CardState>>(columnsSO.Count);
-        //
-        //     for (int i = 0; i < loadedLevel.Columns.Count; i++)
-        //     {
-        //         var row = columnsSO[i];
-        //         _loadedMap.Add(new Queue<CardState>(row.Length)); //AddEmptyRow
-        //     }
-        //
-        //     int X = 0;
-        //     foreach (var row in columnsSO)
-        //     {
-        //         foreach (var card in row)
-        //         {
-        //             if (card == null) continue;
-        //
-        //             var cardSO = card.Card;
-        //             var cardState = new CardState();
-        //             cardState.CardSO = cardSO;
-        //             cardState.CardSO.Type = cardSO.Type;
-        //             cardState.Quantity = card.Quantity;
-        //             cardState.StartQuantity = card.Quantity;
-        //
-        //             _loadedMap[X].Enqueue(cardState);
-        //         }
-        //
-        //         if (_loadedMap[X].Count > BattleObjects.Field.SizeZ)
-        //             BattleUI.LeftCardsPanel.Columns[X].text =
-        //                 (_loadedMap[X].Count - BattleObjects.Field.SizeZ).ToString();
-        //         else
-        //             BattleUI.LeftCardsPanel.Columns[X].text = "0";
-        //
-        //         X++;
-        //     }
-        //
-        //     _loadedInventory = new Queue<CardState>(loadedLevel.Inventory.Length);
-        //     foreach (var card in loadedLevel.Inventory)
-        //     {
-        //         var cardSO = card.Card;
-        //         var cardState = new CardState();
-        //         cardState.CardSO = cardSO;
-        //         cardState.CardSO.Type = cardSO.Type;
-        //         cardState.Quantity = card.Quantity;
-        //         cardState.StartQuantity = card.Quantity;
-        //
-        //         _loadedInventory.Enqueue(cardState);
-        //     }
-        //
-        //     BattleUI.Score.gameObject.SetActive(false);
-        //     BattleUI.LeftCardsPanel.gameObject.SetActive(true);
-        // }
-
+        
         private void LoadTutor(TutorCardInfo[] tutor)
         {
             _tutorActive = false;
@@ -297,18 +237,20 @@ namespace CardGrid
         CardState CreateCard(CardSO newCard)
         {
             int quantity = Random.Range(1, _startMaxCellQuantity + 1);
-            return new CardState {
+            return new CardState
+            {
                 CardSO = newCard,
                 Quantity = quantity,
-                StartQuantity = quantity};
+            };
         }
 
         CardState CreateCard(CardSO newCard, int quantity)
         {
-            return new CardState {
+            return new CardState
+            {
                 CardSO = newCard,
                 Quantity = quantity,
-                StartQuantity = quantity};
+            };
         }
 
         CardState CreateNewRandomItem()
@@ -344,7 +286,6 @@ namespace CardGrid
 
                     cardState.CardSO = newCard;
                     cardState.Quantity = quantity;
-                    cardState.StartQuantity = quantity;
                     cardState.GameObject.gameObject.SetActive(true);
                     SetCommonCardState(ref cardState, ref cardState.GameObject, newCard);
                 }
@@ -400,6 +341,10 @@ namespace CardGrid
             }
             if(cardState.CardSO != null)
                 SetCommonCardState(ref cardState, ref cardGameObject, cardState.CardSO);
+            if (!WithQuantity)
+            {
+                cardGameObject.QuantityText.transform.parent.gameObject.SetActive(false);
+            }
             _cardMonobehsPool.Add(cardGameObject);
 
             for (int i = 0; i < cardGameObject.Chains.Length; i++)

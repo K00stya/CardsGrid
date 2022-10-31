@@ -33,7 +33,8 @@ namespace CardGrid
         bool _itemsRecession;
         bool _enemiesRecession;
         bool _tutorActive;
-        private bool _playerPressed;
+        bool _playerPressed;
+        int _nextLevels;
 
         //Not fixed because I use raycasts for get input, and I don't make changes in physics
         void Update()
@@ -246,6 +247,13 @@ namespace CardGrid
                     _CommonState.CurrentTutorial.RemoveAt(0);
                 
                 yield return DealImpact(drag);
+
+                while (_nextLevels > 0)
+                {
+                    yield return NextLevel();
+                    
+                    _nextLevels--;
+                }
                 
                 _playerPressed = false;
             }
@@ -357,7 +365,7 @@ namespace CardGrid
                     if (card.Quantity <= 0)
                     {
                         card.GameObject.transform.position =
-                            BattleObjects.Field.GetSpawnPosition(cards[x, z].Position.x);
+                            BattleObjects.Field.GetSpawnPosition(cards[x, z].Position.x, z);
                         ReCreateCard(ref cards[x, z], x);
                         MoveCardToSelfPosition(cards[x, z], BattleObjects.Field);
                         needWait = true;
@@ -413,15 +421,20 @@ namespace CardGrid
             }
             else
             {
-                card.Quantity -= damage;
+                if(WithQuantity)
+                    card.Quantity -= damage;
+                else
+                    card.Quantity -= card.Quantity;
+                
                 if (card.Quantity <= 0)
                 {
                     card.GameObject.gameObject.SetActive(false);
 
-                    _CommonState.BattleState.Score += card.StartQuantity;
-                    BattleUI.Score.text = _CommonState.BattleState.Score.ToString();
-                    if (_CommonState.BattleState.Score > _CommonState.BestScore)
-                        _CommonState.BestScore = _CommonState.BattleState.Score;
+                    if (_CommonState.BattleState.LevelID < BattleState.CommonLevelID)
+                    {
+                        UpdateLevel();
+                    }
+
                     CollectColorAndShape(card);
                     return;
                 }
@@ -461,9 +474,15 @@ namespace CardGrid
                     }
                 }
             }
-                
-            if(win)
+
+            if (win && _CommonState.BattleState.LevelID >= BattleState.CommonLevelID)
+            {
                 Win();
+            }
+            else
+            {
+                UpdateLevel();
+            }
         }
         
         #endregion
@@ -623,81 +642,9 @@ namespace CardGrid
 
             _impactHighlightCards = new List<CardGameObject>();
         }
-        
-        void CheckWinOrDefeat(CardState[,] cells, CardState[,] items)
-        {
-            bool enemiesExist = false;
-            foreach (var cell in cells)
-            {
-                if (cell.CardSO != null && cell.CardSO.Type == TypeCard.Enemy && cell.Quantity > 0)
-                {
-                    enemiesExist = true;
-                    break;
-                }
-            }
-
-            if (!enemiesExist)
-            {
-                Win();
-                return;
-            }
-            
-            bool haveItems = false;
-            foreach (var item in items)
-            {
-                if (item.Quantity > 0)
-                {
-                    haveItems = true;
-                    break;
-                }
-            }
-
-            if (!haveItems)
-            {
-                Defeat();
-            }
-        }
-
-        void Win()
-        {
-            DebugSystem.DebugLog("Win", DebugSystem.Type.Battle);
-            StopAllCoroutines();
-            DOTween.KillAll();
-                
-            MenuAudioSource.clip = WinSound;
-            MenuAudioSource.Play();
-                
-            int id = _CommonState.BattleState.LevelID;
-            if (_CommonState.BattleState.LevelID >= BattleState.CommonLevelID)
-            {
-                id = _CommonState.BattleState.LevelID - BattleState.CommonLevelID;
-            }
-
-            _CommonState.Levels[id].Complete = true;
-
-            if (_CommonState.BattleState.LevelStar > _CommonState.Levels[id].Stars)
-            {
-                _CommonState.Levels[id].Stars++;
-            }
-            OpenWin(BattleUI.BattleMenu);
-        }
-
-        void Defeat()
-        {
-            DebugSystem.DebugLog("Defeat", DebugSystem.Type.Battle);
-                
-            MenuAudioSource.clip = DefeateSound;
-            MenuAudioSource.Play();
-                
-            OpenDefeat(BattleUI.BattleMenu);
-            _CommonState.InBattle = false;
-            _inputActive = false;
-        }
 
         #endregion
-
-        #region Swaying
-
+        
         void SetSwaying(CardGameObject cardGO)
         {
             if (_inputActive && _mySequence is not {active: true} && _swayingCard != cardGO && _dragGameObjectCard == null)
@@ -741,8 +688,6 @@ namespace CardGrid
 
             _infoHighlightCards = new List<CardGameObject>();
         }
-        
-        #endregion
 
         CardState[] GetImpactCards(CardState itemCardState, CardState fieldCardState)
         {
@@ -765,28 +710,6 @@ namespace CardGrid
             int[,] attackArray = GetImpactMap<ImpactMaps>(fieldCardState.CardSO.ImpactMap);
 
             return GetImpactedCards(fieldCardState.CardSO.Name, fieldCardState.Position, attackArray);
-        }
-        
-        //death wounded NO USE
-        void ImpactDamageOnField(int damage, CardState[] cards, ref List<CardState> deaths)
-        {
-            foreach (var card in cards)
-            {
-                card.Quantity -= damage;
-                if (card.Quantity <= 0)
-                {
-                    //deaths.Add(card);
-                    card.GameObject.gameObject.SetActive(false);
-                    
-                    _CommonState.BattleState.Score += card.StartQuantity;
-                    BattleUI.Score.text = _CommonState.BattleState.Score.ToString();
-                    if (_CommonState.BattleState.Score > _CommonState.BestScore)
-                        _CommonState.BestScore = _CommonState.BattleState.Score;
-                    continue;
-                }
-
-                card.GameObject.QuantityText.text = card.Quantity.ToString();
-            }
         }
     }
 }

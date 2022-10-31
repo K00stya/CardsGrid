@@ -73,7 +73,7 @@ namespace CardGrid
         public int[,] ChainMap;
     }
 
-    public static partial class LevelsMaps
+    public static class LevelsMaps
     {
         public static Level[] Levels =
         {

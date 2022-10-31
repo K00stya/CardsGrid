@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,11 +15,13 @@ namespace CardGrid
     [Serializable]
     public class BattleUI : MonoBehaviour
     {
-        public TextMeshProUGUI Score;
+        public Slider LevelProgress;
+        public TextMeshProUGUI LevelNumber;
         public Button OpenMenu;
         public Button PlayAgain;
         public BattleMenu BattleMenu;
         public LeftCardsPanel LeftCardsPanel;
+        public NewLevelUp NewLevelUp;
         public Require[] Requires = new Require[3];
         public SpriteColorType[] Colors;
 

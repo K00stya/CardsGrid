@@ -314,7 +314,10 @@ namespace CardGrid
                 _CommonState.BattleState.LevelID >= BattleState.CommonLevelID);
 
             BattleUI.gameObject.SetActive(true);
-            BattleUI.Score.text = _CommonState.BattleState.Score.ToString();
+
+            BattleUI.LevelNumber.text = _CommonState.BattleState.NumberLevel.ToString();
+            BattleUI.LevelProgress.maxValue = _CommonState.BattleState.MaxLevelProgress;
+            BattleUI.LevelProgress.SetValueWithoutNotify(_CommonState.BattleState.LevelProgress);
         }
 
         void GoToMenu()
