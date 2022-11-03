@@ -8,8 +8,10 @@ public class MainMenu : MonoBehaviour
 {
     public TextMeshProUGUI StarsQuantity;
     public Button OpenLevels;
-    public TextMeshProUGUI MaxScore;
-    public Button OpenInfiniteMenu;
+    public Button ClassicLevel;
+    public TextMeshProUGUI MaxLevelClassic;
+    public Button QuantityLevel;
+    public TextMeshProUGUI MaxLevelQuantity;
     
     public Slider VolumeSlider;
     public TMP_Dropdown LanguageDropdown;

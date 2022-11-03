@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace CardGrid
 {
@@ -254,6 +256,7 @@ namespace CardGrid
                     
                     _nextLevels--;
                 }
+                CheckWinOrDefeat(_CommonState.BattleState.Filed.Cells, _CommonState.BattleState.Inventory.Items);
                 
                 _playerPressed = false;
             }
@@ -301,8 +304,6 @@ namespace CardGrid
                 yield return TryGetNewItemsForField(cells, items);
                 
             } while (_itemsRecession || _enemiesRecession);
-
-            CheckWinOrDefeat(cells, items);
         }
 
         #region DealImpact
@@ -446,10 +447,19 @@ namespace CardGrid
         {
             var state = _CommonState.BattleState;
             if (state.CollectColors == null || state.CollectColors.Length <= 0)
-                return;
-                
+            {
+                if (_CommonState.BattleState.LevelID < BattleState.CommonLevelID)
+                {
+                    state.CollectColors = GenerateNewCollectColors();
+                }
+                else
+                {
+                    return;
+                }
+            }
+
             bool win = true;
-                
+
             for (int i = 0; i < state.CollectColors.Length; i++)
             {
                 if (card.CardSO.ColorType == state.CollectColors[i].Item1)
@@ -463,8 +473,6 @@ namespace CardGrid
                     {
                         win = false;
                     }
-
-                    BattleUI.Requires[i].Quantity.text = state.CollectColors[i].Item2.ToString();
                 }
                 else
                 {
@@ -475,14 +483,49 @@ namespace CardGrid
                 }
             }
 
-            if (win && _CommonState.BattleState.LevelID >= BattleState.CommonLevelID)
+            if (win)
+                if (_CommonState.BattleState.LevelID >= BattleState.CommonLevelID)
+                {
+                    Win();
+                }
+                else if (_CommonState.BattleState.LevelID < BattleState.CommonLevelID)
+                {
+                    foreach (var collection in state.CollectColors)
+                    {
+                        UpdateLevel(reawardForCompleteTask);
+                    }
+
+                    MenuAudioSource.clip = QuestComplete;
+                    MenuAudioSource.Play();
+                    state.CollectColors = GenerateNewCollectColors();
+                }
+            
+            UpdateRequires(state.CollectColors);
+        }
+
+        void GenerateColorTypesList()
+        {
+            var v = Enum.GetValues (typeof (ColorType));
+            for (int i = 0; i < v.Length; i++)
             {
-                Win();
+                ColorTypes.Add( (ColorType) v.GetValue(i) );
             }
-            else
+        }
+        
+        (ColorType, int)[] GenerateNewCollectColors()
+        {
+            List<ColorType> types = new List<ColorType>(ColorTypes);
+            
+            (ColorType, int)[] collection = new (ColorType, int)[3];
+            for (int i = 0; i < 3; i++)
             {
-                UpdateLevel();
+                int index = Random.Range(0, types.Count);
+                ColorType type = types[index];
+                types.RemoveAt(index);
+                collection[i] = (type, Random.Range(3, 11));
             }
+            
+            return collection;
         }
         
         #endregion

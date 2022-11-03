@@ -10,5 +10,6 @@ namespace CardGrid
         public GridGameObject Field;
         public GridGameObject Inventory;
         public Transform ParentEffects;
+        public Transform FieldRotator;
     }
 }

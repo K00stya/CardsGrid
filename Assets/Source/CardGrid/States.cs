@@ -7,7 +7,8 @@ namespace CardGrid
     //TODO SEPARATE SAVES?
     public class PlayerCommonState
     {
-        public int BestScore;
+        public int BestLevelClassic;
+        public int BestLevelQuantity;
         public bool InBattle;
         
         public BattleState BattleState = new BattleState();

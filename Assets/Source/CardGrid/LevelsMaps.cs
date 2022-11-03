@@ -52,7 +52,8 @@ namespace CardGrid
     public class Level
     {
         public Level(int group, TutorCardInfo[] tutor, (CT, int)[] inventory, (CT, int)[,] field,
-            (ColorType, int)[] collectColors, bool spawnNewRandom = false, int[,] chainMap = null)
+            (ColorType, int)[] collectColors, bool spawnNewRandom = false, int[,] chainMap = null,
+            bool quantity = false, bool inGame = true)
         {
             Group = group;
             Tutor = tutor;
@@ -124,7 +125,9 @@ namespace CardGrid
                     {(CT.B1, 1), (CT.R2, 1), (CT.B1, 1), (CT.G3, 1), (CT.B1, 1), (CT.P2, 1),},
                 },
                 
-                Array.Empty<(ColorType, int)>()
+                Array.Empty<(ColorType, int)>(),
+                
+                quantity: false
             ),
 
             new Level //1_2

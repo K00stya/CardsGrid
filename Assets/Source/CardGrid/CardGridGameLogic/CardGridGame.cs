@@ -40,6 +40,8 @@ namespace CardGrid
         public AudioSource BattleAudioSource;
         public AudioSource MusicAudioSource;
         public AudioSource MenuAudioSource;
+        public AudioClip QuestComplete;
+        public AudioClip LevelUpSound;
         public AudioClip WinSound;
         public AudioClip DefeateSound;
         public AudioClip ColorSound;
@@ -54,7 +56,9 @@ namespace CardGrid
         List<CardGameObject> _cardMonobehsPool;
         Camera _camera;
         bool WithShape = false;
-        bool WithQuantity = false;
+        bool WithQuantity = true;
+        List<ColorType> ColorTypes = new (5);
+        int reawardForCompleteTask = 10;
 
         void Awake()
         {
@@ -74,12 +78,12 @@ namespace CardGrid
                         level.Init();
                 }
             }
+
+            GenerateColorTypesList();
         }
 
         void Start()
         {
-            Debug.Log(Screen.width);
-            Debug.Log(Screen.height);
             //Try load save
             // if (ES3.KeyExists(SaveName) && !CurrentGameSeetings.NewSaveOnStart)
             // {
@@ -91,12 +95,6 @@ namespace CardGrid
                 _CommonState = new PlayerCommonState();
                 int quantityLevels = 0;
                 
-                // for (int i = 0; i < CommonLevelsGroups.Length; i++)
-                // {
-                //     quantityLevels += CommonLevelsGroups[i].Levels.Length;
-                // }
-                
-                //V2
                 var levels = (Level[])typeof(LevelsMaps).GetField("Levels").GetValue(null);
                 quantityLevels += levels.Length;
 
@@ -114,18 +112,6 @@ namespace CardGrid
                     
                     levelIndex++;
                 }
-                
-                // int levelIndex = 0;
-                // for (int i = 0; i < CommonLevelsGroups.Length; i++)
-                // {
-                //     for (int j = 0; j < CommonLevelsGroups[i].Levels.Length; j++)
-                //     {
-                //         _CommonState.Levels[levelIndex] = new LevelState();
-                //         _CommonState.Levels[levelIndex].Group = i; //NumberGroup
-                //         _CommonState.Levels[levelIndex].IdInGroup = j;
-                //         levelIndex++;
-                //     }
-                // }
 
                 DebugSystem.DebugLog("Save no exist. First active.", DebugSystem.Type.SaveSystem);
             }
@@ -186,9 +172,15 @@ namespace CardGrid
             _CommonState.InBattle = true;
             _CommonState.BattleState.LevelID = levelID;
             _CommonState.BattleState.LevelProgress = 0;
+            _CommonState.BattleState.NumberLevel = 1;
+            _CommonState.BattleState.MaxLevelProgress = 10;
+            BattleObjects.FieldRotator.eulerAngles = Vector3.zero;
+            for (int i = 0; i < BattleObjects.Field.transform.childCount; i++)
+            {
+                BattleObjects.Field.transform.GetChild(i).eulerAngles = Vector3.zero;
+            }
             
             ActiveBattleUI();
-
             LoadLevelCards(levelID);
 
             if (levelID < BattleState.CommonLevelID)

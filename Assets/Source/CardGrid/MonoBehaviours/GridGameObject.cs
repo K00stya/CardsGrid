@@ -4,6 +4,7 @@ namespace CardGrid
 {
     public class GridGameObject : MonoBehaviour
     {
+        public Vector3 CommonOffset = new Vector3(-2.45f, 0, 2.5f);
         public float OffsetX = 0.2f;
         public float OffsetZ = 0.2f;
         public int SizeX = 6;
@@ -13,13 +14,13 @@ namespace CardGrid
 
         public Vector3 GetCellSpacePosition(Vector2 fieldPosition)
         {
-            return transform.position + 
+            return transform.position + CommonOffset + 
                    new Vector3(fieldPosition.x + fieldPosition.x * OffsetX, 0, -(fieldPosition.y + fieldPosition.y * OffsetZ));
         }
 
         public Vector3 GetSpawnPosition(int x, int upOffset)
         {
-            return transform.position + new Vector3(x + x * OffsetX, 0, -(-3 + upOffset * OffsetZ));
+            return transform.position + CommonOffset + new Vector3(x + x * OffsetX, 0, -(-3 + upOffset * OffsetZ));
         }
 
         void OnDrawGizmos()

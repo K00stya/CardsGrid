@@ -18,7 +18,7 @@ MonoBehaviour:
     - name: Battle
       Active: 0
     - name: PlayerInput
-      Active: 1
+      Active: 0
     - name: SaveSystem
       Active: 0
     - name: Error

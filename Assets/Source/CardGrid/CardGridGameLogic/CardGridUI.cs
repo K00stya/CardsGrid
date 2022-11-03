@@ -20,7 +20,7 @@ namespace CardGrid
 
         public void OpenMainMenu()
         {
-            UpdateMainMenuStars();
+            UpdateMainMenuRecords();
             MainMenu.gameObject.SetActive(true);
             
             LevelsMenu.gameObject.SetActive(false);
@@ -41,8 +41,16 @@ namespace CardGrid
                 PlayClickSound();
                 OpenLevelsMenu();
             });
-            MainMenu.OpenInfiniteMenu.onClick.AddListener(()=>
+            MainMenu.ClassicLevel.onClick.AddListener(()=>
             {
+                WithQuantity = false;
+                //OpenInfiniteMenu();
+                PlayClickSound();
+                StartNewBattle(0);
+            });
+            MainMenu.QuantityLevel.onClick.AddListener(()=>
+            {
+                WithQuantity = true;
                 //OpenInfiniteMenu();
                 PlayClickSound();
                 StartNewBattle(0);
@@ -97,7 +105,7 @@ namespace CardGrid
             MainMenu.LanguageDropdown.SetValueWithoutNotify((int) _CommonState.Language);
             
             InfiniteLvlMenu.Continue.gameObject.SetActive(_CommonState.InBattle);
-            InfiniteLvlMenu.BestScore.text = _CommonState.BestScore.ToString();
+            UpdateMainMenuRecords();
         }
 
         void OpenInfiniteMenu()
@@ -110,14 +118,7 @@ namespace CardGrid
         {
             for (int i = 0; i < InfiniteLevels.Length; i++)
             {
-                if (InfiniteLevels[i].Open || _CommonState.BestScore >= InfiniteLevels[i].NeedScoreToOpen)
-                {
-                    InfiniteLevelsButtons[i] .interactable = true;
-                }
-                else
-                {
-                    InfiniteLevelsButtons[i] .interactable = false;
-                }
+                InfiniteLevelsButtons[i] .interactable = true;
             }
             
             InfiniteLvlMenu.LevelsContent.SetActive(true);
@@ -228,6 +229,19 @@ namespace CardGrid
 
         void SetBattleUI()
         {
+            BattleUI.RotateRight.onClick.AddListener(
+                ()=>
+                {
+                    if(_inputActive)
+                        StartCoroutine(RotateRight());
+                });
+            BattleUI.RotateLeft.onClick.AddListener(
+                ()=>
+                {
+                    if(_inputActive)
+                        StartCoroutine(RotateLeft());
+                });
+            
             BattleUI.OpenMenu.onClick.AddListener(() =>
             {
                 PlayClickSound();
@@ -275,9 +289,10 @@ namespace CardGrid
             }
         }
 
-        void UpdateMainMenuStars()
+        void UpdateMainMenuRecords()
         {
-            MainMenu.MaxScore.text = _CommonState.BestScore.ToString();
+            MainMenu.MaxLevelClassic.text = _CommonState.BestLevelClassic.ToString();
+            MainMenu.MaxLevelQuantity.text = _CommonState.BestLevelQuantity.ToString();
             
             var maxStars = _CommonState.Levels.Length;
             int currentStars = 0;
@@ -303,6 +318,33 @@ namespace CardGrid
             LevelsMenu.StarsQuantity.text = currentStars.ToString() + "/" + maxStars.ToString();
         }
 
+        void UpdateRequires((ColorType, int)[] collection)
+        {
+            int i = 0;
+            foreach (var color in collection)
+            {
+                BattleUI.Requires[i].GemSprite.sprite = BattleUI.GetColorSprite(color.Item1);
+                if (color.Item2 > 0)
+                {
+                    BattleUI.Requires[i].Quantity.text = color.Item2.ToString();
+                    BattleUI.Requires[i].Quantity.gameObject.SetActive(true);
+                    BattleUI.Requires[i].ToggleCheck.gameObject.SetActive(false);
+                }
+                else
+                {
+                    BattleUI.Requires[i].Quantity.gameObject.SetActive(false);
+                    BattleUI.Requires[i].ToggleCheck.gameObject.SetActive(true);
+                }
+                BattleUI.Requires[i].gameObject.SetActive(true);
+                i++;
+            }
+            
+            for (; i < BattleUI.Requires.Length; i++)
+            {
+                BattleUI.Requires[i].gameObject.SetActive(false);
+            }
+        }
+
         void ActiveBattleUI()
         {
             MainMenu.gameObject.SetActive(false);
@@ -310,8 +352,10 @@ namespace CardGrid
             InfiniteLvlMenu.gameObject.SetActive(false);
             InfiniteLvlMenu.LevelsContent.SetActive(false);
             BattleUI.BattleMenu.gameObject.SetActive(false);
-            BattleUI.BattleMenu.LevelMenu.gameObject.SetActive(
-                _CommonState.BattleState.LevelID >= BattleState.CommonLevelID);
+            var active = _CommonState.BattleState.LevelID >= BattleState.CommonLevelID;
+            BattleUI.BattleMenu.LevelMenu.gameObject.SetActive(active);
+            BattleUI.BattleMenu.LevelAchievedPanel.SetActive(!active);
+            BattleUI.RotateButtons.SetActive(!active);
 
             BattleUI.gameObject.SetActive(true);
 
@@ -323,12 +367,11 @@ namespace CardGrid
         void GoToMenu()
         {
             EndBattle();
-            UpdateMainMenuStars();
+            UpdateMainMenuRecords();
             InfiniteLvlMenu.Continue.gameObject.SetActive(false);
             BattleUI.gameObject.SetActive(false);
             LevelsMenu.gameObject.SetActive(false);
             InfiniteLvlMenu.gameObject.SetActive(false);
-            InfiniteLvlMenu.BestScore.text = _CommonState.BestScore.ToString();
             for (int i = 0; i < BattleUI.Requires.Length; i++)
             {
                 BattleUI.Requires[i].gameObject.SetActive(false);
@@ -346,9 +389,13 @@ namespace CardGrid
             
             var levelID = _CommonState.BattleState.GetRealLevelID();
             if (levelID < _CommonState.Levels.Length - 1)
+            {
                 menu.NextLevel.gameObject.SetActive(_CommonState.Levels[levelID].Stars > 0);
+            }
             else
                 menu.NextLevel.gameObject.SetActive(false);
+            
+            BattleUI.BattleMenu.LevelAchievedNumber.text = _CommonState.BattleState.NumberLevel.ToString();
             
             menu.gameObject.SetActive(true);
         }
@@ -369,6 +416,7 @@ namespace CardGrid
             {
                 menu.NextLevel.gameObject.SetActive(false);
             }
+            BattleUI.BattleMenu.LevelAchievedNumber.text = _CommonState.BattleState.NumberLevel.ToString();
             
             menu.gameObject.SetActive(true);
         }
@@ -382,6 +430,7 @@ namespace CardGrid
 
             var levelID = _CommonState.BattleState.GetRealLevelID();
             menu.NextLevel.gameObject.SetActive(levelID < _CommonState.Levels.Length - 1);
+            BattleUI.BattleMenu.LevelAchievedNumber.text = _CommonState.BattleState.NumberLevel.ToString();
             
             menu.gameObject.SetActive(true);
         }

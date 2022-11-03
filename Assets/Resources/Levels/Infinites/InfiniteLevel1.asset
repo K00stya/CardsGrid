@@ -15,8 +15,8 @@ MonoBehaviour:
   LevelName: Forest
   NeedScoreToOpen: 0
   Open: 1
-  StartMaxCellQuantity: 10
-  ChanceItemOnFiled: 0.087
+  StartMaxCellQuantity: 5
+  ChanceItemOnFiled: 0.05
   Enemies:
   - {fileID: 11400000, guid: f849be4ab14bad44c95d083f414089c0, type: 2}
   - {fileID: 11400000, guid: 15088e049fb43e44f9aa813132691c6f, type: 2}

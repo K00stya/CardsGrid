@@ -32,6 +32,7 @@ namespace CardGrid
                 MoveInventoryAndField(x, cells, items);
 
                 card.Grid = CardGrid.Inventory;
+                card.GameObject.transform.SetParent(BattleObjects.Inventory.transform);
                 card.Position = new Vector2Int(0, 0);
                 items[0, 0] = card;
                 MoveCardToSelfPosition(items[0, 0], BattleObjects.Inventory);
@@ -82,6 +83,7 @@ namespace CardGrid
                         excessItem.Grid = CardGrid.Field;
                         excessItem.Quantity = 0;
                         excessItem.GameObject.gameObject.SetActive(false);
+                        excessItem.GameObject.transform.SetParent(BattleObjects.Field.transform);
                         excessItem.Position = new Vector2Int(currentX, lowerZ);
                         cells[currentX, lowerZ] = excessItem;
                     }

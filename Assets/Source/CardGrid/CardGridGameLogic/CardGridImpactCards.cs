@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 namespace CardGrid
@@ -145,6 +146,68 @@ namespace CardGrid
         bool Accept()
         {
             return (cards.Count > 2);
+        }
+
+        IEnumerator RotateRight()
+        {
+            _inputActive = false;
+            float time = 1f;
+            BattleObjects.FieldRotator.DORotate(
+                BattleObjects.FieldRotator.eulerAngles + new Vector3(0, 90, 0), time);
+            for (int i = 0; i < BattleObjects.Field.transform.childCount; i++)
+            {
+                var cell = BattleObjects.Field.transform.GetChild(i);
+                cell.DOLocalRotate(cell.localRotation.eulerAngles + new Vector3(0, -90, 0), time);
+            }
+
+            var cellsMap = _CommonState.BattleState.Filed.Cells;
+            var newCellsMap = new CardState[cellsMap.GetLength(0),cellsMap.GetLength(1)];
+            for (int row = 0; row < cellsMap.GetLength(1); row++)
+            {
+                for (int col = 0; col < cellsMap.GetLength(0); col++)
+                {
+                    var newRow = col;
+                    var newCol = cellsMap.GetLength(1) - (row + 1);
+                    newCellsMap[newCol, newRow] = cellsMap[col, row];
+                    newCellsMap[newCol, newRow].Position = new Vector2Int(newCol, newRow);
+                }
+            }
+
+            _CommonState.BattleState.Filed.Cells = newCellsMap;
+
+            yield return new WaitForSeconds(time);
+            _inputActive = true;
+        }
+
+        IEnumerator RotateLeft()
+        {
+            _inputActive = false;
+            float time = 1f;
+            BattleObjects.FieldRotator.DORotate(
+                BattleObjects.FieldRotator.eulerAngles + new Vector3(0, -90, 0), time);
+            for (int i = 0; i < BattleObjects.Field.transform.childCount; i++)
+            {
+                var cell = BattleObjects.Field.transform.GetChild(i);
+                cell.DOLocalRotate(cell.localRotation.eulerAngles + new Vector3(0, 90, 0), time);
+            }
+
+            var cellsMap = _CommonState.BattleState.Filed.Cells;
+            var newCellsMap = new CardState[cellsMap.GetLength(0),cellsMap.GetLength(1)];
+            for (int row = 0; row < cellsMap.GetLength(1); row++)
+            {
+                for (int col = 0; col < cellsMap.GetLength(0); col++)
+                {
+                    var newRow = cellsMap.GetLength(0) - (col + 1);
+                    var newCol = row;
+                    newCellsMap[newCol, newRow] = cellsMap[col, row];
+                    newCellsMap[newCol, newRow].Position = new Vector2Int(newCol, newRow);
+                }
+            }
+
+            _CommonState.BattleState.Filed.Cells = newCellsMap;
+
+            yield return new WaitForSeconds(time);
+            _inputActive = true;
         }
     }
 }

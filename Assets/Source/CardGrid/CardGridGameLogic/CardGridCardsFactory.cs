@@ -61,14 +61,14 @@ namespace CardGrid
 
                 var id = levelID - BattleState.CommonLevelID;
                 //LoadLevel1(id);
-                var level = LoadLevel(id);
+                var level = LoadLevelInfo(id);
 
                 BattleUI.LevelProgress.gameObject.SetActive(false);
                 BattleUI.LeftCardsPanel.gameObject.SetActive(!level.NeedSpawnNewRandom);
             }
         }
 
-        Level LoadLevel(int id)
+        Level LoadLevelInfo(int id)
         {
             var fieldInfo = typeof(LevelsMaps).GetField("Levels");
             var levels = (Level[]) fieldInfo.GetValue(null);
@@ -91,19 +91,7 @@ namespace CardGrid
             LoadField(field, level);
             LoadInventory(inventory);
 
-            int i = 0;
-            foreach (var color in level.CollectColors)
-            {
-                BattleUI.Requires[i].GemSprite.sprite = BattleUI.GetColorSprite(color.Item1);
-                BattleUI.Requires[i].Quantity.text = color.Item2.ToString();
-                BattleUI.Requires[i].gameObject.SetActive(true);
-                i++;
-            }
-            
-            for (; i < BattleUI.Requires.Length; i++)
-            {
-                BattleUI.Requires[i].gameObject.SetActive(false);
-            }
+            UpdateRequires(level.CollectColors);
 
             return level;
         }
@@ -333,8 +321,18 @@ namespace CardGrid
         CardGameObject SpawnCard(CardState cardState, GridGameObject grid)
         {
             CardGameObject cardGameObject = Instantiate(BattleObjects.CardPrefab, grid.transform);
-            
-            cardGameObject.transform.position = grid.GetCellSpacePosition(cardState.Position);
+
+            if (cardState.Grid == CardGrid.Field)
+            {
+                cardGameObject.transform.position = grid.GetSpawnPosition(cardState.Position.x, cardState.Position.y);
+                cardGameObject.transform.DOMove(grid.GetCellSpacePosition(cardState.Position),
+                    SpeedRecession + 0.3f);
+            }
+            else
+            {
+                cardGameObject.transform.position = grid.GetCellSpacePosition(cardState.Position);
+            }
+
             if (cardState.Quantity <= 0)
             {
                 cardGameObject.gameObject.SetActive(false);

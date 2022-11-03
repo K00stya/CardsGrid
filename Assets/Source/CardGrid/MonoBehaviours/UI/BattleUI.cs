@@ -15,13 +15,18 @@ namespace CardGrid
     [Serializable]
     public class BattleUI : MonoBehaviour
     {
+        public Button RotateRight;
+        public Button RotateLeft;
         public Slider LevelProgress;
         public TextMeshProUGUI LevelNumber;
         public Button OpenMenu;
         public Button PlayAgain;
+        public GameObject RotateButtons;
         public BattleMenu BattleMenu;
         public LeftCardsPanel LeftCardsPanel;
         public NewLevelUp NewLevelUp;
+        public Transform LevelCompletePanel;
+        public TextMeshProUGUI LevelNumberComplete;
         public Require[] Requires = new Require[3];
         public SpriteColorType[] Colors;
 
