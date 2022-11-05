@@ -20,7 +20,7 @@ namespace CardGrid
         public Slider LevelProgress;
         public TextMeshProUGUI LevelNumber;
         public Button OpenMenu;
-        public Button PlayAgain;
+        public Button TutorButton;
         public GameObject RotateButtons;
         public BattleMenu BattleMenu;
         public LeftCardsPanel LeftCardsPanel;

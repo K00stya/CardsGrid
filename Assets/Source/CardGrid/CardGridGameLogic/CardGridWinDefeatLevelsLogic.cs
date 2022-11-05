@@ -91,7 +91,7 @@ namespace CardGrid
             }
             else
             {
-                OpenWin(BattleUI.BattleMenu);
+                StartNewBattle(0);
             }
             
             _inputActive = true;
@@ -178,7 +178,7 @@ namespace CardGrid
             Rewards = new (CT, int)[numberRewards];
             for (int i = 0; i < numberRewards; i++)
             {
-                int quantity = Random.Range(0, _startMaxCellQuantity + 1);
+                int quantity = Random.Range(1, _startMaxCellQuantity + 1);
                 switch (Random.Range(0, 1f))
                 {
                     case <= 0.1f:
@@ -263,13 +263,13 @@ namespace CardGrid
             }
         }
 
-        IEnumerator AddItem((CT type, int maxQuantity) item)
+        IEnumerator AddItem((CT type, int quantity) item)
         {
             _itemsRecession = true;
             var cardState = new CardState();
             var cardSo = GetCardSO(item.type);
             cardState.CardSO = cardSo;
-            cardState.Quantity = Random.Range(1, item.maxQuantity + 1);
+            cardState.Quantity = item.quantity;
             AddItemInInventory(cardState);
 
             foreach (var card in _CommonState.BattleState.Inventory.Items)

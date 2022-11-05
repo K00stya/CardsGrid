@@ -8,7 +8,8 @@ namespace CardGrid
 {
     public class BattleMenu : MonoBehaviour
     {
-        public TextMeshProUGUI Lable;
+        public TextMeshProUGUI MenuLable;
+        public TextMeshProUGUI EndLable;
         public Image Image;
         public Sprite TrophySprite;
         public Sprite DefeatSprite;

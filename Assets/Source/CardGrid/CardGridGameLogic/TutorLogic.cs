@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 
@@ -50,6 +51,33 @@ namespace CardGrid
             TutorHandObj.transform.DOMove(secondPos + new Vector3(-0.7f,1f,0.5f), 2f)
                 .SetDelay(1f)
                 .OnComplete(() => MoveTutorHandBetween(firstPos, secondPos));
+        }
+
+        List<GameObject> tutors = new List<GameObject>(5);
+        void ActivateTextTutor()
+        {
+            _inputActive = false;
+            PlayerClick += NextTextTutor;
+            if(WithQuantity)
+                tutors.AddRange(Tutorials.QuantityTutors);
+            tutors.AddRange(Tutorials.ClassicTutors);
+            tutors[0].SetActive(true);
+        }
+
+        void NextTextTutor()
+        {
+            tutors[0].SetActive(false);
+            tutors.RemoveAt(0);
+            if(tutors.Count > 0)
+            {
+                tutors[0].SetActive(true);
+            }
+            else
+            {
+                PlayerClick -= NextTextTutor;
+                
+                _inputActive = true;
+            }
         }
     }
 }

@@ -21,6 +21,10 @@ namespace CardGrid
         [NonSerialized] 
         public List<TutorCardInfo> CurrentTutorial = new List<TutorCardInfo>();
 
+        public bool FirstLaunch = true;
+        public bool FLClassic = true;
+        public bool FLQuantity = true;
+
         public LevelState GetCurrentLevel()
         {
             return Levels[BattleState.GetRealLevelID()];
@@ -37,12 +41,6 @@ namespace CardGrid
         public (ShapeType, int)[] CollectShape;
         public bool NeedSpawnNewRandom;
     }
-
-    public enum Language
-    {
-        English = 0,
-        Russian = 1
-    }
     
     #region Battle
 
@@ -52,7 +50,7 @@ namespace CardGrid
         public int LevelID;
         public int NumberLevel = 1;
         public int LevelProgress;
-        public int MaxLevelProgress = 10;
+        public int MaxLevelProgress = 13;
         public (ColorType, int)[] CollectColors;
 
         public Field Filed = new Field();

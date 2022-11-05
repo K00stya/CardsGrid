@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -247,11 +248,12 @@ namespace CardGrid
                 PlayClickSound();
                 OpenMenu(BattleUI.BattleMenu);
             });
-            BattleUI.PlayAgain.onClick.AddListener(() =>
+            BattleUI.TutorButton.onClick.AddListener(() =>
             {
                 PlayClickSound();
-                PlayAgain();
+                ActivateTextTutor();
             });
+            
             
             BattleUI.BattleMenu.PlayAgain.onClick.AddListener(() =>
             {
@@ -382,7 +384,8 @@ namespace CardGrid
 
         public void OpenMenu(BattleMenu menu)
         {
-            menu.Lable.text = "Menu"; //
+            menu.MenuLable.gameObject.SetActive(true);
+            menu.EndLable.gameObject.SetActive(false);
             menu.Image.sprite = menu.MenuSprite;
             menu.Close.gameObject.SetActive(true);
             menu.PlayAgain.gameObject.SetActive(true);
@@ -402,7 +405,8 @@ namespace CardGrid
 
         public void OpenDefeat(BattleMenu menu)
         {
-            menu.Lable.text = "ITEMS END"; //
+            menu.MenuLable.gameObject.SetActive(false);
+            menu.EndLable.gameObject.SetActive(true);
             menu.Image.sprite = menu.DefeatSprite;
             menu.Close.gameObject.SetActive(false);
             menu.PlayAgain.gameObject.SetActive(true);
@@ -423,7 +427,8 @@ namespace CardGrid
 
         public void OpenWin(BattleMenu menu)
         {
-            menu.Lable.text = "SUCCESS"; //
+            menu.MenuLable.gameObject.SetActive(true);
+            menu.EndLable.gameObject.SetActive(true);
             menu.Image.sprite = menu.TrophySprite;
             menu.Close.gameObject.SetActive(false);
             menu.PlayAgain.gameObject.SetActive(true);

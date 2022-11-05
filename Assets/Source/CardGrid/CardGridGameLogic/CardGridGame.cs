@@ -28,6 +28,8 @@ namespace CardGrid
      */
     public partial class CardGridGame : MonoBehaviour //Common
     {
+        public LocalizationSystem Localization;
+        public Tutorials Tutorials;
         public BattleGameObjects BattleObjects;
         public CommonGameSettings CurrentGameSeetings;
         public LevelsGroup[] CommonLevelsGroups;
@@ -49,8 +51,9 @@ namespace CardGrid
 
         const string SaveName = "CardGrid";
 
+        Action PlayerClick;
         int _startMaxCellQuantity;
-        public float StandardChanceItemOnField = 0.1f;
+        float StandardChanceItemOnField = 0.1f;
         float _chanceItemOnFiled;
         PlayerCommonState _CommonState;
         List<CardGameObject> _cardMonobehsPool;
@@ -84,12 +87,10 @@ namespace CardGrid
 
         void Start()
         {
-            //Try load save
             // if (ES3.KeyExists(SaveName) && !CurrentGameSeetings.NewSaveOnStart)
             // {
             //     LoadSave();
             // }
-            //New save
             //else
             {
                 _CommonState = new PlayerCommonState();
@@ -117,7 +118,7 @@ namespace CardGrid
             }
 
             SubscribeOnButtons();
-            
+            UpdateLocalization();
             OpenMainMenu();
         }
         
@@ -185,6 +186,17 @@ namespace CardGrid
 
             if (levelID < BattleState.CommonLevelID)
             {
+                if (!WithQuantity && _CommonState.FLClassic)
+                {
+                    _CommonState.FLClassic = false;
+                    ActivateTextTutor();
+                }
+                else if (WithQuantity && _CommonState.FLQuantity)
+                {
+                    _CommonState.FLQuantity = false;
+                    ActivateTextTutor();
+                }
+                
                 //Spawn new filed
                 SpawnRandomField(out _CommonState.BattleState.Filed.Cells, CardGrid.Field, CreateNewRandomCard, false);
 
@@ -328,6 +340,37 @@ namespace CardGrid
                 case 1:
                     _CommonState.Language = Language.Russian;
                     break;
+            }
+
+            UpdateLocalization();
+        }
+
+        void UpdateLocalization()
+        {
+            Update(Localization.Texts1);
+            Update(Localization.Texts2);
+            Update(Localization.Texts3);
+            
+            void Update(LocText[] loctexts)
+            {
+                foreach (var loctext in loctexts)
+                {
+                    SetText(loctext);
+                }
+            }
+
+            void SetText(LocText loctext)
+            {
+                foreach (var loc in loctext.Localizations)
+                {
+                    if (loc.Language == _CommonState.Language)
+                    {
+                        loctext.View.text = loc.Text;
+                        return;
+                    }
+                }
+                DebugSystem.DebugLog($"NOLOC {loctext.View.gameObject.name}, FOR {_CommonState.Language} LAN",
+                    DebugSystem.Type.Error);
             }
         }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 namespace CardGrid
@@ -114,7 +115,11 @@ namespace CardGrid
             }
 
             DragAndDrop();
-            
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                PlayerClick?.Invoke();
+            }
             TutorHand();
         }
 
@@ -433,6 +438,9 @@ namespace CardGrid
 
                     if (_CommonState.BattleState.LevelID < BattleState.CommonLevelID)
                     {
+                        if (WithQuantity)
+                            UpdateLevel(-card.Quantity);
+                        
                         UpdateLevel();
                     }
 
@@ -655,6 +663,36 @@ namespace CardGrid
             }
 
             return 0;
+        }
+
+        float SpawnEffectOnCards(CardState[] cards, bool color)
+        {
+            float duration = 0;
+
+            foreach (var card in cards)
+            {
+                if (card.Quantity >= 0) //Target live?
+                {
+                    var go = Instantiate(card.CardSO.Effect, BattleObjects.ParentEffects);
+
+                    // if (go.TryGetComponent<ShapeEffect>(out var shape))
+                    // {
+                    //     shape.SetShape(impactCardState.CardSO.ShapeSprite);
+                    // }
+                    if (go.TryGetComponent<ColorEffect>(out var sparks))
+                    {
+                        sparks.SetColor(card.CardSO.ColorType);
+                    }
+
+                    go.transform.position = BattleObjects.Field.GetCellSpacePosition(card.Position)
+                                            + new Vector3(0, 2f, 0);
+                   
+                    if(duration == 0)
+                        duration = go.GetComponent<ParticleSystem>().main.duration;
+                }
+            }
+
+            return duration;
         }
 
         float SpawnEffectOnCard(CardState cardState)

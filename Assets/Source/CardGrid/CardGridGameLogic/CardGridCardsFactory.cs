@@ -47,6 +47,8 @@ namespace CardGrid
                 {
                     _loadedItems.Add(card);
                 }
+                
+                _CommonState.BattleState.CollectColors = GenerateNewCollectColors();
 
                 for (int i = 0; i < BattleUI.Requires.Length; i++)
                 {
@@ -66,6 +68,8 @@ namespace CardGrid
                 BattleUI.LevelProgress.gameObject.SetActive(false);
                 BattleUI.LeftCardsPanel.gameObject.SetActive(!level.NeedSpawnNewRandom);
             }
+            
+            UpdateRequires(_CommonState.BattleState.CollectColors);
         }
 
         Level LoadLevelInfo(int id)
@@ -73,25 +77,24 @@ namespace CardGrid
             var fieldInfo = typeof(LevelsMaps).GetField("Levels");
             var levels = (Level[]) fieldInfo.GetValue(null);
             var level = levels[id];
+            WithQuantity = level.Quantity;
 
             TutorCardInfo[] tutor = level.Tutor;
             (CT, int)[,] field = level.Field;
             (CT, int)[] inventory = level.Inventory;
-            
+
             //new array, no reference
-            _CommonState.BattleState.CollectColors = 
+            _CommonState.BattleState.CollectColors =
                 new (ColorType, int)[level.CollectColors.Length];
             for (int j = 0; j < level.CollectColors.Length; j++)
             {
-                _CommonState.BattleState.CollectColors[j] = 
+                _CommonState.BattleState.CollectColors[j] =
                     (level.CollectColors[j].Item1, level.CollectColors[j].Item2);
             }
 
             LoadTutor(tutor);
             LoadField(field, level);
             LoadInventory(inventory);
-
-            UpdateRequires(level.CollectColors);
 
             return level;
         }
