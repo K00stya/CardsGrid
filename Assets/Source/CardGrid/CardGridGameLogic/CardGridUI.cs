@@ -439,6 +439,9 @@ namespace CardGrid
             menu.Image.sprite = menu.TrophySprite;
             menu.Close.gameObject.SetActive(false);
             menu.PlayAgain.gameObject.SetActive(true);
+            
+            TutorHandObj.SetActive(false);
+            Highlight.gameObject.SetActive(false);
 
             var levelID = _CommonState.BattleState.GetRealLevelID();
             menu.NextLevel.gameObject.SetActive(levelID < _CommonState.Levels.Length - 1);
@@ -449,6 +452,8 @@ namespace CardGrid
 
         void EndBattle()
         {
+            TutorHandObj.SetActive(false);
+            Highlight.gameObject.SetActive(false);
             StopAllCoroutines();
             DOTween.KillAll();
             Save();

@@ -582,8 +582,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -183, y: 0}
-  m_SizeDelta: {x: 64.877014, y: 73.248}
+  m_AnchoredPosition: {x: -183.52301, y: 0.59400177}
+  m_SizeDelta: {x: 64.349, y: 72.651}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &23792993
 MonoBehaviour:
@@ -2177,7 +2177,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &147716897
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2991,7 +2991,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 96, y: -5.155}
+  m_AnchoredPosition: {x: 96, y: -5.154999}
   m_SizeDelta: {x: 344.088, y: 156.145}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &233062498
@@ -4407,7 +4407,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1.61, y: 3.22}
+  m_AnchoredPosition: {x: -1.6099701, y: 3.2200012}
   m_SizeDelta: {x: -32.199, y: -41.859}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &364581092
@@ -4457,7 +4457,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 45.25
+  m_fontSize: 44.75
   m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -13813,8 +13813,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 92.636, y: -1.069}
-  m_SizeDelta: {x: 340.051, y: 147.974}
+  m_AnchoredPosition: {x: 89.86798, y: -0.46600342}
+  m_SizeDelta: {x: 337.281, y: 146.769}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &578408906
 MonoBehaviour:
@@ -26168,7 +26168,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -177, y: -5.155}
+  m_AnchoredPosition: {x: -177, y: -5.154999}
   m_SizeDelta: {x: 64.877014, y: 73.248}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1652453363
@@ -27994,10 +27994,10 @@ RectTransform:
   m_Father: {fileID: 1652453362}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0.0000076293945, y: 2.5}
-  m_SizeDelta: {x: 51.500336, y: 49.577988}
+  m_SizeDelta: {x: -12.499664, y: -24.422012}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1842855522
 MonoBehaviour:
@@ -28046,10 +28046,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 42.7
   m_fontSizeBase: 40
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -28129,10 +28129,10 @@ RectTransform:
   m_Father: {fileID: 23792992}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0.0000076293945, y: 2.5}
-  m_SizeDelta: {x: 51.500336, y: 49.577988}
+  m_SizeDelta: {x: -12.499664, y: -22.422012}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1844788041
 MonoBehaviour:
@@ -28181,10 +28181,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 43.9
   m_fontSizeBase: 40
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -29675,12 +29675,12 @@ GameObject:
   - component: {fileID: 1967493893}
   - component: {fileID: 1967493892}
   m_Layer: 0
-  m_Name: Particle System
+  m_Name: TutorHighlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!199 &1967493892
 ParticleSystemRenderer:
   serializedVersion: 6
