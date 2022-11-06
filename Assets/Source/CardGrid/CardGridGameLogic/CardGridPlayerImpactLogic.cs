@@ -51,7 +51,7 @@ namespace CardGrid
                 {
                     _currentClickTime += Time.deltaTime;
                     _playerPressed = true;
-                    
+
                     //Start drag
                     if (_dragGameObjectCard == null)
                     {
@@ -59,7 +59,7 @@ namespace CardGrid
                         if (cardGO.CardState.Grid == CardGrid.Inventory)
                             _dragGameObjectCard = cardGO;
                     }
-                    
+
                     if (_selectedCard != null)
                     {
                         //Debug.Log("Deselected");
@@ -84,7 +84,7 @@ namespace CardGrid
                             _selectedCard.Highlight.SetActive(true);
                         }
                     }
-                    
+
                     //Return item if unpress on input not active
                     if (_dragGameObjectCard != null && !_inputActive)
                     {
@@ -94,7 +94,7 @@ namespace CardGrid
 
                     StartCoroutine(EndDrag(_dragGameObjectCard));
                 }
-                
+
                 if (_selectedCard != null)
                 {
                     TryHighlight(_selectedCard);
@@ -102,15 +102,6 @@ namespace CardGrid
             }
             else
             {
-                if (Input.GetMouseButton(0))
-                {
-                    if (_selectedCard != null)
-                    {
-                        _selectedCard.Highlight.SetActive(false);
-                        _selectedCard = null;
-                    }
-                }
-
                 DisableHighlightInfo();
             }
 
@@ -120,7 +111,24 @@ namespace CardGrid
             {
                 PlayerClick?.Invoke();
             }
+
             TutorHand();
+
+            if (_CommonState.BattleState.Inventory.Items != null)
+                if (!_inputActive)
+                {
+                    foreach (var item in _CommonState.BattleState.Inventory.Items)
+                    {
+                        item.GameObject.Sprite.color = Color.gray;
+                    }
+                }
+                else
+                {
+                    foreach (var item in _CommonState.BattleState.Inventory.Items)
+                    {
+                        item.GameObject.Sprite.color = Color.white;
+                    }
+                }
         }
 
         #region DragAndDrop
@@ -136,16 +144,19 @@ namespace CardGrid
 
         void DragAndDrop()
         {
-            if (_dragGameObjectCard != null && _plane.Raycast(_ray, out var enter) && IsItemDoesNotContradictTutor(_dragGameObjectCard.CardState))
+            if (_dragGameObjectCard != null)
             {
-                DebugSystem.DebugLog($"Drag card {_dragGameObjectCard.CardState.CardSO.Name}",
-                    DebugSystem.Type.PlayerInput);
-                var newPosition = _ray.GetPoint(enter);
-                _dragGameObjectCard.transform.position = new Vector3(newPosition.x, 1f, newPosition.z);
+                if (_plane.Raycast(_ray, out var enter) && IsItemDoesNotContradictTutor(_dragGameObjectCard.CardState))
+                {
+                    DebugSystem.DebugLog($"Drag card {_dragGameObjectCard.CardState.CardSO.Name}",
+                        DebugSystem.Type.PlayerInput);
+                    var newPosition = _ray.GetPoint(enter);
+                    _dragGameObjectCard.transform.position = new Vector3(newPosition.x, 1f, newPosition.z);
 
-                if (!_inputActive) return;
+                    if (!_inputActive) return;
 
-                TryHighlight(_dragGameObjectCard);
+                    TryHighlight(_dragGameObjectCard);
+                }
             }
         }
 

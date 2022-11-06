@@ -233,14 +233,20 @@ namespace CardGrid
             BattleUI.RotateRight.onClick.AddListener(
                 ()=>
                 {
-                    if(_inputActive)
+                    if (_inputActive)
+                    {
+                        DisableHighlightInfo();
                         StartCoroutine(RotateRight());
+                    }
                 });
             BattleUI.RotateLeft.onClick.AddListener(
                 ()=>
                 {
-                    if(_inputActive)
+                    if (_inputActive)
+                    {
+                        DisableHighlightInfo();
                         StartCoroutine(RotateLeft());
+                    }
                 });
             
             BattleUI.OpenMenu.onClick.AddListener(() =>
@@ -358,6 +364,7 @@ namespace CardGrid
             BattleUI.BattleMenu.LevelMenu.gameObject.SetActive(active);
             BattleUI.BattleMenu.LevelAchievedPanel.SetActive(!active);
             BattleUI.RotateButtons.SetActive(!active);
+            BattleUI.TutorButton.gameObject.SetActive(!active);
 
             BattleUI.gameObject.SetActive(true);
 

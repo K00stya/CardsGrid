@@ -12,6 +12,8 @@ namespace CardGrid
         
         void TutorHand()
         {
+            if(_CommonState.BattleState.LevelID < BattleState.CommonLevelID) return;
+            
             if (!_inputActive || _CommonState.CurrentTutorial.Count == 0)
             {
                 TutorHandObj.SetActive(false);

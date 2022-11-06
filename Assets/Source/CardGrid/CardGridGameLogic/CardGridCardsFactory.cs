@@ -203,6 +203,8 @@ namespace CardGrid
                 Destroy(monobeh.gameObject);
             }
             _cardMonobehsPool.Clear();
+            _CommonState.BattleState.Inventory.Items = null;
+            _CommonState.BattleState.Filed.Cells = null;
             
             _loadedEnemies = null;
             _loadedItems = null;

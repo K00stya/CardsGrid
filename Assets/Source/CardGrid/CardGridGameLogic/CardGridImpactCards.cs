@@ -47,6 +47,10 @@ namespace CardGrid
             {
                 CheckCell(check, x, z, cards);
             }
+            if (Accept(cards))
+            {
+                _cards.AddRange(cards.ToArray());
+            }
         }
 
         void CheckHorizontal(Checking check, int z)
@@ -55,6 +59,10 @@ namespace CardGrid
             for (int x = BattleObjects.Field.SizeX - 1; x >= 0; x--)
             {
                 CheckCell(check, x, z, cards);
+            }
+            if (Accept(cards))
+            {
+                _cards.AddRange(cards.ToArray());
             }
         }
         
@@ -66,9 +74,9 @@ namespace CardGrid
                 if (Accept(cards))
                 {
                     _cards.AddRange(cards.ToArray());
-                    Debug.Log(_cards.Count);
                 }
                 cards.Clear();
+                return;
             }
                 
             if (cards.Count > 0 && check(cards.Peek(), cell))
@@ -80,7 +88,6 @@ namespace CardGrid
                 if (Accept(cards))
                 {
                     _cards.AddRange(cards.ToArray());
-                    Debug.Log(_cards.Count);
                 }
                 
                 cards.Clear();

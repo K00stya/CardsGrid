@@ -84,6 +84,7 @@ namespace CardGrid
                         excessItem.Quantity = 0;
                         excessItem.GameObject.gameObject.SetActive(false);
                         excessItem.GameObject.transform.SetParent(BattleObjects.Field.transform);
+                        excessItem.GameObject.Sprite.color = Color.white;
                         excessItem.Position = new Vector2Int(currentX, lowerZ);
                         cells[currentX, lowerZ] = excessItem;
                     }

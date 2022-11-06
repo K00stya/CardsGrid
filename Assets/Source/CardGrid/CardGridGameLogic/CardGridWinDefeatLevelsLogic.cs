@@ -80,7 +80,7 @@ namespace CardGrid
             BattleUI.LevelNumberComplete.text = $"LEVEL {id} COMPLETE!";
             BattleUI.LevelCompletePanel.localScale = Vector3.zero;
             BattleUI.LevelCompletePanel.DOScale(Vector3.one, 1f);
-            yield return new WaitForSeconds(2.5f);
+            yield return new WaitForSeconds(4f);
             
             BattleUI.LevelCompletePanel.gameObject.SetActive(false);
             
@@ -242,6 +242,7 @@ namespace CardGrid
                 yield return rewardsImages[i].transform.DOScale(Vector3.one, LevelUpSeed / rewards.Length);
                 yield return new WaitForSeconds(LevelUpSeed / rewards.Length);
             }
+            yield return new WaitForSeconds(1f);
 
             BattleUI.NewLevelUp.gameObject.SetActive(false);
             for (int i = 0; i < rewards.Length; i++)
