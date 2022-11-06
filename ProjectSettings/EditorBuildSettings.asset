@@ -4,6 +4,9 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/GridCardGame.unity
+    guid: 24d0d71e7c4fbed4b8bb3d74c73df94a
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 20ade371eb9fc234e86fe7e37be4dae9, type: 2}
