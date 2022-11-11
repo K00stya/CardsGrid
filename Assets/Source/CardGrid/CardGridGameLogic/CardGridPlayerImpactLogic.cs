@@ -146,7 +146,7 @@ namespace CardGrid
         {
             if (_dragGameObjectCard != null)
             {
-                if (_plane.Raycast(_ray, out var enter) && IsItemDoesNotContradictTutor(_dragGameObjectCard.CardState))
+                if (_plane.Raycast(_ray, out var enter) && IsItemInTutor(_dragGameObjectCard.CardState))
                 {
                     DebugSystem.DebugLog($"Drag card {_dragGameObjectCard.CardState.CardSO.Name}",
                         DebugSystem.Type.PlayerInput);
@@ -209,11 +209,13 @@ namespace CardGrid
             }
         }
 
-        bool IsItemDoesNotContradictTutor(CardState card)
+        bool IsItemInTutor(CardState card)
         {
-            if (_CommonState.CurrentTutorial != null && _CommonState.CurrentTutorial.Count > 0)
+            if (_CommonState.BattleState.CurrentTutorial != null && _CommonState.BattleState.CurrentTutorial.Count > 0)
             {
-                var tutorCards = _CommonState.CurrentTutorial.First();
+                var tutorCards = _CommonState.BattleState.CurrentTutorial.First();
+                if (tutorCards.RotateLeft || tutorCards.RotateRight)
+                    return false;
                 
                 if (tutorCards.AnyItem)
                     return true;
@@ -226,9 +228,12 @@ namespace CardGrid
 
         bool IsEnemyInTutorAndRemove(CardState cardState)
         {
-            if (_CommonState.CurrentTutorial != null && _CommonState.CurrentTutorial.Count > 0)
+            if (_CommonState.BattleState.CurrentTutorial != null && _CommonState.BattleState.CurrentTutorial.Count > 0)
             {
-                var tutorCards = _CommonState.CurrentTutorial.First();
+                var tutorCards = _CommonState.BattleState.CurrentTutorial.First();
+                if (tutorCards.RotateLeft || tutorCards.RotateRight)
+                    return false;
+                
                 if (tutorCards.FieldPosition == cardState.Position)
                 {
                     return true;
@@ -259,10 +264,10 @@ namespace CardGrid
 
             if (_impactHighlightCards.Count > 0 &&
                 IsEnemyInTutorAndRemove(_hitFieldCardOnDrag.CardState) && 
-                IsItemDoesNotContradictTutor(drag.CardState))
+                IsItemInTutor(drag.CardState))
             {
-                if (_CommonState.CurrentTutorial.Count > 0)
-                    _CommonState.CurrentTutorial.RemoveAt(0);
+                if (_CommonState.BattleState.CurrentTutorial.Count > 0)
+                    _CommonState.BattleState.CurrentTutorial.RemoveAt(0);
                 
                 yield return DealImpact(drag);
 
@@ -337,7 +342,7 @@ namespace CardGrid
             //List<CardState> deaths = new List<CardState>();
             //List<CardState> woundeds = new List<CardState>(cards);
 
-            ImpactDamageOnField(impactCardState.Quantity, cards); //ref deaths);
+            yield return ImpactDamageOnField(impactCardState.Quantity, cards); //ref deaths);
             impactCardState.Quantity = 0;
             dragCard.gameObject.SetActive(false);
 
@@ -409,23 +414,23 @@ namespace CardGrid
                 GetCellSpacePosition(cardState.Position), SpeedRecession);
         }
         
-        void ImpactDamageOnField(int damage, CardState[] cards)
+        IEnumerator ImpactDamageOnField(int damage, CardState[] cards)
         {
             foreach (var card in cards)
             {
-                Damage(card, damage);
+                yield return Damage(card, damage);
             }
         }
         
-        void ImpactDamageOnField(CardState[] cards)
+        IEnumerator ImpactDamageOnField(CardState[] cards)
         {
             foreach (var card in cards)
             {
-                Damage(card, card.Quantity);
+                yield return Damage(card, card.Quantity);
             }
         }
 
-        private void Damage(CardState card, int damage)
+        IEnumerator Damage(CardState card, int damage)
         {
             if (card.Chains > 0)
             {
@@ -455,14 +460,14 @@ namespace CardGrid
                         UpdateLevel();
                     }
 
-                    CollectColorAndShape(card);
-                    return;
+                    yield return CollectColorAndShape(card);
+                    yield break;
                 }
                 card.GameObject.QuantityText.text = card.Quantity.ToString();
             }
         }
 
-        void CollectColorAndShape(CardState card)
+        IEnumerator CollectColorAndShape(CardState card)
         {
             var state = _CommonState.BattleState;
             if (state.CollectColors == null || state.CollectColors.Length <= 0)
@@ -470,10 +475,11 @@ namespace CardGrid
                 if (_CommonState.BattleState.LevelID < BattleState.CommonLevelID)
                 {
                     state.CollectColors = GenerateNewCollectColors();
+                    UpdateCompleteQuest(state.CollectColors);
                 }
                 else
                 {
-                    return;
+                    yield break;
                 }
             }
 
@@ -509,17 +515,35 @@ namespace CardGrid
                 }
                 else if (_CommonState.BattleState.LevelID < BattleState.CommonLevelID)
                 {
-                    foreach (var collection in state.CollectColors)
-                    {
-                        UpdateLevel(reawardForCompleteTask);
-                    }
-
                     MenuAudioSource.clip = QuestComplete;
                     MenuAudioSource.Play();
+                    yield return Quest();
+
                     state.CollectColors = GenerateNewCollectColors();
+                    UpdateCompleteQuest(state.CollectColors);
                 }
             
             UpdateRequires(state.CollectColors);
+        }
+
+        IEnumerator Quest()
+        {
+            var panel  = BattleUI.QuestCompletePanel;
+            panel.transform.localScale = Vector3.zero;
+            panel.transform.DOScale(Vector3.one, LevelUpSeed);
+            panel.gameObject.SetActive(true);
+            yield return new WaitForSeconds(LevelUpSeed + 1f);
+            UpdateLevel(reawardForCompleteTask);
+            foreach (var require in panel.Requires)
+            {
+                require.Quantity.gameObject.SetActive(false);
+                require.ToggleCheck.gameObject.SetActive(true);
+                yield return new WaitForSeconds(0.5f);
+            }
+            
+            panel.transform.DOScale(Vector3.zero, LevelUpSeed);
+            yield return new WaitForSeconds(LevelUpSeed);
+            panel.gameObject.SetActive(false);
         }
 
         void GenerateColorTypesList()
@@ -534,9 +558,10 @@ namespace CardGrid
         (ColorType, int)[] GenerateNewCollectColors()
         {
             List<ColorType> types = new List<ColorType>(ColorTypes);
-            
-            (ColorType, int)[] collection = new (ColorType, int)[3];
-            for (int i = 0; i < 3; i++)
+
+            int quantity = Random.Range(2, 4);
+            (ColorType, int)[] collection = new (ColorType, int)[quantity];
+            for (int i = 0; i < quantity; i++)
             {
                 int index = Random.Range(0, types.Count);
                 ColorType type = types[index];

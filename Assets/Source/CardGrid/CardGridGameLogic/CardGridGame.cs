@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEditor;
@@ -12,7 +13,7 @@ namespace CardGrid
         public LevelSO[] Levels = new LevelSO[5];
         public int QuantityStarsToOpen;
     }
-    
+
     /*
      * The game code is divided into several files.
      * This file is the main script of the game, which is responsible
@@ -34,11 +35,11 @@ namespace CardGrid
         public CommonGameSettings CurrentGameSeetings;
         public LevelsGroup[] CommonLevelsGroups;
         public InfiniteLevelSO[] InfiniteLevels;
-        
+
         public CardSO[] Enemies;
         public CardSO[] Items;
         public ParticleSystem[] Effects;
-        
+
         public AudioSource BattleAudioSource;
         public AudioSource MusicAudioSource;
         public AudioSource MenuAudioSource;
@@ -60,7 +61,7 @@ namespace CardGrid
         Camera _camera;
         bool WithShape = false;
         bool WithQuantity = true;
-        List<ColorType> ColorTypes = new (5);
+        List<ColorType> ColorTypes = new(5);
         int reawardForCompleteTask = 10;
 
         void Awake()
@@ -77,26 +78,56 @@ namespace CardGrid
             {
                 foreach (var level in group.Levels)
                 {
-                    if(level != null)
+                    if (level != null)
                         level.Init();
                 }
             }
+            Fade.gameObject.SetActive(true);
 
             GenerateColorTypesList();
         }
 
-        void Start()
+        private void Start()
         {
-            // if (ES3.KeyExists(SaveName) && !CurrentGameSeetings.NewSaveOnStart)
-            // {
-            //     LoadSave();
-            // }
-            //else
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Yandex.LoadFromYandex();
+#endif
+
+#if UNITY_EDITOR
+            Load(null);
+#endif
+        }
+
+        //Yandex
+        void Load(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                _CommonState = null;
+            }
+            else
+            {
+                DebugSystem.DebugLog("LoadedSave.", DebugSystem.Type.SaveSystem);
+                _CommonState = JsonUtility.FromJson<PlayerCommonState>(value);
+            }
+
+            if (_CommonState == null)
             {
                 _CommonState = new PlayerCommonState();
+#if UNITY_WEBGL && !UNITY_EDITOR
+                switch (Yandex.GetLang())
+                {
+                    case "ru":
+                        _CommonState.Language = Language.Russian;
+                        break;
+                    default:
+                        _CommonState.Language = Language.English;
+                        break;
+                }
+#endif
                 int quantityLevels = 0;
-                
-                var levels = (Level[])typeof(LevelsMaps).GetField("Levels").GetValue(null);
+
+                var levels = (Level[]) typeof(LevelsMaps).GetField("Levels").GetValue(null);
                 quantityLevels += levels.Length;
 
                 _CommonState.Levels = new LevelState[quantityLevels];
@@ -110,17 +141,34 @@ namespace CardGrid
                     var level = levels[i];
                     _CommonState.Levels[levelIndex].CollectColors = level.CollectColors;
                     _CommonState.Levels[levelIndex].NeedSpawnNewRandom = level.NeedSpawnNewRandom;
-                    
+
                     levelIndex++;
                 }
-
+                
+                StartNewBattle(BattleState.CommonLevelID);
                 DebugSystem.DebugLog("Save no exist. First active.", DebugSystem.Type.SaveSystem);
             }
-
+            else
+            {
+                OpenMainMenu();
+            }
+            
+            MenuAudioSource.volume = _CommonState.Volume;
+            BattleAudioSource.volume = _CommonState.Volume;
+            
+            LoadUI();
             SubscribeOnButtons();
             UpdateLocalization();
-            OpenMainMenu();
+            
+            Fade.CrossFadeAlpha(0 , 1f, false);
+            StartCoroutine(FadeOff());
+            IEnumerator FadeOff()
+            {
+                yield return new WaitForSeconds(1f);
+                Fade.gameObject.SetActive(false);
+            }
         }
+        
         
         void LoadBattle()
         {
@@ -143,32 +191,13 @@ namespace CardGrid
             }
         }
 
-        void LoadSave()
-        {
-            _CommonState = ES3.Load<PlayerCommonState>(SaveName);
-
-            if (_CommonState == null)
-            {
-                DebugSystem.DebugLog("Save can't be load. New save active.", DebugSystem.Type.SaveSystem);
-                _CommonState = new PlayerCommonState();
-            }
-            else
-            {
-                DebugSystem.DebugLog("Loaded exist save", DebugSystem.Type.SaveSystem);
-            }
-
-            LoadUI();
-
-            MenuAudioSource.volume = _CommonState.Volume;
-            BattleAudioSource.volume = _CommonState.Volume;
-        }
-
         void StartNewBattle(int levelID)
         {
             DebugSystem.DebugLog("Start new battle", DebugSystem.Type.Battle);
             StopAllCoroutines();
             DOTween.KillAll();
             
+            rewardsLeft = 2;
             _inputActive = true;
             _CommonState.InBattle = true;
             _CommonState.BattleState.LevelID = levelID;
@@ -180,7 +209,7 @@ namespace CardGrid
             {
                 BattleObjects.Field.transform.GetChild(i).eulerAngles = Vector3.zero;
             }
-            
+
             ActiveBattleUI();
             LoadLevelCards(levelID);
 
@@ -196,12 +225,13 @@ namespace CardGrid
                     _CommonState.FLQuantity = false;
                     ActivateTextTutor();
                 }
-                
+
                 //Spawn new filed
                 SpawnRandomField(out _CommonState.BattleState.Filed.Cells, CardGrid.Field, CreateNewRandomCard, false);
 
                 //Spawn new inventory
-                SpawnRandomField(out _CommonState.BattleState.Inventory.Items, CardGrid.Inventory, CreateNewRandomItem, true);
+                SpawnRandomField(out _CommonState.BattleState.Inventory.Items, CardGrid.Inventory, CreateNewRandomItem,
+                    true);
             }
             else
             {
@@ -235,8 +265,16 @@ namespace CardGrid
                         else
                         {
                             cell = createCard();
+                            if (x - 1 >= 0 && cards[x - 1, z] != null && cards[x - 1, z].CardSO == cell.CardSO)
+                            {
+                                cell = createCard();
+                            }
+                            else if (z - 1 >= 0 && cards[x, z - 1] != null &&  cards[x,z -1].CardSO == cell.CardSO)
+                            {
+                                cell = createCard();
+                            }
                         }
-                        
+
                         cell.Grid = gridType;
                         cell.Position = new Vector2Int(x, z);
                         cards[x, z] = cell;
@@ -260,7 +298,7 @@ namespace CardGrid
                 }
 
                 cards = new CardState[gridGameObject.SizeX, gridGameObject.SizeZ];
-                
+
                 cards = new CardState[gridGameObject.SizeX, gridGameObject.SizeZ];
                 for (int z = gridGameObject.SizeZ - 1; z >= 0; z--)
                 {
@@ -277,7 +315,7 @@ namespace CardGrid
                         {
                             cell = new CardState();
                         }
-                        
+
                         cell.Grid = gridType;
                         cell.Position = new Vector2Int(x, z);
                         cards[x, z] = cell;
@@ -287,7 +325,7 @@ namespace CardGrid
                     }
                 }
             }
-            
+
             void SpawnInventory(out CardState[,] cards, CardGrid gridType, Queue<CardState> mapField)
             {
                 GridGameObject gridGameObject;
@@ -301,7 +339,7 @@ namespace CardGrid
                 }
 
                 cards = new CardState[gridGameObject.SizeX, gridGameObject.SizeZ];
-                
+
                 cards = new CardState[gridGameObject.SizeX, gridGameObject.SizeZ];
                 for (int z = 0; z < gridGameObject.SizeZ; z++)
                 {
@@ -317,7 +355,7 @@ namespace CardGrid
                         {
                             cell = new CardState();
                         }
-                        
+
                         //Get card
                         cell.Grid = gridType;
                         cell.Position = new Vector2Int(x, z);
@@ -350,7 +388,7 @@ namespace CardGrid
             Update(Localization.Texts1);
             Update(Localization.Texts2);
             Update(Localization.Texts3);
-            
+
             void Update(LocText[] loctexts)
             {
                 foreach (var loctext in loctexts)
@@ -369,6 +407,7 @@ namespace CardGrid
                         return;
                     }
                 }
+
                 DebugSystem.DebugLog($"NOLOC {loctext.View.gameObject.name}, FOR {_CommonState.Language} LAN",
                     DebugSystem.Type.Error);
             }
@@ -379,21 +418,34 @@ namespace CardGrid
             Save();
         }
 
-        void Save()
+        //Yandex
+        public void RewardPlayer()
         {
-            //DebugSystem.DebugLog("Save on pause/out", DebugSystem.Type.SaveSystem);
-            //Debug.Log(_CommonState);
-            //ES3.Save(SaveName, _CommonState);
+            StartCoroutine(AddRewardedItems());
         }
 
-        #if UNITY_EDITOR
-        
+        //Yandex
+        public void NotRewardPlayer()
+        {
+            BattleUI.EndItemsReward.gameObject.SetActive(false);
+            OpenDefeat(BattleUI.BattleMenu);
+        }
+
+        void Save()
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            string jString = JsonUtility.ToJson(_CommonState);
+            Yandex.SaveOnYandex(jString);
+#endif
+        }
+
+#if UNITY_EDITOR
+
         [MenuItem("CardGrid/DeleteSave")]
         public static void DeleteSave()
         {
             ES3.DeleteFile();
         }
-        
-        #endif
+#endif
     }
 }

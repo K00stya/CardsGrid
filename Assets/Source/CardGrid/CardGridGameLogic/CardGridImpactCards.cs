@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 
@@ -35,7 +36,7 @@ namespace CardGrid
                 BattleAudioSource.Play();
                 
                 yield return new WaitForSeconds(SpawnEffectOnCards(_cards.ToArray(), true));
-                ImpactDamageOnField(_cards.ToArray());
+                yield return ImpactDamageOnField(_cards.ToArray());
                 _enemiesRecession = true;
             }
         }
@@ -112,6 +113,20 @@ namespace CardGrid
 
         IEnumerator RotateRight()
         {
+            if (_CommonState.BattleState.LevelID >= BattleState.CommonLevelID &&
+                _CommonState.BattleState.CurrentTutorial != null && _CommonState.BattleState.CurrentTutorial.Count > 0)
+            {
+                var tutor = _CommonState.BattleState.CurrentTutorial.First();
+                if (tutor.RotateRight)
+                {
+                    _CommonState.BattleState.CurrentTutorial.RemoveAt(0);
+                }
+                else
+                {
+                    yield break;
+                }
+            }
+            
             _inputActive = false;
             float time = 1f;
             BattleObjects.FieldRotator.DORotate(
@@ -143,6 +158,20 @@ namespace CardGrid
 
         IEnumerator RotateLeft()
         {
+            if (_CommonState.BattleState.LevelID >= BattleState.CommonLevelID &&
+                _CommonState.BattleState.CurrentTutorial != null && _CommonState.BattleState.CurrentTutorial.Count > 0)
+            {
+                var tutor = _CommonState.BattleState.CurrentTutorial.First();
+                if (tutor.RotateLeft)
+                {
+                    _CommonState.BattleState.CurrentTutorial.RemoveAt(0);
+                }
+                else
+                {
+                    yield break;
+                }
+            }
+
             _inputActive = false;
             float time = 1f;
             BattleObjects.FieldRotator.DORotate(

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using DG.Tweening;
 using TMPro;
@@ -9,6 +10,7 @@ namespace CardGrid
 {
     public partial class CardGridGame //UI
     {
+        public Image Fade;
         public MainMenu MainMenu;
         public LevelsMenu LevelsMenu;
         public InfiniteMenuUI InfiniteLvlMenu;
@@ -35,6 +37,7 @@ namespace CardGrid
             {
                 PlayClickSound();
                 ChangeLanguage(language);
+                Save();
             });
             
             MainMenu.OpenLevels.onClick.AddListener(() =>
@@ -63,6 +66,7 @@ namespace CardGrid
                 _CommonState.Volume = value;
                 MenuAudioSource.volume = value;
                 BattleAudioSource.volume = value;
+                DelaySave();
             });
             MainMenu.VolumeSlider.onValueChanged.AddListener(value =>
             {
@@ -70,6 +74,7 @@ namespace CardGrid
                 _CommonState.Volume = value;
                 MenuAudioSource.volume = value;
                 BattleAudioSource.volume = value;
+                DelaySave();
             });
 
             
@@ -99,14 +104,18 @@ namespace CardGrid
             SetLevelsButtons();
         }
 
+        IEnumerator DelaySave()
+        {
+            StopCoroutine(DelaySave());
+            yield return new WaitForSeconds(1);
+            Save();
+        }
+
         void LoadUI()
         {
             BattleUI.BattleMenu.VolumeSlider.SetValueWithoutNotify(_CommonState.Volume);
             MainMenu.VolumeSlider.SetValueWithoutNotify(_CommonState.Volume);
             MainMenu.LanguageDropdown.SetValueWithoutNotify((int) _CommonState.Language);
-            
-            InfiniteLvlMenu.Continue.gameObject.SetActive(_CommonState.InBattle);
-            UpdateMainMenuRecords();
         }
 
         void OpenInfiniteMenu()
@@ -230,8 +239,7 @@ namespace CardGrid
 
         void SetBattleUI()
         {
-            BattleUI.RotateRight.onClick.AddListener(
-                ()=>
+            BattleUI.RotateRight.onClick.AddListener(()=>
                 {
                     if (_inputActive)
                     {
@@ -239,8 +247,7 @@ namespace CardGrid
                         StartCoroutine(RotateRight());
                     }
                 });
-            BattleUI.RotateLeft.onClick.AddListener(
-                ()=>
+            BattleUI.RotateLeft.onClick.AddListener(()=>
                 {
                     if (_inputActive)
                     {
@@ -268,26 +275,51 @@ namespace CardGrid
             });
             BattleUI.BattleMenu.ToMenu.onClick.AddListener(() =>
             {
+                Save();
                 PlayClickSound();
                 GoToMenu();
             });
             BattleUI.BattleMenu.Close.onClick.AddListener(() =>
             {
+                Save();
                 PlayClickSound();
                 BattleUI.BattleMenu.gameObject.SetActive(false);
             });
             BattleUI.BattleMenu.NextLevel.onClick.AddListener(() =>
             {
+                Save();
                 PlayClickSound();
                 EndBattle();
                 StartNewBattle(_CommonState.BattleState.LevelID + 1);
             });
             BattleUI.BattleMenu.LevelMenu.onClick.AddListener(() =>
             {
+                Save();
                 PlayClickSound();
                 EndBattle();
                 OpenLevelsMenu();
             });
+            
+            BattleUI.EndAttempt.onClick.AddListener(() =>
+            {
+                BattleUI.EndItemsReward.gameObject.SetActive(false);
+                OpenDefeat(BattleUI.BattleMenu);
+            });
+            
+#if UNITY_WEBGL && !UNITY_EDITOR
+            
+            BattleUI.GetAdItems.onClick.AddListener(() =>
+            {
+                rewardsLeft--;
+                Yandex.ShowRewardAd();
+            });
+
+            Yandex.SetActiveRateButton();
+            BattleUI.BattleMenu.RateGame.onClick.AddListener(() =>
+            {
+                Yandex.RateGame();
+            });
+#endif
 
             void PlayAgain()
             {
@@ -353,6 +385,34 @@ namespace CardGrid
             }
         }
 
+        void UpdateCompleteQuest((ColorType, int)[] collection)
+        {
+            int i = 0;
+            var panel = BattleUI.QuestCompletePanel;
+            foreach (var color in collection)
+            {
+                panel.Requires[i].GemSprite.sprite = BattleUI.GetColorSprite(color.Item1);
+                if (color.Item2 > 0)
+                {
+                    panel.Requires[i].Quantity.text = color.Item2.ToString();
+                    panel.Requires[i].Quantity.gameObject.SetActive(true);
+                    panel.Requires[i].ToggleCheck.gameObject.SetActive(false);
+                }
+                else
+                {
+                    panel.Requires[i].Quantity.gameObject.SetActive(false);
+                    panel.Requires[i].ToggleCheck.gameObject.SetActive(true);
+                }
+                panel.Requires[i].gameObject.SetActive(true);
+                i++;
+            }
+            
+            for (; i < panel.Requires.Length; i++)
+            {
+                panel.Requires[i].gameObject.SetActive(false);
+            }
+        }
+
         void ActiveBattleUI()
         {
             MainMenu.gameObject.SetActive(false);
@@ -360,11 +420,13 @@ namespace CardGrid
             InfiniteLvlMenu.gameObject.SetActive(false);
             InfiniteLvlMenu.LevelsContent.SetActive(false);
             BattleUI.BattleMenu.gameObject.SetActive(false);
-            var active = _CommonState.BattleState.LevelID >= BattleState.CommonLevelID;
-            BattleUI.BattleMenu.LevelMenu.gameObject.SetActive(active);
-            BattleUI.BattleMenu.LevelAchievedPanel.SetActive(!active);
-            BattleUI.RotateButtons.SetActive(!active);
-            BattleUI.TutorButton.gameObject.SetActive(!active);
+            BattleUI.QuestCompletePanel.gameObject.SetActive(false);
+            BattleUI.LevelCompletePanel.gameObject.SetActive(false);
+            BattleUI.NewLevelPanel.gameObject.SetActive(false);
+            var tutor = _CommonState.BattleState.LevelID >= BattleState.CommonLevelID;
+            BattleUI.BattleMenu.LevelMenu.gameObject.SetActive(tutor);
+            BattleUI.BattleMenu.LevelAchievedPanel.SetActive(!tutor);
+            BattleUI.TutorButton.gameObject.SetActive(!tutor);
 
             BattleUI.gameObject.SetActive(true);
 
@@ -377,6 +439,8 @@ namespace CardGrid
         {
             EndBattle();
             UpdateMainMenuRecords();
+            BattleUI.QuestCompletePanel.gameObject.SetActive(false);
+            BattleUI.LevelCompletePanel.gameObject.SetActive(false);
             InfiniteLvlMenu.Continue.gameObject.SetActive(false);
             BattleUI.gameObject.SetActive(false);
             LevelsMenu.gameObject.SetActive(false);
@@ -395,6 +459,7 @@ namespace CardGrid
             menu.EndLable.gameObject.SetActive(false);
             menu.Image.sprite = menu.MenuSprite;
             menu.Close.gameObject.SetActive(true);
+            menu.PlayAgain.GetComponent<ButtonSwaying>().StopSway();
             menu.PlayAgain.gameObject.SetActive(true);
             
             var levelID = _CommonState.BattleState.GetRealLevelID();
@@ -417,6 +482,8 @@ namespace CardGrid
             menu.Image.sprite = menu.DefeatSprite;
             menu.Close.gameObject.SetActive(false);
             menu.PlayAgain.gameObject.SetActive(true);
+            menu.PlayAgain.GetComponent<ButtonSwaying>().Swaying = true;
+            //menu.PlayAgain.GetComponent<ButtonSwaying>().GoSway();
             
             var levelID = _CommonState.BattleState.GetRealLevelID();
             if (_CommonState.BattleState.GetRealLevelID() < _CommonState.Levels.Length - 1)
@@ -438,6 +505,7 @@ namespace CardGrid
             menu.EndLable.gameObject.SetActive(true);
             menu.Image.sprite = menu.TrophySprite;
             menu.Close.gameObject.SetActive(false);
+            menu.PlayAgain.GetComponent<ButtonSwaying>().StopSway();
             menu.PlayAgain.gameObject.SetActive(true);
             
             TutorHandObj.SetActive(false);
@@ -464,6 +532,12 @@ namespace CardGrid
         {
             MenuAudioSource.clip = ClickSound;
             MenuAudioSource.Play();
+        }
+
+        //Yandex
+        public void SetActiveRateButton(bool active)
+        {
+            BattleUI.BattleMenu.RateGame.gameObject.SetActive(active);
         }
     }
 }

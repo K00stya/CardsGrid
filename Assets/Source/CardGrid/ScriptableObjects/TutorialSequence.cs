@@ -10,6 +10,8 @@ namespace CardGrid
         public bool AnyItem = true;
         public Vector2Int ItemPosition;
         public Vector2Int FieldPosition;
+        public bool RotateRight;
+        public bool RotateLeft;
     }
     
     [CreateAssetMenu (fileName = "TutorSequence ")]

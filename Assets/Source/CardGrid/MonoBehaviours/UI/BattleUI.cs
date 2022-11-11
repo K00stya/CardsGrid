@@ -24,10 +24,16 @@ namespace CardGrid
         public GameObject RotateButtons;
         public BattleMenu BattleMenu;
         public LeftCardsPanel LeftCardsPanel;
-        public NewLevelUp NewLevelUp;
+        public Button GetAdItems;
+        public Button EndAttempt;
+        public PanelWithItems NewLevelPanel;
+        public PanelWithItems EndItemsReward;
+
+        public QuestComplete QuestCompletePanel;
         public Transform LevelCompletePanel;
         public TextMeshProUGUI LevelNumberComplete;
-        public Require[] Requires = new Require[3];
+        
+        public Require[] Requires = new Require[4];
         public SpriteColorType[] Colors;
 
         public Sprite GetColorSprite(ColorType colorType)

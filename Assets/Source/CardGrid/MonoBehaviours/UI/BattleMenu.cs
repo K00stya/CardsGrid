@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +18,7 @@ namespace CardGrid
 
         public GameObject LevelAchievedPanel;
         public TextMeshProUGUI LevelAchievedNumber;
+        public Button RateGame;
         public Button PlayAgain;
         public Button NextDifficult;
         public Button NextLevel;

@@ -18,9 +18,6 @@ namespace CardGrid
 
         public LevelState[] Levels;
 
-        [NonSerialized] 
-        public List<TutorCardInfo> CurrentTutorial = new List<TutorCardInfo>();
-
         public bool FirstLaunch = true;
         public bool FLClassic = true;
         public bool FLQuantity = true;
@@ -55,6 +52,9 @@ namespace CardGrid
 
         public Field Filed = new Field();
         public Inventory Inventory = new Inventory();
+
+        [NonSerialized] 
+        public List<TutorCardInfo> CurrentTutorial = new List<TutorCardInfo>();
 
         public int GetRealLevelID()
         {

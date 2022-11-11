@@ -29,10 +29,9 @@ namespace CardGrid
                 _loadedEnemies = new List<CardSO>();
                 _loadedItems = new List<CardSO>();
                 
-                //off tutor
                 TutorHandObj.transform.DOKill();
                 TutorHandObj.SetActive(false);
-                _CommonState.CurrentTutorial = new List<TutorCardInfo>();
+                _CommonState.BattleState.CurrentTutorial = new List<TutorCardInfo>();
                 
                 var loadedLevel = InfiniteLevels[levelID];
                 _startMaxCellQuantity = loadedLevel.StartMaxCellQuantity;
@@ -49,13 +48,15 @@ namespace CardGrid
                 }
                 
                 _CommonState.BattleState.CollectColors = GenerateNewCollectColors();
+                UpdateCompleteQuest(_CommonState.BattleState.CollectColors);
 
+                BattleUI.RotateButtons.SetActive(true);
                 for (int i = 0; i < BattleUI.Requires.Length; i++)
                 {
                     BattleUI.Requires[i].gameObject.SetActive(false);
                 }
                 BattleUI.LevelProgress.gameObject.SetActive(true);
-                BattleUI.LeftCardsPanel.gameObject.SetActive(false);
+                //BattleUI.LeftCardsPanel.gameObject.SetActive(false);
             }
             else
             {
@@ -64,9 +65,10 @@ namespace CardGrid
                 var id = levelID - BattleState.CommonLevelID;
                 //LoadLevel1(id);
                 var level = LoadLevelInfo(id);
-
+                BattleUI.RotateButtons.SetActive(level.Rotation);
+                
                 BattleUI.LevelProgress.gameObject.SetActive(false);
-                BattleUI.LeftCardsPanel.gameObject.SetActive(!level.NeedSpawnNewRandom);
+                //BattleUI.LeftCardsPanel.gameObject.SetActive(!level.NeedSpawnNewRandom);
             }
             
             UpdateRequires(_CommonState.BattleState.CollectColors);
@@ -179,11 +181,11 @@ namespace CardGrid
             TutorHandObj.transform.DOKill();
             if (tutor != null)
             {
-                _CommonState.CurrentTutorial = new List<TutorCardInfo>(tutor);
+                _CommonState.BattleState.CurrentTutorial = new List<TutorCardInfo>(tutor);
             }
             else
             {
-                _CommonState.CurrentTutorial = new List<TutorCardInfo>();
+                _CommonState.BattleState.CurrentTutorial = new List<TutorCardInfo>();
             }
         }
 

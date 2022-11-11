@@ -40,6 +40,11 @@
 			-ms-interpolation-mode: nearest-neighbor;
 		}
 	</style>
+
+	<!-- Yandex.RTB -->
+	<script>window.yaContextCb=window.yaContextCb||[]</script>
+	<script src="https://yandex.ru/ads/system/context.js" async></script>
+
 </head>
 
 <body>
@@ -99,10 +104,15 @@
 				container.style.top = Math.floor((window.innerHeight - h) / 2) + "px";
 				container.style.left = Math.floor((window.innerWidth - w) / 2) + "px";
 			}
-			createUnityInstance(canvas, config, progressHandler).then(function (instance) {
+
+ 			var gameInstance = null;
+			createUnityInstance(canvas, config, progressHandler).then(function (instance)
+			{
+				gameInstance = instance;
 				canvas = instance.Module.canvas;
 				onResize();
 			});
+
 			window.addEventListener('resize', onResize);
 			onResize();
 
@@ -113,12 +123,74 @@
 				meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
 				document.getElementsByTagName('head')[0].appendChild(meta);
 			}
+
 		</script>
-		
+
 		<script>
+			YaGames
+			.init()
+			.then(ysdk => {
+				console.log('Yandex SDK initialized');
+				window.ysdk = ysdk;
+				auth();
+
+				ysdk.getLeaderboards()
+				.then(_lb => lb = _lb);
+
+			});
+
+			var lb;
 			
+			var player;
+
+			function initPlayer() 
+			{
+				return ysdk.getPlayer().then(_player => 
+				{
+					player = _player;
+
+					return player;
+				});
+			}
+
+			function auth()
+			{
+				initPlayer().then(_player => 
+				{
+					if (_player.getMode() === 'lite') 
+					{
+			        // Игрок не авторизован.
+			        ysdk.auth.openAuthDialog().then(() => 
+			        {
+			            // Игрок успешно авторизован
+			            initPlayer().catch(err => 
+			            {
+			                // Ошибка при инициализации объекта Player.
+			            });
+			        }).catch(() => 
+			        {
+			                // Игрок не авторизован.
+			        });
+			    }
+				}).catch(err => {
+			        // Ошибка при инициализации объекта Player.
+			    });
+
+			}
 		</script>
 	</div>
+
+	<div style="position: absolute; height: 100%; right: 0%;">
+		<!-- Yandex.RTB R-A-1988125-19 -->
+		<div id="yandex_rtb_R-A-1988125-18"></div>
+		<script>window.yaContextCb.push(()=>{
+			Ya.Context.AdvManager.render({
+				renderTo: 'yandex_rtb_R-A-1988125-18',
+				blockId: 'R-A-1988125-18'
+			})
+		})</script>
+	</div>
+	
 </body>
 
 </html>

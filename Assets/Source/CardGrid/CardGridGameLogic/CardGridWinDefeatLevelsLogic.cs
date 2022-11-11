@@ -8,7 +8,7 @@ namespace CardGrid
 {
     public partial class CardGridGame
     {
-        float LevelUpSeed = 0.5f;
+        float LevelUpSeed = 0.7f;
 
         void CheckWinOrDefeat(CardState[,] cells, CardState[,] items)
         {
@@ -46,6 +46,7 @@ namespace CardGrid
 
         void Win()
         {
+            Save();
             DebugSystem.DebugLog("Win", DebugSystem.Type.Battle);
             StopAllCoroutines();
             DOTween.KillAll();
@@ -80,7 +81,7 @@ namespace CardGrid
             BattleUI.LevelNumberComplete.text = $"LEVEL {id} COMPLETE!";
             BattleUI.LevelCompletePanel.localScale = Vector3.zero;
             BattleUI.LevelCompletePanel.DOScale(Vector3.one, 1f);
-            yield return new WaitForSeconds(4f);
+            yield return new WaitForSeconds(2.5f);
             
             BattleUI.LevelCompletePanel.gameObject.SetActive(false);
             
@@ -97,16 +98,67 @@ namespace CardGrid
             _inputActive = true;
         }
 
+        (CT, int)[] _AdRewards;
+        int rewardsLeft;
         void Defeat()
         {
+            Save();
             DebugSystem.DebugLog("Defeat", DebugSystem.Type.Battle);
 
             MenuAudioSource.clip = DefeateSound;
             MenuAudioSource.Play();
 
-            OpenDefeat(BattleUI.BattleMenu);
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if (_CommonState.BattleState.LevelID <= BattleState.CommonLevelID && rewardsLeft > 0)
+            {
+                BattleUI.EndItemsReward.gameObject.SetActive(true);
+                var rewardsImages = BattleUI.EndItemsReward.Reward;
+                _AdRewards = GenerateRandomRewards(5);
+                int j = 0;
+                for (; j < _AdRewards.Length; j++)
+                {
+                    rewardsImages[j].sprite = GetCardSO(_AdRewards[j].Item1).Sprite;
+                    rewardsImages[j].gameObject.SetActive(true);
+                }
+                for (; j < rewardsImages.Length; j++)
+                {
+                    rewardsImages[j].gameObject.SetActive(false);
+                }
+            }
+            else
+#endif
+            {
+                BattleUI.EndItemsReward.gameObject.SetActive(false);
+                OpenDefeat(BattleUI.BattleMenu);
+            }
+            
             _CommonState.InBattle = false;
             _inputActive = false;
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if (_CommonState.BattleState.LevelID == 0)
+            {
+                if (WithQuantity)
+                {
+                    Yandex.SetToLeaderboard("CLASSICMODE", _CommonState.BattleState.NumberLevel);
+                }
+                else
+                {
+                    Yandex.SetToLeaderboard("LITEMODE", _CommonState.BattleState.NumberLevel);
+                }
+            }
+#endif
+        }
+
+        IEnumerator AddRewardedItems()
+        {
+            BattleUI.EndItemsReward.gameObject.SetActive(false);
+            for (int i = 0; i < _AdRewards.Length; i++)
+            {
+                yield return AddItem(_AdRewards[i]);
+            }
+
+            _inputActive = true;
         }
 
         void UpdateLevel(int addProgress = 1)
@@ -149,7 +201,7 @@ namespace CardGrid
             }
         }
         
-        (CT, int)[] GenerateRandomRewards()
+        (CT, int)[] GenerateRandomRewards(int quantity = 0)
         {
             (CT, int)[] Rewards;
 
@@ -176,9 +228,11 @@ namespace CardGrid
                     break;
             }
             Rewards = new (CT, int)[numberRewards];
-            for (int i = 0; i < numberRewards; i++)
+            numberRewards += quantity;
+            for (int i = 0; i < numberRewards && i < Rewards.Length; i++)
             {
-                int quantity = Random.Range(1, _startMaxCellQuantity + 1);
+                if(quantity == 0)
+                    quantity = Random.Range(1, _startMaxCellQuantity + 1);
                 switch (Random.Range(0, 1f))
                 {
                     case <= 0.1f:
@@ -208,10 +262,9 @@ namespace CardGrid
             return Rewards;
         }
         
-
         IEnumerator NextLevel()
         {
-            var rewardsImages = BattleUI.NewLevelUp.Reward;
+            var rewardsImages = BattleUI.NewLevelPanel.Reward;
 
             (CT, int)[] rewards = GenerateRandomRewards();
 
@@ -227,13 +280,13 @@ namespace CardGrid
                 rewardsImages[j].gameObject.SetActive(false);
             }
 
-            BattleUI.NewLevelUp.gameObject.SetActive(true);
+            BattleUI.NewLevelPanel.gameObject.SetActive(true);
             for (int i = 0; i < rewards.Length; i++)
             {
                 rewardsImages[i].transform.localScale = Vector3.zero;
             }
 
-            var panel = BattleUI.NewLevelUp.transform.GetChild(0);
+            var panel = BattleUI.NewLevelPanel.transform.GetChild(0);
             panel.localScale = Vector3.zero;
             panel.DOScale(Vector3.one, 0.5f);
             yield return new WaitForSeconds(0.5f);
@@ -244,7 +297,7 @@ namespace CardGrid
             }
             yield return new WaitForSeconds(1f);
 
-            BattleUI.NewLevelUp.gameObject.SetActive(false);
+            BattleUI.NewLevelPanel.gameObject.SetActive(false);
             for (int i = 0; i < rewards.Length; i++)
             {
                 yield return AddItem(rewards[i]);
