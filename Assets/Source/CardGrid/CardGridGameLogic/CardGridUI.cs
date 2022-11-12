@@ -310,6 +310,7 @@ namespace CardGrid
             
             BattleUI.GetAdItems.onClick.AddListener(() =>
             {
+                _rewarded = false;
                 rewardsLeft--;
                 Yandex.ShowRewardAd();
             });

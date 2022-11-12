@@ -418,10 +418,19 @@ namespace CardGrid
             Save();
         }
 
+        private bool _rewarded;
         //Yandex
-        public void RewardPlayer()
+        public void Rewarded()
         {
-            StartCoroutine(AddRewardedItems());
+            _rewarded = true;
+        }
+
+        public void AdRewardClose()
+        {
+            if (_rewarded)
+                StartCoroutine(AddRewardedItems());
+            else
+                NotRewardPlayer();
         }
 
         //Yandex

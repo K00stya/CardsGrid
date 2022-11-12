@@ -130,6 +130,7 @@
 			YaGames
 			.init()
 			.then(ysdk => {
+            	ysdk.adv.showFullscreenAdv();
 				console.log('Yandex SDK initialized');
 				window.ysdk = ysdk;
 				auth();
@@ -182,11 +183,11 @@
 
 	<div style="position: absolute; height: 100%; right: 0%;">
 		<!-- Yandex.RTB R-A-1988125-19 -->
-		<div id="yandex_rtb_R-A-1988125-18"></div>
+		<div id="yandex_rtb_R-A-1988125-19"></div>
 		<script>window.yaContextCb.push(()=>{
 			Ya.Context.AdvManager.render({
-				renderTo: 'yandex_rtb_R-A-1988125-18',
-				blockId: 'R-A-1988125-18'
+				renderTo: 'yandex_rtb_R-A-1988125-19',
+				blockId: 'R-A-1988125-19'
 			})
 		})</script>
 	</div>

@@ -39,8 +39,22 @@ mergeInto(LibraryManager.library, {
   {
     player.getData().then(_data => 
     {
-        const jSON = JSON.stringify(_data);
-        gameInstance.SendMessage('CardGame', 'Load', jSON);
+      try {
+        player.getData(["saves"]).then(data => {
+          if (data.saves) {
+            myGameInstance.SendMessage('CardGame', 'Load', JSON.stringify(data.saves));
+          } else {
+            myGameInstance.SendMessage('CardGame', 'Load', "");
+          }
+        }).catch(() => {
+          console.error('getData Error!');
+        });
+      } catch (e) {
+        console.error('CRASH Load Saves Cloud: ', e.message);
+        setTimeout(function () {
+          LoadFromYandex();
+        }, 1000);
+      }
     })
   },
 
@@ -82,9 +96,10 @@ mergeInto(LibraryManager.library, {
         onOpen: () => {
         },
         onRewarded: () => {
-          gameInstance.SendMessage('CardGame', 'RewardPlayer');
+          gameInstance.SendMessage('CardGame', 'Rewarded');
         },
         onClose: () => {
+          gameInstance.SendMessage('CardGame', 'AdRewardClose');
         }, 
         onError: (e) => {
           gameInstance.SendMessage('CardGame', 'NotRewardPlayer');
