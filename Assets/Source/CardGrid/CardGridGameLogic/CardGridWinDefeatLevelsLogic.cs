@@ -132,7 +132,6 @@ namespace CardGrid
                 OpenDefeat(BattleUI.BattleMenu);
             }
             
-            _CommonState.InBattle = false;
             _inputActive = false;
 
 #if UNITY_WEBGL && !UNITY_EDITOR

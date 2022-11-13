@@ -5,7 +5,7 @@ mergeInto(LibraryManager.library, {
      ysdk.feedback.canReview()
     .then(({ value, reason }) => 
     {
-      gameInstance.SendMessage('CardGame', 'SetActiveRateButton', value);
+      myGameInstance.SendMessage('CardGame', 'SetActiveRateButton', value);
     })
   },
 
@@ -96,13 +96,13 @@ mergeInto(LibraryManager.library, {
         onOpen: () => {
         },
         onRewarded: () => {
-          gameInstance.SendMessage('CardGame', 'Rewarded');
+          myGameInstance.SendMessage('CardGame', 'Rewarded');
         },
         onClose: () => {
-          gameInstance.SendMessage('CardGame', 'AdRewardClose');
+          myGameInstance.SendMessage('CardGame', 'AdRewardClose');
         }, 
         onError: (e) => {
-          gameInstance.SendMessage('CardGame', 'NotRewardPlayer');
+          myGameInstance.SendMessage('CardGame', 'NotRewardPlayer');
         }
       }
     })
