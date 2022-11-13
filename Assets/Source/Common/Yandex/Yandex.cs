@@ -16,6 +16,9 @@ public static class Yandex
     
     [DllImport("__Internal")]
     public static extern void SetToLeaderboard(string name, int value);
+
+    [DllImport("__Internal")]
+    public static extern void GetLeaderBoard(string name);
     
     [DllImport("__Internal")]
     public static extern string GetLang();

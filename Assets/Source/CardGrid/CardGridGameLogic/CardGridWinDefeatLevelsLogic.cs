@@ -107,13 +107,12 @@ namespace CardGrid
 
             MenuAudioSource.clip = DefeateSound;
             MenuAudioSource.Play();
-
 #if UNITY_WEBGL && !UNITY_EDITOR
             if (_CommonState.BattleState.LevelID <= BattleState.CommonLevelID && rewardsLeft > 0)
             {
                 BattleUI.EndItemsReward.gameObject.SetActive(true);
                 var rewardsImages = BattleUI.EndItemsReward.Reward;
-                _AdRewards = GenerateRandomRewards(5);
+                _AdRewards = GenerateRandomRewards(5, 5);
                 int j = 0;
                 for (; j < _AdRewards.Length; j++)
                 {
@@ -139,11 +138,11 @@ namespace CardGrid
             {
                 if (WithQuantity)
                 {
-                    Yandex.SetToLeaderboard("CLASSICMODE", _CommonState.BattleState.NumberLevel);
+                    Yandex.SetToLeaderboard(CLASSICMODE, _CommonState.BattleState.NumberLevel);
                 }
                 else
                 {
-                    Yandex.SetToLeaderboard("LITEMODE", _CommonState.BattleState.NumberLevel);
+                    Yandex.SetToLeaderboard(ONLYWITHCOLOR, _CommonState.BattleState.NumberLevel);
                 }
             }
 #endif
@@ -160,11 +159,14 @@ namespace CardGrid
             _inputActive = true;
         }
 
-        void UpdateLevel(int addProgress = 1)
+        IEnumerator UpdateLevel(int addProgress = 1)
         {
             _CommonState.BattleState.LevelProgress += addProgress;
             if (_CommonState.BattleState.LevelProgress >= _CommonState.BattleState.MaxLevelProgress)
             {
+                DOTween.To(() => BattleUI.LevelProgress.value,
+                    x => BattleUI.LevelProgress.value = x, _CommonState.BattleState.MaxLevelProgress, 0.3f);
+                yield return new WaitForSeconds(0.3f);
                 _nextLevels++;
                 _CommonState.BattleState.MaxLevelProgress = (int) (_CommonState.BattleState.MaxLevelProgress * 1.15f);
                 _CommonState.BattleState.LevelProgress = 0;
@@ -175,8 +177,10 @@ namespace CardGrid
             }
 
             BattleUI.LevelNumber.text = _CommonState.BattleState.NumberLevel.ToString();
+            
             DOTween.To(() => BattleUI.LevelProgress.value,
-                x => BattleUI.LevelProgress.value = x, _CommonState.BattleState.LevelProgress, 0.5f);
+                x => BattleUI.LevelProgress.value = x, _CommonState.BattleState.LevelProgress, 0.3f);
+            
             BattleUI.LevelProgress.maxValue = _CommonState.BattleState.MaxLevelProgress;
 
             if (WithQuantity)
@@ -200,7 +204,7 @@ namespace CardGrid
             }
         }
         
-        (CT, int)[] GenerateRandomRewards(int quantity = 0)
+        (CT, int)[] GenerateRandomRewards(int quantity = 0, int allDamage = 0)
         {
             (CT, int)[] Rewards;
 
@@ -227,33 +231,38 @@ namespace CardGrid
                     break;
             }
             Rewards = new (CT, int)[numberRewards];
-            numberRewards += quantity;
+            if (quantity != 0)
+                numberRewards += quantity;
             for (int i = 0; i < numberRewards && i < Rewards.Length; i++)
             {
-                if(quantity == 0)
-                    quantity = Random.Range(1, _startMaxCellQuantity + 1);
+                int power;
+                if (allDamage == 0)
+                    power = Random.Range(1, _startMaxCellQuantity + 1);
+                else
+                    power = allDamage;
+                
                 switch (Random.Range(0, 1f))
                 {
                     case <= 0.1f:
-                        Rewards[i] = (CT.SH, quantity);
+                        Rewards[i] = (CT.SH, power);
                         break;
                     case <= 0.2f:
-                        Rewards[i] = (CT.SV, quantity);
+                        Rewards[i] = (CT.SV, power);
                         break;
                     case <= 0.3f:
-                        Rewards[i] = (CT.SLR, quantity);
+                        Rewards[i] = (CT.SLR, power);
                         break;
                     case <= 0.4f:
-                        Rewards[i] = (CT.SRL, quantity);
+                        Rewards[i] = (CT.SRL, power);
                         break;
                     case <= 0.5f:
-                        Rewards[i] = (CT.Sw, quantity);
+                        Rewards[i] = (CT.Sw, power);
                         break;
                     case <= 0.6f:
-                        Rewards[i] = (CT.Bo, quantity);
+                        Rewards[i] = (CT.Bo, power);
                         break;
                     default:
-                        Rewards[i] = (CT.Ha, quantity);
+                        Rewards[i] = (CT.Ha, power);
                         break;
                 }
             }

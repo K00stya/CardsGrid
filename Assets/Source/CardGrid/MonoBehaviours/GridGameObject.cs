@@ -14,13 +14,15 @@ namespace CardGrid
 
         public Vector3 GetCellSpacePosition(Vector2 fieldPosition)
         {
-            return transform.position + CommonOffset + 
-                   new Vector3(fieldPosition.x + fieldPosition.x * OffsetX, 0, -(fieldPosition.y + fieldPosition.y * OffsetZ));
+            return (new Vector3(transform.position.x,transform.position.z,0) + CommonOffset + 
+                   new Vector3(fieldPosition.x + fieldPosition.x * OffsetX, 0,
+                       -(fieldPosition.y + fieldPosition.y * OffsetZ))) * transform.lossyScale.x;
         }
 
         public Vector3 GetSpawnPosition(int x, int upOffset)
         {
-            return transform.position + CommonOffset + new Vector3(x + x * OffsetX, 0, -(-3 + upOffset * OffsetZ));
+            return (new Vector3(transform.position.x,transform.position.z,0) + CommonOffset + 
+                    new Vector3(x + x * OffsetX, 0,-(-3 + upOffset * OffsetZ))) * transform.lossyScale.x;
         }
 
         void OnDrawGizmos()
@@ -29,7 +31,7 @@ namespace CardGrid
             {
                 for (int z = 0; z < SizeZ; z++)
                 {
-                    Gizmos.DrawCube(GetCellSpacePosition(new Vector2(x,z)), CubeSize);
+                    Gizmos.DrawCube(GetCellSpacePosition(new Vector2(x,z)), CubeSize * transform.lossyScale.x);
                 }
             }
         }

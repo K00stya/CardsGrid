@@ -30,14 +30,14 @@ namespace CardGrid
                 {
                     _tutorActive = true;
                     Highlight.gameObject.SetActive(true);
-                    Highlight.transform.position = Tutorials.LeftRotate;
+                    Highlight.transform.position = Tutorials.LeftRotate.position;
                     return;
                 }
                 else if (tutor.RotateRight)
                 {
                     _tutorActive = true;
                     Highlight.gameObject.SetActive(true);
-                    Highlight.transform.position = Tutorials.RightRotate;
+                    Highlight.transform.position = Tutorials.RightRotate.position;
                     return;
                 }
 

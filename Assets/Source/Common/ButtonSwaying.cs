@@ -9,8 +9,10 @@ public class ButtonSwaying : MonoBehaviour
     public Vector3 MaxScale = new Vector3(1.1f, 1.1f, 1.1f);
     public Vector3 MinScale = new Vector3(0.9f, 0.9f, 0.9f);
     public float MaxAngle = 1f;
-    void OnEnable()
+    private Vector3 rot;
+    void Start()
     {
+        rot = transform.localRotation.eulerAngles;
         transform.localScale = MaxScale;
         if(Swaying)
             Sway();
@@ -21,11 +23,11 @@ public class ButtonSwaying : MonoBehaviour
         if(Swaying)
         {
             MaxAngle = -MaxAngle;
-            transform.DORotate(new Vector3(0, 0, MaxAngle), Speed);
+            transform.DOLocalRotate(new Vector3(rot.x, rot.y, MaxAngle), Speed);
             transform.DOScale(MaxScale, Speed)
                 .OnComplete(() =>
                 {
-                    transform.DORotate(new Vector3(0, 0, 0), Speed);
+                    transform.DOLocalRotate(new Vector3(rot.x, rot.y, 0), Speed);
                     transform.DOScale(MinScale, Speed)
                         .OnComplete(Sway);
                 });
@@ -43,6 +45,6 @@ public class ButtonSwaying : MonoBehaviour
         Swaying = false;
         transform.DOKill();
         transform.localScale = Vector3.one;
-        transform.rotation = Quaternion.identity;
+        transform.localRotation = Quaternion.Euler(new Vector3(rot.x, rot.y, 0));
     }
 }

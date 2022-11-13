@@ -478,6 +478,13 @@ namespace CardGrid
 
         public void OpenDefeat(BattleMenu menu)
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if(WithQuantity)
+                Yandex.GetLeaderBoard(CLASSICMODE);
+            else
+                Yandex.GetLeaderBoard(ONLYWITHCOLOR);
+#endif
+            
             menu.MenuLable.gameObject.SetActive(false);
             menu.EndLable.gameObject.SetActive(true);
             menu.Image.sprite = menu.DefeatSprite;

@@ -342,6 +342,7 @@ namespace CardGrid
             //List<CardState> deaths = new List<CardState>();
             //List<CardState> woundeds = new List<CardState>(cards);
 
+            impactCardState.GameObject.gameObject.SetActive(false);
             yield return ImpactDamageOnField(impactCardState.Quantity, cards); //ref deaths);
             impactCardState.Quantity = 0;
             dragCard.gameObject.SetActive(false);
@@ -413,24 +414,54 @@ namespace CardGrid
             cardState.GameObject.transform.DOMove(grid.
                 GetCellSpacePosition(cardState.Position), SpeedRecession);
         }
-        
+
+        List<int> _deaths = new List<int>(20);
+        private List<CardState> _collection = new List<CardState>(20);
         IEnumerator ImpactDamageOnField(int damage, CardState[] cards)
         {
+            _deaths.Clear();
+            _collection.Clear();
             foreach (var card in cards)
             {
-                yield return Damage(card, damage);
+                Damage(card, damage);
+            }
+            
+            int sum = 0;
+            foreach (var val in _deaths)
+            {
+                sum += val;
+            }
+            yield return UpdateLevel(sum);
+            
+            foreach (var col in _collection)
+            {
+                yield return CollectColorAndShape(col);
             }
         }
         
         IEnumerator ImpactDamageOnField(CardState[] cards)
         {
+            _deaths.Clear();
+            _collection.Clear();
             foreach (var card in cards)
             {
-                yield return Damage(card, card.Quantity);
+                Damage(card, card.Quantity);
+            }
+
+            int sum = 0;
+            foreach (var val in _deaths)
+            {
+                sum += val;
+            }
+            yield return UpdateLevel(sum);
+            
+            foreach (var col in _collection)
+            {
+                yield return CollectColorAndShape(col);
             }
         }
 
-        IEnumerator Damage(CardState card, int damage)
+        void Damage(CardState card, int damage)
         {
             if (card.Chains > 0)
             {
@@ -454,14 +485,14 @@ namespace CardGrid
 
                     if (_CommonState.BattleState.LevelID < BattleState.CommonLevelID)
                     {
-                        if (WithQuantity)
-                            UpdateLevel(-card.Quantity);
+                        _deaths.Add(1);
                         
-                        UpdateLevel();
+                        if (WithQuantity)
+                            _deaths.Add(-card.Quantity);
                     }
-
-                    yield return CollectColorAndShape(card);
-                    yield break;
+                    
+                    _collection.Add(card);
+                    return;
                 }
                 card.GameObject.QuantityText.text = card.Quantity.ToString();
             }
@@ -533,7 +564,7 @@ namespace CardGrid
             panel.transform.DOScale(Vector3.one, LevelUpSeed);
             panel.gameObject.SetActive(true);
             yield return new WaitForSeconds(LevelUpSeed + 1f);
-            UpdateLevel(reawardForCompleteTask);
+            yield return UpdateLevel(reawardForCompleteTask);
             foreach (var require in panel.Requires)
             {
                 require.Quantity.gameObject.SetActive(false);

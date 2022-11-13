@@ -66,6 +66,15 @@ mergeInto(LibraryManager.library, {
     });
   },
 
+  GetLeaderBoard: function(name)
+  {
+    ysdk.getLeaderboards().then(lb => 
+    {
+      lb.getLeaderboardEntries(name, { quantityTop: 10, includeUser: true, quantityAround: 3 })
+      .then(res => console.log(res));
+    });
+  },
+
   GetLang: function()
   {
     var lang = ysdk.environment.i18n.lang;

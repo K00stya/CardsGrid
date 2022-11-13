@@ -51,6 +51,8 @@ namespace CardGrid
         public AudioClip ShapeSound;
 
         const string SaveName = "CardGrid";
+        const string CLASSICMODE = "CLASSICMODE";
+        const string ONLYWITHCOLOR = "ONLYWITHCOLOR";
 
         Action PlayerClick;
         int _startMaxCellQuantity;
