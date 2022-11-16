@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa43c45854e44fdd918da63fb51893f3, type: 3}
+  m_Name: GetBlue
+  m_EditorClassIdentifier: 
+  Levels:
+  - Reward: 3
+    MaxProgress: 10
+  - Reward: 5
+    MaxProgress: 25
+  - Reward: 8
+    MaxProgress: 70
+  - Reward: 10
+    MaxProgress: 150
+  - Reward: 15
+    MaxProgress: 200
+  - Reward: 20
+    MaxProgress: 300
+  - Reward: 45
+    MaxProgress: 400
+  - Reward: 50
+    MaxProgress: 500
+  Localizations:
+  - Language: 0
+    Text: Get {0} blue gems.
+  - Language: 1
+    Text: "\u0412\u0437\u044F\u0442\u044C {0} \u0433\u043E\u043B\u0443\u0431\u043E\u0439
+      \u0433\u0435\u043C\u043E\u0432."

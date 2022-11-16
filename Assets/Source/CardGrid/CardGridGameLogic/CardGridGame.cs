@@ -49,6 +49,7 @@ namespace CardGrid
         public AudioClip DefeateSound;
         public AudioClip ColorSound;
         public AudioClip ShapeSound;
+        public AudioClip CompleteAchievementSound;
 
         const string SaveName = "CardGrid";
         const string CLASSICMODE = "CLASSICMODE";
@@ -146,7 +147,8 @@ namespace CardGrid
 
                     levelIndex++;
                 }
-                
+
+                LoadAchievementsStates();
                 StartNewBattle(BattleState.CommonLevelID);
                 DebugSystem.DebugLog("Save no exist. First active.", DebugSystem.Type.SaveSystem);
             }
@@ -160,7 +162,7 @@ namespace CardGrid
             
             LoadUI();
             SubscribeOnButtons();
-            UpdateLocalization();
+            UpdateCommonLocalization();
             
             Fade.CrossFadeAlpha(0 , 1f, false);
             StartCoroutine(FadeOff());
@@ -382,10 +384,11 @@ namespace CardGrid
                     break;
             }
 
-            UpdateLocalization();
+            UpdateCommonLocalization();
+            UpdateAchievementsLanguage();
         }
 
-        void UpdateLocalization()
+        void UpdateCommonLocalization()
         {
             Update(Localization.Texts1);
             Update(Localization.Texts2);

@@ -7,6 +7,9 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
     public TextMeshProUGUI StarsQuantity;
+    public TextMeshProUGUI TrophiesQuantity;
+    public Button OpenAhievements;
+    public GameObject Notify;
     public Button OpenLevels;
     public Button ClassicLevel;
     public TextMeshProUGUI MaxLevelClassic;

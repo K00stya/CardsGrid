@@ -14,6 +14,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/Source/CardGrid/CardGridGameLogic/CardGridUI.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Source/CardGrid/MonoBehaviours/Effects/ColorEffect.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Source/CardGrid/MonoBehaviours/Tutorials.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Source/CardGrid/MonoBehaviours/UI/Achivement.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Source/CardGrid/MonoBehaviours/UI/BattleMenu.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Source/CardGrid/MonoBehaviours/UI/PanelWithItems.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Source/CardGrid/ScriptableObjects/InfiniteLevelSO.cs" root0="FORCE_HIGHLIGHTING" />

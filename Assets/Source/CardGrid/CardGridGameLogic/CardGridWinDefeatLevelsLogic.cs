@@ -193,6 +193,7 @@ namespace CardGrid
                 if (_CommonState.BattleState.LevelProgress > _CommonState.BestLevelClassic)
                     _CommonState.BestLevelClassic = _CommonState.BattleState.NumberLevel;
             }
+            
         }
         
         void GenerateItemsTypes()
@@ -309,6 +310,15 @@ namespace CardGrid
             for (int i = 0; i < rewards.Length; i++)
             {
                 yield return AddItem(rewards[i]);
+            }
+
+            if (WithQuantity)
+            {
+                SetProgressAchieve("GetLevelComplicated", _CommonState.BattleState.NumberLevel);
+            }
+            else
+            {
+                SetProgressAchieve("GetLevelClassic", _CommonState.BattleState.NumberLevel);
             }
         }
 

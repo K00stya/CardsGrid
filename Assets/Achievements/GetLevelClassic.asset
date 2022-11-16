@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa43c45854e44fdd918da63fb51893f3, type: 3}
+  m_Name: GetLevelClassic
+  m_EditorClassIdentifier: 
+  Levels:
+  - Reward: 10
+    MaxProgress: 10
+  - Reward: 15
+    MaxProgress: 15
+  - Reward: 25
+    MaxProgress: 20
+  - Reward: 40
+    MaxProgress: 25
+  - Reward: 80
+    MaxProgress: 30
+  - Reward: 100
+    MaxProgress: 35
+  - Reward: 200
+    MaxProgress: 40
+  Localizations:
+  - Language: 0
+    Text: Reach level {0} in classic mode.
+  - Language: 1
+    Text: "\u0414\u043E\u0441\u0442\u0438\u0433\u043D\u0438\u0442\u0435 {0} \u0443\u0440\u043E\u0432\u043D\u044F
+      \u0432 \u043A\u043B\u0430\u0441\u0441\u0438\u0447\u0435\u0441\u043A\u043E\u043C
+      \u0440\u0435\u0436\u0438\u043C\u0435."

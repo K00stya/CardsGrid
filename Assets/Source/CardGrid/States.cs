@@ -11,12 +11,15 @@ namespace CardGrid
         public int BestLevelQuantity;
         public bool InBattle;
         
+        [NonSerialized] 
         public BattleState BattleState = new BattleState();
         
         public Language Language;
         public float Volume = 0.5f;
 
         public LevelState[] Levels;
+        public AchieveState[] Achievements;
+        public int AchievementsTrophies;
 
         public bool FirstLaunch = true;
         public bool FLClassic = true;
@@ -86,6 +89,19 @@ namespace CardGrid
     public class Inventory
     {
         public CardState[,] Items;
+    }
+    
+    public class AchieveState
+    {
+        public string Key;
+        public int Level;
+        public int Progress = 0;
+        public int MaxProgress;
+        public int Reward;
+        public bool Complete = false;
+        
+        [NonSerialized]
+        public Achivement AchiveGO;
     }
 
     public enum CardGrid

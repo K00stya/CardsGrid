@@ -46,7 +46,12 @@ namespace CardGrid
             {
                 DebugSystem.DebugLog($"Raycast hit card {cardGO.CardState.CardSO.Name}" +
                                      $" on {cardGO.CardState.Position}", DebugSystem.Type.PlayerInput);
-
+                
+                if (_selectedCard != null)
+                {
+                    TryHighlight(_selectedCard);
+                }
+                
                 if (Input.GetMouseButton(0))
                 {
                     _currentClickTime += Time.deltaTime;
@@ -58,13 +63,6 @@ namespace CardGrid
                         //Drag only inventory
                         if (cardGO.CardState.Grid == CardGrid.Inventory)
                             _dragGameObjectCard = cardGO;
-                    }
-
-                    if (_selectedCard != null)
-                    {
-                        //Debug.Log("Deselected");
-                        _selectedCard.Highlight.SetActive(false);
-                        StartCoroutine(EndDrag(_selectedCard));
                     }
                 }
                 else
@@ -91,13 +89,17 @@ namespace CardGrid
                         ReturnDragCard(_dragGameObjectCard);
                         _dragGameObjectCard = null;
                     }
-
+                    
                     StartCoroutine(EndDrag(_dragGameObjectCard));
                 }
 
-                if (_selectedCard != null)
+                if (Input.GetMouseButtonUp(0))
                 {
-                    TryHighlight(_selectedCard);
+                    if (_selectedCard != null)
+                    {
+                        _selectedCard.Highlight.SetActive(false);
+                        StartCoroutine(EndDrag(_selectedCard));
+                    }
                 }
             }
             else
@@ -250,7 +252,7 @@ namespace CardGrid
                 yield break;
             }
 
-            if (!_inputActive)
+            if (!_inputActive || _battleMenuOpen)
             {
                 //ReturnDragCard();
                 yield break;
@@ -492,6 +494,9 @@ namespace CardGrid
                     }
                     
                     _collection.Add(card);
+
+                    CollectGemsAchive(card);
+                    
                     return;
                 }
                 card.GameObject.QuantityText.text = card.Quantity.ToString();
