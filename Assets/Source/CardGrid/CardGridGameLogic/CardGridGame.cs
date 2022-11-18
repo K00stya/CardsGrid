@@ -77,6 +77,22 @@ namespace CardGrid
                          + BattleObjects.Field.SizeX * BattleObjects.Field.SizeZ;
             _cardMonobehsPool = new List<CardGameObject>(length);
 
+#if UNITY_WEBPLAYER
+            string redirectUrl = "https://yandex.ru/games";
+            string[] domains = { "https://yandex.ru"};
+		    string jsarray = "[";
+		    foreach (string domain in domains) {
+			    jsarray += "'"+domain+"',";
+		}
+		jsarray += "]";
+		Application.ExternalEval("function contains(a, obj) { " +
+			                       "var i = a.length; " +
+			                       "while (i--) { if (a[i] === obj) { return true;}} " +
+			                       "return false;" +
+			                      "} "+
+			                     "if(contains("+jsarray+", document.location.host)) {} else { document.location='"+redirectUrl+"'; }");
+#endif
+
             foreach (var group in CommonLevelsGroups)
             {
                 foreach (var level in group.Levels)
@@ -85,6 +101,7 @@ namespace CardGrid
                         level.Init();
                 }
             }
+
             Fade.gameObject.SetActive(true);
 
             GenerateColorTypesList();
@@ -102,7 +119,7 @@ namespace CardGrid
         }
 
         //Yandex
-        void Load(string value)
+        public void Load(string value)
         {
             if (string.IsNullOrEmpty(value))
             {
@@ -123,6 +140,23 @@ namespace CardGrid
                     case "ru":
                         _CommonState.Language = Language.Russian;
                         break;
+                    case "be":
+                        _CommonState.Language = Language.Russian;
+                        break;
+                    case "kk":
+                        _CommonState.Language = Language.Russian;
+                        break;
+                    case "uk":
+                        _CommonState.Language = Language.Russian;
+                        break;
+                    case "uz":
+                        _CommonState.Language = Language.Russian;
+                        break;
+                    
+                    case "tr":
+                        _CommonState.Language = Language.Turk;
+                        break;
+                    
                     default:
                         _CommonState.Language = Language.English;
                         break;
@@ -382,6 +416,9 @@ namespace CardGrid
                 case 1:
                     _CommonState.Language = Language.Russian;
                     break;
+                case 2:
+                    _CommonState.Language = Language.Turk;
+                    break;
             }
 
             UpdateCommonLocalization();
@@ -445,8 +482,12 @@ namespace CardGrid
             OpenDefeat(BattleUI.BattleMenu);
         }
 
+        private float SaveReload = 10f;
+        float _saveTimer;
         void Save()
         {
+            if(_saveTimer < SaveReload) return;
+            _saveTimer = 0;
 #if UNITY_WEBGL && !UNITY_EDITOR
             string jString = JsonUtility.ToJson(_CommonState);
             Yandex.SaveOnYandex(jString);

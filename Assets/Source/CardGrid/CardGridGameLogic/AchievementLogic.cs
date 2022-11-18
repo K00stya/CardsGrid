@@ -144,6 +144,7 @@ namespace CardGrid
             AchievementsPanel.gameObject.SetActive(false);
             MainMenu.Notify.SetActive(IsHaveCompletedAchievements());
             BattleUI.BattleMenu.Notify.SetActive(IsHaveCompletedAchievements());
+            BattleUI.BattleMenu.TrophiesQuantity.text = _CommonState.AchievementsTrophies.ToString();
         }
 
         void UpdateAchievements()
@@ -168,6 +169,7 @@ namespace CardGrid
                 }
                 else
                 {
+                    achiveGO.Check.SetActive(false);
                     achiveGO.transform.SetSiblingIndex(0);
                 }
                 

@@ -16,6 +16,7 @@ namespace CardGrid
         public Button Close;
         public Difficult[] Difficults;
         public Button OpenAchievement;
+        public TextMeshProUGUI TrophiesQuantity;
         public GameObject Notify;
 
         public GameObject LevelAchievedPanel;

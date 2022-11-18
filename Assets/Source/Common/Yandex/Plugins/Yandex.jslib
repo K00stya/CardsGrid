@@ -5,7 +5,7 @@ mergeInto(LibraryManager.library, {
      ysdk.feedback.canReview()
     .then(({ value, reason }) => 
     {
-      myGameInstance.SendMessage('CardGame', 'SetActiveRateButton', value);
+      myGameInstance.SendMessage('CardGridGame', 'SetActiveRateButton', value);
     })
   },
 
@@ -30,32 +30,41 @@ mergeInto(LibraryManager.library, {
 
   SaveOnYandex: function(data)
   {
-    var dataString = UTF8ToString(data);
-    var obj = JSON.parse(dataString);
-    player.setData(obj);
+    try {
+      player.setData({
+        saves: [data],
+      }, false).then(() => {
+        console.log('Cloud saves are installed');
+      });
+    } catch (e) {
+      console.error('CRASH Save Cloud: ', e.message);
+    }
   },
 
   LoadFromYandex: function()
   {
-    player.getData().then(_data => 
+    try 
     {
-      try {
-        player.getData(["saves"]).then(data => {
-          if (data.saves) {
-            myGameInstance.SendMessage('CardGame', 'Load', JSON.stringify(data.saves));
-          } else {
-            myGameInstance.SendMessage('CardGame', 'Load', "");
-          }
-        }).catch(() => {
-          console.error('getData Error!');
-        });
-      } catch (e) {
-        console.error('CRASH Load Saves Cloud: ', e.message);
-        setTimeout(function () {
-          LoadFromYandex();
-        }, 1000);
-      }
-    })
+      player.getData(["saves"]).then(data => 
+      {
+        if (data.saves) {
+          myGameInstance.SendMessage('CardGridGame', 'Load', JSON.stringify(data.saves));
+        } else {
+          myGameInstance.SendMessage('CardGridGame', 'Load', "");
+        }
+      }).catch(() => 
+      {
+        console.error('getData Error!');
+        myGameInstance.SendMessage('CardGridGame', 'Load', "");
+      });
+    } 
+    catch (e) 
+    {
+      console.error('CRASH Load Saves Cloud: ', e.message);
+      setTimeout(function () {
+        LoadFromYandex();
+      }, 1000);
+    }
   },
 
   SetToLeaderboard: function(name, value)
@@ -105,13 +114,13 @@ mergeInto(LibraryManager.library, {
         onOpen: () => {
         },
         onRewarded: () => {
-          myGameInstance.SendMessage('CardGame', 'Rewarded');
+          myGameInstance.SendMessage('CardGridGame', 'Rewarded');
         },
         onClose: () => {
-          myGameInstance.SendMessage('CardGame', 'AdRewardClose');
+          myGameInstance.SendMessage('CardGridGame', 'AdRewardClose');
         }, 
         onError: (e) => {
-          myGameInstance.SendMessage('CardGame', 'NotRewardPlayer');
+          myGameInstance.SendMessage('CardGridGame', 'NotRewardPlayer');
         }
       }
     })

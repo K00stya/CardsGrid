@@ -5,7 +5,8 @@ using UnityEngine;
 public enum Language
 {
     English = 0,
-    Russian = 1
+    Russian = 1,
+    Turk = 2,
 }
 
 [Serializable]

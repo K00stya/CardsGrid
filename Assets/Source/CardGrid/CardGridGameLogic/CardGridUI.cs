@@ -291,14 +291,12 @@ namespace CardGrid
             });
             BattleUI.BattleMenu.ToMenu.onClick.AddListener(() =>
             {
-                Save();
                 PlayClickSound();
                 GoToMenu();
                 _battleMenuOpen = false;
             });
             BattleUI.BattleMenu.Close.onClick.AddListener(() =>
             {
-                Save();
                 PlayClickSound();
                 BattleUI.BattleMenu.gameObject.SetActive(false);
                 
@@ -306,14 +304,12 @@ namespace CardGrid
             });
             BattleUI.BattleMenu.NextLevel.onClick.AddListener(() =>
             {
-                Save();
                 PlayClickSound();
                 EndBattle();
                 StartNewBattle(_CommonState.BattleState.LevelID + 1);
             });
             BattleUI.BattleMenu.LevelMenu.onClick.AddListener(() =>
             {
-                Save();
                 PlayClickSound();
                 EndBattle();
                 OpenLevelsMenu();
@@ -496,6 +492,7 @@ namespace CardGrid
             
             menu.gameObject.SetActive(true);
             BattleUI.BattleMenu.Notify.SetActive(IsHaveCompletedAchievements());
+            BattleUI.BattleMenu.TrophiesQuantity.text = _CommonState.AchievementsTrophies.ToString();
         }
 
         public void OpenDefeat(BattleMenu menu)

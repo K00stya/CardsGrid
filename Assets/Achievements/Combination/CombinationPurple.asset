@@ -27,3 +27,5 @@ MonoBehaviour:
       \u0438\u0437 {0} \u0444\u0438\u043E\u043B\u0435\u0442\u043E\u0432\u044B\u0445
       \u0433\u0435\u043C\u043E\u0432 \u043F\u043E\u0441\u043B\u0435 \u043E\u0434\u043D\u043E\u0433\u043E
       \u0443\u0434\u0430\u0440\u0430."
+  - Language: 2
+    Text: "Bir vuru\u015Ftan sonra {0} mor gemilerden olu\u015Fan bir \xE7izgi toplay\u0131n."

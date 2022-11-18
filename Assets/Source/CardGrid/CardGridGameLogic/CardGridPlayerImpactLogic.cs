@@ -62,7 +62,14 @@ namespace CardGrid
                     {
                         //Drag only inventory
                         if (cardGO.CardState.Grid == CardGrid.Inventory)
+                        {
+                            if (_selectedCard != null)
+                            {
+                                _selectedCard.Highlight.SetActive(false);
+                                StartCoroutine(EndDrag(_selectedCard));
+                            }
                             _dragGameObjectCard = cardGO;
+                        }
                     }
                 }
                 else
@@ -131,6 +138,8 @@ namespace CardGrid
                         item.GameObject.Sprite.color = Color.white;
                     }
                 }
+            
+            _saveTimer += Time.deltaTime;
         }
 
         #region DragAndDrop
@@ -287,7 +296,8 @@ namespace CardGrid
             {
                 ReturnDragCard(drag);
             }
-
+            
+            Save();
             _inputActive = true;
         }
         

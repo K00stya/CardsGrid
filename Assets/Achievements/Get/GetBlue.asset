@@ -33,5 +33,6 @@ MonoBehaviour:
   - Language: 0
     Text: Get {0} blue gems.
   - Language: 1
-    Text: "\u0412\u0437\u044F\u0442\u044C {0} \u0433\u043E\u043B\u0443\u0431\u043E\u0439
-      \u0433\u0435\u043C\u043E\u0432."
+    Text: "\u0412\u0437\u044F\u0442\u044C {0} \u0441\u0438\u043D\u0438\u0445 \u0433\u0435\u043C\u043E\u0432."
+  - Language: 2
+    Text: "{0} mavi kanlar\u0131 al\u0131n."

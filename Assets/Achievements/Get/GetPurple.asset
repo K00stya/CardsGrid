@@ -35,3 +35,5 @@ MonoBehaviour:
   - Language: 1
     Text: "\u0412\u0437\u044F\u0442\u044C {0} \u0444\u0438\u043E\u043B\u0435\u0442\u043E\u0432\u044B\u0445
       \u0433\u0435\u043C\u043E\u0432."
+  - Language: 2
+    Text: "{0} mor kanlar\u0131 al\u0131n."
