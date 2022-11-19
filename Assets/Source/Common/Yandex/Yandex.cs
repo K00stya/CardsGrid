@@ -28,4 +28,12 @@ public static class Yandex
 
     [DllImport("__Internal")]
     public static extern void ShowRewardAd();
+    
+    
+    [DllImport("__Internal")]
+    public static extern void NewSave();
+    [DllImport("__Internal")]
+    public static extern void ReSave();
+    [DllImport("__Internal")]
+    public static extern void LoadSave();
 }

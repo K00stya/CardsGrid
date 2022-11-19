@@ -16,7 +16,7 @@ namespace CardGrid
         
         public Language Language;
         public float Volume = 0.5f;
-
+        
         public LevelState[] Levels;
         public AchieveState[] Achievements;
         public int AchievementsTrophies;
@@ -31,14 +31,13 @@ namespace CardGrid
         }
     }
 
-    public struct LevelState
+    [Serializable]
+    public class LevelState
     {
         public bool IsOpen;
         public int Group;
         public int Stars;
         public bool Complete;
-        public (ColorType, int)[] CollectColors;
-        public (ShapeType, int)[] CollectShape;
         public bool NeedSpawnNewRandom;
     }
     
@@ -91,6 +90,7 @@ namespace CardGrid
         public CardState[,] Items;
     }
     
+    [Serializable]
     public class AchieveState
     {
         public string Key;

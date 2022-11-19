@@ -28,44 +28,37 @@ mergeInto(LibraryManager.library, {
     }) 
   },
 
-  SaveOnYandex: function(data)
-  {
-    try {
-      player.setData({
-        saves: [data],
-      }, false).then(() => {
-        console.log('Cloud saves are installed');
-      });
-    } catch (e) {
-      console.error('CRASH Save Cloud: ', e.message);
-    }
-  },
 
-  LoadFromYandex: function()
-  {
-    try 
+    SaveOnYandex: function(data)
     {
-      player.getData(["saves"]).then(data => 
-      {
-        if (data.saves) {
-          myGameInstance.SendMessage('CardGridGame', 'Load', JSON.stringify(data.saves));
-        } else {
-          myGameInstance.SendMessage('CardGridGame', 'Load', "");
+      try {
+        var dataString = UTF8ToString(data);
+        var myObj = JSON.parse(dataString);
+        player.setData(myObj, false).then(() => {
+        console.log('Cloud saves are installed');
+        });
+        } catch (e) {
+          console.error('CRASH Save Cloud: ', e.message);
+      }
+    },
+
+    LoadFromYandex: function()
+    {
+        try {
+            player.getData().then(data => {
+                if (data) {
+                    myGameInstance.SendMessage('CardGridGame', 'Load', JSON.stringify(data));
+                } else {
+                    ResetProgress();
+                }
+            }).catch(() => {console.error('getData Error!');});
+        } catch (e) {
+            console.error('CRASH Load Saves Cloud: ', e.message);
+            setTimeout(function () {
+                LoadFromYandex();
+            }, 1000);
         }
-      }).catch(() => 
-      {
-        console.error('getData Error!');
-        myGameInstance.SendMessage('CardGridGame', 'Load', "");
-      });
-    } 
-    catch (e) 
-    {
-      console.error('CRASH Load Saves Cloud: ', e.message);
-      setTimeout(function () {
-        LoadFromYandex();
-      }, 1000);
-    }
-  },
+    },
 
   SetToLeaderboard: function(name, value)
   {
@@ -125,4 +118,20 @@ mergeInto(LibraryManager.library, {
       }
     })
   },
+
+  NewSave: function()
+  {
+    console.log("NewSave");
+  },
+
+  ReSave: function()
+  {
+    console.log("ReSave");
+  },
+
+  LoadSave: function()
+  {
+    console.log("LoadSave");
+  },
+
 });

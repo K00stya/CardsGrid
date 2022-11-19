@@ -207,6 +207,7 @@ namespace CardGrid
             achieve.AchiveGO.Progress.gameObject.SetActive(false);
             _rewarding = true;
             StartCoroutine(Reward(achieve, achiveSO));
+            Save();
             
             UpdateAchievements();
         }

@@ -320,14 +320,18 @@ namespace CardGrid
         IEnumerator DealImpact(CardGameObject drag)
         {
             yield return UseItemOnFiled(drag, _impactHighlightCards);
+            yield return UpdateFields();
+        }
+
+        IEnumerator UpdateFields()
+        {
             var cells = _CommonState.BattleState.Filed.Cells;
             var items = _CommonState.BattleState.Inventory.Items;
-
             do
             {
                 _enemiesRecession = false;
                 
-                RecessionField(cells);
+                RecessionField(_CommonState.BattleState.Filed.Cells);
                 
                 yield return Filling(cells);
 

@@ -126,7 +126,7 @@ namespace CardGrid
             }
             
             _inputActive = false;
-            float time = 1f;
+            float time = 0.7f;
             BattleObjects.FieldRotator.DORotate(
                 BattleObjects.FieldRotator.eulerAngles + new Vector3(0, 90, 0), time);
             for (int i = 0; i < BattleObjects.Field.transform.childCount; i++)
@@ -151,6 +151,9 @@ namespace CardGrid
             _CommonState.BattleState.Filed.Cells = newCellsMap;
 
             yield return new WaitForSeconds(time);
+            yield return TryGetNewItemsForField(_CommonState.BattleState.Filed.Cells,
+                _CommonState.BattleState.Inventory.Items);
+            yield return UpdateFields();
             _inputActive = true;
         }
 
@@ -171,7 +174,7 @@ namespace CardGrid
             }
 
             _inputActive = false;
-            float time = 1f;
+            float time = 0.7f;
             BattleObjects.FieldRotator.DORotate(
                 BattleObjects.FieldRotator.eulerAngles + new Vector3(0, -90, 0), time);
             for (int i = 0; i < BattleObjects.Field.transform.childCount; i++)
@@ -196,6 +199,9 @@ namespace CardGrid
             _CommonState.BattleState.Filed.Cells = newCellsMap;
 
             yield return new WaitForSeconds(time);
+            yield return TryGetNewItemsForField(_CommonState.BattleState.Filed.Cells,
+                _CommonState.BattleState.Inventory.Items);
+            yield return UpdateFields();
             _inputActive = true;
         }
     }

@@ -469,6 +469,7 @@ namespace CardGrid
             }
             
             MainMenu.gameObject.SetActive(true);
+            Save(false);
         }
 
         public void OpenMenu(BattleMenu menu)

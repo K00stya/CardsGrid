@@ -121,7 +121,7 @@ namespace CardGrid
         //Yandex
         public void Load(string value)
         {
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value) || value == "null")
             {
                 _CommonState = null;
             }
@@ -130,43 +130,14 @@ namespace CardGrid
                 DebugSystem.DebugLog("LoadedSave.", DebugSystem.Type.SaveSystem);
                 _CommonState = JsonUtility.FromJson<PlayerCommonState>(value);
             }
-
+            
+            var levels = (Level[]) typeof(LevelsMaps).GetField("Levels").GetValue(null);
             if (_CommonState == null)
             {
                 _CommonState = new PlayerCommonState();
-#if UNITY_WEBGL && !UNITY_EDITOR
-                switch (Yandex.GetLang())
-                {
-                    case "ru":
-                        _CommonState.Language = Language.Russian;
-                        break;
-                    case "be":
-                        _CommonState.Language = Language.Russian;
-                        break;
-                    case "kk":
-                        _CommonState.Language = Language.Russian;
-                        break;
-                    case "uk":
-                        _CommonState.Language = Language.Russian;
-                        break;
-                    case "uz":
-                        _CommonState.Language = Language.Russian;
-                        break;
-                    
-                    case "tr":
-                        _CommonState.Language = Language.Turk;
-                        break;
-                    
-                    default:
-                        _CommonState.Language = Language.English;
-                        break;
-                }
-#endif
+                LoadLanguage();
                 int quantityLevels = 0;
-
-                var levels = (Level[]) typeof(LevelsMaps).GetField("Levels").GetValue(null);
                 quantityLevels += levels.Length;
-
                 _CommonState.Levels = new LevelState[quantityLevels];
 
                 int levelIndex = 0;
@@ -176,7 +147,6 @@ namespace CardGrid
                     _CommonState.Levels[levelIndex].Group = i;
 
                     var level = levels[i];
-                    _CommonState.Levels[levelIndex].CollectColors = level.CollectColors;
                     _CommonState.Levels[levelIndex].NeedSpawnNewRandom = level.NeedSpawnNewRandom;
 
                     levelIndex++;
@@ -185,9 +155,24 @@ namespace CardGrid
                 LoadAchievementsStates();
                 StartNewBattle(BattleState.CommonLevelID);
                 DebugSystem.DebugLog("Save no exist. First active.", DebugSystem.Type.SaveSystem);
+                
+#if UNITY_WEBGL && !UNITY_EDITOR
+                Yandex.NewSave();
+#endif
+            }
+            else if (_CommonState.Levels.Length < levels.Length || _CommonState.Achievements.Length < AchievementsSO.Length)
+            {
+                LoadGameResave(levels);
+                
+#if UNITY_WEBGL && !UNITY_EDITOR
+                Yandex.ReSave();
+#endif
             }
             else
             {
+#if UNITY_WEBGL && !UNITY_EDITOR
+                Yandex.LoadSave();
+#endif
                 OpenMainMenu();
             }
             
@@ -207,25 +192,75 @@ namespace CardGrid
             }
         }
         
-        
-        void LoadBattle()
+        void LoadGameResave(Level[] levels)
         {
-            BattleState playerBattleState = _CommonState.BattleState;
+            LoadLanguage();
 
-            LoadLevelCards(playerBattleState.LevelID);
-
-            foreach (var cell in playerBattleState.Filed.Cells)
+            if (_CommonState.Achievements.Length == 0)
             {
-                var monobeh = SpawnCard(cell, BattleObjects.Field);
-                cell.GameObject = monobeh;
-                monobeh.CardState = cell;
+                _CommonState.Achievements = new AchieveState[AchievementsSO.Length];
+            }
+            else
+            {
+                AchieveState[] l = new AchieveState[AchievementsSO.Length];
+                for (int i = 0; i < _CommonState.Achievements.Length; i++)
+                {
+                    l[i] = _CommonState.Achievements[i];
+                }
+
+                _CommonState.Achievements = l;
+            }
+            
+            for (int i = 0; i < _CommonState.Achievements.Length; i++)
+            {
+                if (_CommonState.Achievements[i] == null)
+                    _CommonState.Achievements[i] = new AchieveState()
+                    {
+                        Key = AchievementsSO[i].name,
+                        Level = 0,
+                        MaxProgress = AchievementsSO[i].Levels[0].MaxProgress,
+                        Reward = AchievementsSO[i].Levels[0].Reward,
+                    };
             }
 
-            foreach (var item in playerBattleState.Inventory.Items)
+            bool firstLevel = false;
+            if (_CommonState.Levels.Length == 0)
             {
-                var monobeh = SpawnCard(item, BattleObjects.Inventory);
-                item.GameObject = monobeh;
-                monobeh.CardState = item;
+                firstLevel = true;
+                _CommonState.Levels = new LevelState[levels.Length];
+            }
+            else
+            {
+                LevelState[] l = new LevelState[levels.Length];
+                for (int i = 0; i < _CommonState.Levels.Length; i++)
+                {
+                    l[i] = _CommonState.Levels[i];
+                }
+                _CommonState.Levels = l;
+            }
+            
+            int levelIndex = 0;
+            for (int i = 0; i < levels.Length; i++)
+            {
+                if (_CommonState.Levels[levelIndex] == null)
+                {
+                    _CommonState.Levels[levelIndex] = new LevelState();
+                    _CommonState.Levels[levelIndex].Group = i;
+
+                    var level = levels[i];
+                    _CommonState.Levels[levelIndex].NeedSpawnNewRandom = level.NeedSpawnNewRandom;
+                }
+
+                levelIndex++;
+            }
+
+            if (firstLevel)
+            {
+                StartNewBattle(BattleState.CommonLevelID);
+            }
+            else
+            {
+                OpenMainMenu();
             }
         }
 
@@ -482,11 +517,11 @@ namespace CardGrid
             OpenDefeat(BattleUI.BattleMenu);
         }
 
-        private float SaveReload = 10f;
+        private float SaveReload = 15f;
         float _saveTimer;
-        void Save()
+        void Save(bool timer = true)
         {
-            if(_saveTimer < SaveReload) return;
+            if(_saveTimer < SaveReload && timer) return;
             _saveTimer = 0;
 #if UNITY_WEBGL && !UNITY_EDITOR
             string jString = JsonUtility.ToJson(_CommonState);
@@ -502,5 +537,37 @@ namespace CardGrid
             ES3.DeleteFile();
         }
 #endif
+
+        void LoadLanguage()
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+                switch (Yandex.GetLang())
+                {
+                    case "ru":
+                        _CommonState.Language = Language.Russian;
+                        break;
+                    case "be":
+                        _CommonState.Language = Language.Russian;
+                        break;
+                    case "kk":
+                        _CommonState.Language = Language.Russian;
+                        break;
+                    case "uk":
+                        _CommonState.Language = Language.Russian;
+                        break;
+                    case "uz":
+                        _CommonState.Language = Language.Russian;
+                        break;
+                    
+                    case "tr":
+                        _CommonState.Language = Language.Turk;
+                        break;
+                    
+                    default:
+                        _CommonState.Language = Language.English;
+                        break;
+                }
+#endif
+        }
     }
 }
