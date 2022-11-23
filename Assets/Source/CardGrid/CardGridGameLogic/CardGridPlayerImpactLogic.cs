@@ -105,8 +105,8 @@ namespace CardGrid
                     if (_selectedCard != null)
                     {
                         _selectedCard.Highlight.SetActive(false);
-                        StartCoroutine(EndDrag(_selectedCard));
                     }
+                    StartCoroutine(EndDrag(_selectedCard));
                 }
             }
             else
@@ -296,8 +296,6 @@ namespace CardGrid
             {
                 ReturnDragCard(drag);
             }
-            
-            Save();
             _inputActive = true;
         }
         

@@ -145,6 +145,7 @@ namespace CardGrid
             MainMenu.Notify.SetActive(IsHaveCompletedAchievements());
             BattleUI.BattleMenu.Notify.SetActive(IsHaveCompletedAchievements());
             BattleUI.BattleMenu.TrophiesQuantity.text = _CommonState.AchievementsTrophies.ToString();
+            Save();
         }
 
         void UpdateAchievements()
@@ -207,7 +208,6 @@ namespace CardGrid
             achieve.AchiveGO.Progress.gameObject.SetActive(false);
             _rewarding = true;
             StartCoroutine(Reward(achieve, achiveSO));
-            Save();
             
             UpdateAchievements();
         }

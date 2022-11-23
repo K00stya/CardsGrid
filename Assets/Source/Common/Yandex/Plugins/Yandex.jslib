@@ -64,7 +64,8 @@ mergeInto(LibraryManager.library, {
   {
     ysdk.getLeaderboards().then(lb =>
     { 
-      lb.setLeaderboardScore(name, value);
+      var dataString = UTF8ToString(name);
+      lb.setLeaderboardScore(dataString, value);
     });
   },
 
@@ -72,7 +73,8 @@ mergeInto(LibraryManager.library, {
   {
     ysdk.getLeaderboards().then(lb => 
     {
-      lb.getLeaderboardEntries(name, { quantityTop: 10, includeUser: true, quantityAround: 3 })
+      var dataString = UTF8ToString(name);
+      lb.getLeaderboardEntries(dataString, { quantityTop: 10, includeUser: true, quantityAround: 3 })
       .then(res => console.log(res));
     });
   },

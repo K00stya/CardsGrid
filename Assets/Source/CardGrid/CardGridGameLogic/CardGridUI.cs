@@ -80,7 +80,6 @@ namespace CardGrid
                 _CommonState.Volume = value;
                 MenuAudioSource.volume = value;
                 BattleAudioSource.volume = value;
-                DelaySave();
             });
             MainMenu.VolumeSlider.onValueChanged.AddListener(value =>
             {
@@ -88,7 +87,6 @@ namespace CardGrid
                 _CommonState.Volume = value;
                 MenuAudioSource.volume = value;
                 BattleAudioSource.volume = value;
-                DelaySave();
             });
 
             
@@ -122,7 +120,6 @@ namespace CardGrid
         {
             StopCoroutine(DelaySave());
             yield return new WaitForSeconds(1);
-            Save();
         }
 
         void LoadUI()
@@ -552,7 +549,6 @@ namespace CardGrid
             Highlight.gameObject.SetActive(false);
             StopAllCoroutines();
             DOTween.KillAll();
-            Save();
             DestroyAndUnloadCards();
         }
 

@@ -522,6 +522,7 @@ namespace CardGrid
         void Save(bool timer = true)
         {
             if(_saveTimer < SaveReload && timer) return;
+            
             _saveTimer = 0;
 #if UNITY_WEBGL && !UNITY_EDITOR
             string jString = JsonUtility.ToJson(_CommonState);

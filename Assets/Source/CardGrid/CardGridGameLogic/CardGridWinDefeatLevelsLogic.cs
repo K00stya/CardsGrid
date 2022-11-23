@@ -46,7 +46,6 @@ namespace CardGrid
 
         void Win()
         {
-            Save();
             DebugSystem.DebugLog("Win", DebugSystem.Type.Battle);
             StopAllCoroutines();
             DOTween.KillAll();
