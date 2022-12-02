@@ -36,7 +36,7 @@ namespace CardGrid
                 BattleAudioSource.clip = ColorSound;
                 BattleAudioSource.Play();
                 
-                yield return new WaitForSeconds(SpawnEffectOnCards(_cards.ToArray(), true));
+                yield return new WaitForSeconds(SpawnEffectOnCards(_cards.ToArray()));
                 yield return ImpactDamageOnField(_cards.ToArray());
                 _enemiesRecession = true;
             }

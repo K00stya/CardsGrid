@@ -5,6 +5,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using InstantGamesBridge;
 
 namespace CardGrid
 {
@@ -39,7 +40,6 @@ namespace CardGrid
             {
                 PlayClickSound();
                 ChangeLanguage(language);
-                Save();
             });
 
             MainMenu.OpenAhievements.onClick.AddListener(() =>
@@ -318,21 +318,35 @@ namespace CardGrid
                 OpenDefeat(BattleUI.BattleMenu);
             });
             
-#if UNITY_WEBGL && !UNITY_EDITOR
-            
             BattleUI.GetAdItems.onClick.AddListener(() =>
             {
-                _rewarded = false;
                 rewardsLeft--;
-                Yandex.ShowRewardAd();
+                Bridge.advertisement.ShowRewarded(success =>
+                {
+                    if (success)
+                    {
+                        AddRewardedItems();
+                    }
+                    else
+                    {
+                        NotRewardPlayer();
+                    }
+                });
             });
 
-            Yandex.SetActiveRateButton();
-            BattleUI.BattleMenu.RateGame.onClick.AddListener(() =>
+            if (Bridge.social.isRateSupported)
             {
-                Yandex.RateGame();
-            });
-#endif
+                if(Bridge.platform.id == "yandex")
+                    Yandex.SetActiveRateButton();
+                BattleUI.BattleMenu.RateGame.onClick.AddListener(() =>
+                {
+                    Bridge.social.Rate();
+                });
+            }
+            else
+            {
+                BattleUI.BattleMenu.RateGame.gameObject.SetActive(false);
+            }
 
             void PlayAgain()
             {
@@ -495,12 +509,14 @@ namespace CardGrid
 
         public void OpenDefeat(BattleMenu menu)
         {
-#if UNITY_WEBGL && !UNITY_EDITOR
-            if(WithQuantity)
-                Yandex.GetLeaderBoard(CLASSICMODE);
+            if (WithQuantity)
+            {
+                
+            }//Yandex.GetLeaderBoard(CLASSICMODE);
             else
-                Yandex.GetLeaderBoard(ONLYWITHCOLOR);
-#endif
+            {
+                
+            }//Yandex.GetLeaderBoard(ONLYWITHCOLOR);
             
             menu.MenuLable.gameObject.SetActive(false);
             menu.EndLable.gameObject.SetActive(true);
@@ -545,6 +561,7 @@ namespace CardGrid
 
         void EndBattle()
         {
+            _nextLevels = 0;
             TutorHandObj.SetActive(false);
             Highlight.gameObject.SetActive(false);
             StopAllCoroutines();

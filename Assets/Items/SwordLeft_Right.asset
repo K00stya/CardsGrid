@@ -14,13 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: SwordRight_Left
   CardType: 4
-  StartQuantity: 4
   Type: 1
   Shape: 0
   ColorType: 0
   Sprite: {fileID: 21300000, guid: 363c9daa00af6af44bff748cb3657561, type: 3}
-  ShapeSprite: {fileID: 0}
   ImpactMap: 10
-  Effect: {fileID: 2484946017443502368, guid: 255c4198f61d80d40bf107538f14809d, type: 3}
-  ShapeEffect: {fileID: 0}
+  Effect: {fileID: 7431265563841405139, guid: 255c4198f61d80d40bf107538f14809d, type: 3}
   SoundEffect: {fileID: 8300000, guid: 7d6d1c91a2db71e4bbab78eb698a6373, type: 3}

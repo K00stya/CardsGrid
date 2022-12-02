@@ -14,12 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Gem4Blue
   CardType: 23
-  StartQuantity: 0
   Type: 0
   Shape: 3
   ColorType: 0
   Sprite: {fileID: 21300000, guid: aeb0fa3a678fc484a896eacdbedd65fc, type: 3}
-  ShapeSprite: {fileID: 2800000, guid: ed563a7e2769c334ba0b93657d2a757f, type: 3}
   ImpactMap: 0
-  Effect: {fileID: 8163684771574148739, guid: 86410a9595efac247ae1067b102d5721, type: 3}
-  ShapeEffect: {fileID: 6792422011593997659, guid: 71c5e5ed3ca77844a8d79121f7ebe000, type: 3}
+  Effect: {fileID: 7899759636986838969, guid: 86410a9595efac247ae1067b102d5721, type: 3}
+  SoundEffect: {fileID: 0}

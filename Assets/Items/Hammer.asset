@@ -14,13 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Hammer
   CardType: 1
-  StartQuantity: 1
   Type: 1
   Shape: 0
   ColorType: 0
   Sprite: {fileID: 21300000, guid: ab4c15c487fc0ed44b25b8a3a9ee7305, type: 3}
-  ShapeSprite: {fileID: 0}
   ImpactMap: 1
-  Effect: {fileID: 2711157171983558214, guid: 3fc1dbdb410a38943998686b02dfc3d0, type: 3}
-  ShapeEffect: {fileID: 0}
+  Effect: {fileID: 3541963635732142996, guid: 3fc1dbdb410a38943998686b02dfc3d0, type: 3}
   SoundEffect: {fileID: 8300000, guid: 51b01f381b712f44892773e88910db43, type: 3}

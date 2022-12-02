@@ -304,7 +304,6 @@
             window.ysdk = ysdk;
 
             //InitPayments();
-            auth();
             ysdk.getLeaderboards()
             .then(_lb => lb = _lb);
 
@@ -335,9 +334,26 @@
             } catch (e) {
                 console.error('CRASH canShowFeedback: ', e.message);
             }
+
+            auth1();
         });
+
+        function auth1()
+        {
+            initPlayer().then(_player => 
+            {
+                if (_player.getMode() === 'lite') 
+                {
+                    // Игрок не авторизован.
+                    console.error('Not LOG', e.message);
+                }
+            }).catch(err => {
+                    // Ошибка при инициализации объекта Player.
+                });
+
+        }
         
-        function auth()
+        function auth2()
         {
             initPlayer().then(_player => 
             {
@@ -364,13 +380,15 @@
 
             function initPlayer() 
             {
-                return ysdk.getPlayer().then(_player => 
+                return ysdk.getPlayer({ scopes: false }).then(_player => 
                 {
                     player = _player;
 
                     return player;
                 });
             }
+
+            
 
     function PaintRBT(rbt) {
         try {

@@ -9,13 +9,23 @@ using Random = UnityEngine.Random;
 
 namespace CardGrid
 {
+    [Serializable]
+    public class EffectPool
+    {
+        public CrystalEffect Effect;
+        public int quantity;
+    }
     /*
      * In this partial, the logic of the player's attack.
      * Mainly processes Update and its possible results during the battle.
      */
     public partial class CardGridGame //PlayerImpactLogic
     {
-        public float SpeedRecession = 0.3f;
+        public float SpeedRecession = 0.4f;
+
+        [Header("EffectsPools")] 
+        public EffectPool[] Pools;
+        private Dictionary<string, Queue<CrystalEffect>> _poolsEffects;
         
         bool _inputActive = true;
         Sequence _mySequence;
@@ -38,6 +48,20 @@ namespace CardGrid
         bool _tutorActive;
         bool _playerPressed;
         int _nextLevels;
+
+        void LoadPools()
+        {
+            _poolsEffects = new Dictionary<string, Queue<CrystalEffect>>();
+            foreach (var pool in Pools)
+            {
+                var queue = new Queue<CrystalEffect>(pool.quantity);
+                for (int i = 0; i < pool.quantity; i++)
+                {
+                    queue.Enqueue(Instantiate(pool.Effect));
+                }
+                _poolsEffects.Add(pool.Effect.name, queue);
+            }
+        }
 
         //Not fixed because I use raycasts for get input, and I don't make changes in physics
         void Update()
@@ -368,7 +392,7 @@ namespace CardGrid
                 BattleAudioSource.Play();
             }
             //visual effect
-            yield return new WaitForSeconds(SpawnEffectOnCards(impactCardState, cards, true));
+            SpawnItemEffect(impactCardState, cards);
             //yield return ReactOnImpact(deaths, woundeds);
         }
         
@@ -445,7 +469,8 @@ namespace CardGrid
             {
                 sum += val;
             }
-            yield return UpdateLevel(sum);
+            if(_CommonState.BattleState.LevelID == 0)
+                yield return UpdateLevel(sum);
             
             foreach (var col in _collection)
             {
@@ -467,7 +492,8 @@ namespace CardGrid
             {
                 sum += val;
             }
-            yield return UpdateLevel(sum);
+            if(_CommonState.BattleState.LevelID == 0)
+                yield return UpdateLevel(sum);
             
             foreach (var col in _collection)
             {
@@ -706,18 +732,10 @@ namespace CardGrid
         }
 
         //TODO Pool efffects
-        float SpawnEffectOnCards(CardState impactCardState, CardState[] cards, bool color)
+        float SpawnItemEffect(CardState impactCardState, CardState[] cards)
         {
             bool needWait = false;
-            GameObject effect;
-            if (color)
-            {
-                effect = impactCardState.CardSO.Effect;
-            }
-            else
-            {
-                effect = impactCardState.CardSO.ShapeEffect;
-            }
+            var effect = impactCardState.CardSO.Effect;
 
             if (effect)
             {
@@ -725,17 +743,7 @@ namespace CardGrid
                 {
                     if (card.Quantity >= 0) //Target live?
                     {
-                        var go = Instantiate(effect, BattleObjects.ParentEffects);
-                        
-                        if (go.TryGetComponent<ShapeEffect>(out var shape))
-                        {
-                            shape.SetShape(impactCardState.CardSO.ShapeSprite);
-                        }
-                        else if (go.TryGetComponent<ColorEffect>(out var sparks))
-                        {
-                            sparks.SetColor(impactCardState.CardSO.ColorType);
-                        }
-                        
+                        var go = GetEffect(effect.name);
                         go.transform.position = BattleObjects.Field.GetCellSpacePosition(card.Position)
                                                 + new Vector3(0,2f,0);
                         needWait = true;
@@ -743,13 +751,13 @@ namespace CardGrid
                 }
                 
                 if(needWait)
-                    return effect.GetComponent<ParticleSystem>().main.duration;
+                    return effect.System.main.duration;
             }
 
             return 0;
         }
 
-        float SpawnEffectOnCards(CardState[] cards, bool color)
+        float SpawnEffectOnCards(CardState[] cards)
         {
             float duration = 0;
 
@@ -757,26 +765,29 @@ namespace CardGrid
             {
                 if (card.Quantity >= 0) //Target live?
                 {
-                    var go = Instantiate(card.CardSO.Effect, BattleObjects.ParentEffects);
+                    var go = GetEffect(card.CardSO.Effect.name);
 
-                    // if (go.TryGetComponent<ShapeEffect>(out var shape))
-                    // {
-                    //     shape.SetShape(impactCardState.CardSO.ShapeSprite);
-                    // }
-                    if (go.TryGetComponent<ColorEffect>(out var sparks))
-                    {
-                        sparks.SetColor(card.CardSO.ColorType);
-                    }
-
+                    go.Color.SetColor(card.CardSO.ColorType);
                     go.transform.position = BattleObjects.Field.GetCellSpacePosition(card.Position)
                                             + new Vector3(0, 2f, 0);
-                   
                     if(duration == 0)
-                        duration = go.GetComponent<ParticleSystem>().main.duration;
+                        duration = go.System.main.duration;
                 }
             }
 
             return duration;
+        }
+
+        private Queue<CrystalEffect> _effects;
+        CrystalEffect _currentEffect;
+        CrystalEffect GetEffect(string name)
+        {
+            _effects = _poolsEffects[name];
+            _currentEffect = _effects.Dequeue();
+            _effects.Enqueue(_currentEffect);
+            _currentEffect.gameObject.SetActive(true);
+            _currentEffect.System.Play();
+            return _currentEffect;
         }
 
         float SpawnEffectOnCard(CardState cardState)

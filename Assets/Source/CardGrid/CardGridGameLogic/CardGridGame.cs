@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using InstantGamesBridge;
+using InstantGamesBridge.Modules.Storage;
 using UnityEditor;
 using UnityEngine;
 
@@ -77,21 +79,21 @@ namespace CardGrid
                          + BattleObjects.Field.SizeX * BattleObjects.Field.SizeZ;
             _cardMonobehsPool = new List<CardGameObject>(length);
 
-#if UNITY_WEBPLAYER
-            string redirectUrl = "https://yandex.ru/games";
-            string[] domains = { "https://yandex.ru"};
-		    string jsarray = "[";
-		    foreach (string domain in domains) {
-			    jsarray += "'"+domain+"',";
-		}
-		jsarray += "]";
-		Application.ExternalEval("function contains(a, obj) { " +
-			                       "var i = a.length; " +
-			                       "while (i--) { if (a[i] === obj) { return true;}} " +
-			                       "return false;" +
-			                      "} "+
-			                     "if(contains("+jsarray+", document.location.host)) {} else { document.location='"+redirectUrl+"'; }");
-#endif
+// #if UNITY_WEBPLAYER
+//             string redirectUrl = "https://yandex.ru/games";
+//             string[] domains = { "https://yandex.ru"};
+// 		    string jsarray = "[";
+// 		    foreach (string domain in domains) {
+// 			    jsarray += "'"+domain+"',";
+// 		}
+// 		jsarray += "]";
+// 		Application.ExternalEval("function contains(a, obj) { " +
+// 			                       "var i = a.length; " +
+// 			                       "while (i--) { if (a[i] === obj) { return true;}} " +
+// 			                       "return false;" +
+// 			                      "} "+
+// 			                     "if(contains("+jsarray+", document.location.host)) {} else { document.location='"+redirectUrl+"'; }");
+// #endif
 
             foreach (var group in CommonLevelsGroups)
             {
@@ -109,17 +111,39 @@ namespace CardGrid
 
         private void Start()
         {
-#if UNITY_WEBGL && !UNITY_EDITOR
-            Yandex.LoadFromYandex();
-#endif
-
-#if UNITY_EDITOR
-            Load(null);
-#endif
+            Bridge.storage.Get("CrystalFight", (success, data) => 
+            {
+                if (success)
+                {
+                    Load(data);
+                }
+                else
+                {
+                    Load(null);
+                }
+            }, GetStorageType());
+        }
+        
+        private float SaveReload = 5f;
+        float _saveTimer;
+        void Save(bool timer = true)
+        {
+            if(_saveTimer < SaveReload && timer) return;
+            
+            _saveTimer = 0;
+            string jString = JsonUtility.ToJson(_CommonState);
+            Bridge.storage.Set("CrystalFight", jString, null, GetStorageType());
         }
 
-        //Yandex
-        public void Load(string value)
+        StorageType GetStorageType()
+        {
+            if (Bridge.player.isAuthorized)
+                return StorageType.PlatformInternal;
+            else
+                return StorageType.LocalStorage;
+        }
+        
+        private void Load(string value)
         {
             if (string.IsNullOrEmpty(value) || value == "null")
             {
@@ -128,7 +152,14 @@ namespace CardGrid
             else
             {
                 DebugSystem.DebugLog("LoadedSave.", DebugSystem.Type.SaveSystem);
-                _CommonState = JsonUtility.FromJson<PlayerCommonState>(value);
+                try
+                {
+                    _CommonState = JsonUtility.FromJson<PlayerCommonState>(value);
+                }
+                catch (Exception e)
+                {
+                    _CommonState = null;
+                }
             }
             
             var levels = (Level[]) typeof(LevelsMaps).GetField("Levels").GetValue(null);
@@ -155,24 +186,13 @@ namespace CardGrid
                 LoadAchievementsStates();
                 StartNewBattle(BattleState.CommonLevelID);
                 DebugSystem.DebugLog("Save no exist. First active.", DebugSystem.Type.SaveSystem);
-                
-#if UNITY_WEBGL && !UNITY_EDITOR
-                Yandex.NewSave();
-#endif
             }
             else if (_CommonState.Levels.Length < levels.Length || _CommonState.Achievements.Length < AchievementsSO.Length)
             {
                 LoadGameResave(levels);
-                
-#if UNITY_WEBGL && !UNITY_EDITOR
-                Yandex.ReSave();
-#endif
             }
             else
             {
-#if UNITY_WEBGL && !UNITY_EDITOR
-                Yandex.LoadSave();
-#endif
                 OpenMainMenu();
             }
             
@@ -185,6 +205,8 @@ namespace CardGrid
             
             Fade.CrossFadeAlpha(0 , 1f, false);
             StartCoroutine(FadeOff());
+            LoadPools();
+            
             IEnumerator FadeOff()
             {
                 yield return new WaitForSeconds(1f);
@@ -495,39 +517,11 @@ namespace CardGrid
             Save();
         }
 
-        private bool _rewarded;
-        //Yandex
-        public void Rewarded()
-        {
-            _rewarded = true;
-        }
-
-        public void AdRewardClose()
-        {
-            if (_rewarded)
-                StartCoroutine(AddRewardedItems());
-            else
-                NotRewardPlayer();
-        }
-
         //Yandex
         public void NotRewardPlayer()
         {
             BattleUI.EndItemsReward.gameObject.SetActive(false);
             OpenDefeat(BattleUI.BattleMenu);
-        }
-
-        private float SaveReload = 15f;
-        float _saveTimer;
-        void Save(bool timer = true)
-        {
-            if(_saveTimer < SaveReload && timer) return;
-            
-            _saveTimer = 0;
-#if UNITY_WEBGL && !UNITY_EDITOR
-            string jString = JsonUtility.ToJson(_CommonState);
-            Yandex.SaveOnYandex(jString);
-#endif
         }
 
 #if UNITY_EDITOR
@@ -541,8 +535,7 @@ namespace CardGrid
 
         void LoadLanguage()
         {
-#if UNITY_WEBGL && !UNITY_EDITOR
-                switch (Yandex.GetLang())
+            switch (Bridge.platform.language)
                 {
                     case "ru":
                         _CommonState.Language = Language.Russian;
@@ -568,7 +561,6 @@ namespace CardGrid
                         _CommonState.Language = Language.English;
                         break;
                 }
-#endif
         }
     }
 }
