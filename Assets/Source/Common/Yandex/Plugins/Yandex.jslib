@@ -2,10 +2,13 @@ mergeInto(LibraryManager.library, {
 
   SetActiveRateButton: function()
   {
-     ysdk.feedback.canReview()
+     bridge.platform.sdk.feedback.canReview()
     .then(({ value, reason }) => 
     {
-      unityInstance.SendMessage('CardGridGame', 'SetActiveRateButton', value);
+      if(value)
+        unityInstance.SendMessage('CardGridGame', 'SetActiveRateButton');
+      else
+        unityInstance.SendMessage('CardGridGame', 'SetDeActiveRateButton');
     })
   },
 });

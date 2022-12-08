@@ -280,6 +280,7 @@ namespace CardGrid
         
         IEnumerator EndDrag(CardGameObject drag)
         {
+            Debug.Log(_battleMenuOpen);
             if (drag == null)
             {
                 yield break;
@@ -287,7 +288,6 @@ namespace CardGrid
 
             if (!_inputActive || _battleMenuOpen)
             {
-                //ReturnDragCard();
                 yield break;
             }
 

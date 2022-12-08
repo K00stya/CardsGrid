@@ -111,6 +111,7 @@ namespace CardGrid
 
         private void Start()
         {
+            Bridge.advertisement.ShowInterstitial();
             Bridge.storage.Get("CrystalFight", (success, data) => 
             {
                 if (success)

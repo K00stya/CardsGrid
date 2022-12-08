@@ -103,73 +103,53 @@ namespace CardGrid
         private bool authAsked;
         (CT, int)[] _AdRewards;
         int rewardsLeft;
+
         void Defeat()
         {
-            if (!Bridge.player.isAuthorized && !authAsked)
+            Save();
+            DebugSystem.DebugLog("Defeat", DebugSystem.Type.Battle);
+
+            MenuAudioSource.clip = DefeateSound;
+            MenuAudioSource.Play();
+
+            if (_CommonState.BattleState.LevelID <= BattleState.CommonLevelID && rewardsLeft > 0)
             {
-                authAsked = true;
-                var authorizeYandexOptions = new AuthorizeYandexOptions(false);
-                Bridge.player.Authorize(
-                    success =>
-                    {
-                        Defeat2();
-                    },
-                    authorizeYandexOptions);
+                BattleUI.EndItemsReward.gameObject.SetActive(true);
+                var rewardsImages = BattleUI.EndItemsReward.Reward;
+                _AdRewards = GenerateRandomRewards(5, 5);
+                int j = 0;
+                for (; j < _AdRewards.Length; j++)
+                {
+                    rewardsImages[j].sprite = GetCardSO(_AdRewards[j].Item1).Sprite;
+                    rewardsImages[j].gameObject.SetActive(true);
+                }
+
+                for (; j < rewardsImages.Length; j++)
+                {
+                    rewardsImages[j].gameObject.SetActive(false);
+                }
             }
             else
             {
-                Defeat2();
+                BattleUI.EndItemsReward.gameObject.SetActive(false);
+                OpenDefeat(BattleUI.BattleMenu);
             }
 
-            
-            void Defeat2()
-            {
-                Save();
-                DebugSystem.DebugLog("Defeat", DebugSystem.Type.Battle);
+            _inputActive = false;
 
-                MenuAudioSource.clip = DefeateSound;
-                MenuAudioSource.Play();
-            
-                if (_CommonState.BattleState.LevelID <= BattleState.CommonLevelID && rewardsLeft > 0)
+            if (_CommonState.BattleState.LevelID == 0)
+            {
+                if (WithQuantity)
                 {
-                    BattleUI.EndItemsReward.gameObject.SetActive(true);
-                    var rewardsImages = BattleUI.EndItemsReward.Reward;
-                    _AdRewards = GenerateRandomRewards(5, 5);
-                    int j = 0;
-                    for (; j < _AdRewards.Length; j++)
-                    {
-                        rewardsImages[j].sprite = GetCardSO(_AdRewards[j].Item1).Sprite;
-                        rewardsImages[j].gameObject.SetActive(true);
-                    }
-                    for (; j < rewardsImages.Length; j++)
-                    {
-                        rewardsImages[j].gameObject.SetActive(false);
-                    }
+                    Bridge.leaderboard.SetScore(
+                        success => { },
+                        new SetScoreYandexOptions(_CommonState.BattleState.NumberLevel, CLASSICMODE));
                 }
                 else
                 {
-                    BattleUI.EndItemsReward.gameObject.SetActive(false);
-                    OpenDefeat(BattleUI.BattleMenu);
-                }
-            
-                _inputActive = false;
-
-                if (_CommonState.BattleState.LevelID == 0)
-                {
-                    if (WithQuantity)
-                    {
-                        Bridge.leaderboard.SetScore(
-                            success =>
-                            { },
-                            new SetScoreYandexOptions(_CommonState.BattleState.NumberLevel, CLASSICMODE));
-                    }
-                    else
-                    {
-                        Bridge.leaderboard.SetScore(
-                            success =>
-                            { },
-                            new SetScoreYandexOptions(_CommonState.BattleState.NumberLevel, ONLYWITHCOLOR));
-                    }
+                    Bridge.leaderboard.SetScore(
+                        success => { },
+                        new SetScoreYandexOptions(_CommonState.BattleState.NumberLevel, ONLYWITHCOLOR));
                 }
             }
         }

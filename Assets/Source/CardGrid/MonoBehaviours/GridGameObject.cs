@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace CardGrid
@@ -10,7 +11,29 @@ namespace CardGrid
         public int SizeX = 6;
         public int SizeZ = 6;
 
-        public Vector3 CubeSize = new Vector3(1,1,1);    
+        public Vector3 CubeSize = new Vector3(1,1,1);
+
+        // private void OnValidate()
+        // {
+        //     var position = transform.position;
+        //     int i = 0;
+        //     float offsetX = 0;
+        //     float offsetY = 0;
+        //     for (int x = 0; x < SizeX; x++)
+        //     {
+        //         for (int z = 0; z < OffsetZ; z++)
+        //         {
+        //             if(i >= transform.childCount) return;
+        //             transform.GetChild(i).transform.position =
+        //                 new Vector3(position.x + offsetX, position.y + offsetY, position.z);
+        //             i++;
+        //             offsetY += OffsetZ;
+        //         }
+        //
+        //         offsetY = 0;
+        //         offsetX += OffsetX;
+        //     }
+        // }
 
         public Vector3 GetCellSpacePosition(Vector2 fieldPosition)
         {

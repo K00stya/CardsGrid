@@ -285,6 +285,7 @@ namespace CardGrid
             {
                 PlayClickSound();
                 PlayAgain();
+                _battleMenuOpen = false;
             });
             BattleUI.BattleMenu.ToMenu.onClick.AddListener(() =>
             {
@@ -325,7 +326,7 @@ namespace CardGrid
                 {
                     if (success)
                     {
-                        AddRewardedItems();
+                        StartCoroutine(AddRewardedItems());
                     }
                     else
                     {
@@ -462,6 +463,7 @@ namespace CardGrid
             BattleUI.LevelNumber.text = _CommonState.BattleState.NumberLevel.ToString();
             BattleUI.LevelProgress.maxValue = _CommonState.BattleState.MaxLevelProgress;
             BattleUI.LevelProgress.SetValueWithoutNotify(_CommonState.BattleState.LevelProgress);
+            _battleMenuOpen = false;
         }
 
         void GoToMenu()
@@ -561,7 +563,11 @@ namespace CardGrid
 
         void EndBattle()
         {
+            if(_CommonState.BattleState.LevelID == 0)
+                Bridge.advertisement.ShowInterstitial();
             _nextLevels = 0;
+            _dragGameObjectCard = null;
+            _selectedCard = null;
             TutorHandObj.SetActive(false);
             Highlight.gameObject.SetActive(false);
             StopAllCoroutines();
@@ -576,9 +582,13 @@ namespace CardGrid
         }
 
         //Yandex
-        public void SetActiveRateButton(bool active)
+        public void SetActiveRateButton()
         {
-            BattleUI.BattleMenu.RateGame.gameObject.SetActive(active);
+            BattleUI.BattleMenu.RateGame.gameObject.SetActive(true);
+        }
+        public void SetDeActiveRateButton()
+        {
+            BattleUI.BattleMenu.RateGame.gameObject.SetActive(false);
         }
     }
 }
