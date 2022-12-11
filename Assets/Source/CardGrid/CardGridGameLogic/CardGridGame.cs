@@ -79,22 +79,6 @@ namespace CardGrid
                          + BattleObjects.Field.SizeX * BattleObjects.Field.SizeZ;
             _cardMonobehsPool = new List<CardGameObject>(length);
 
-// #if UNITY_WEBPLAYER
-//             string redirectUrl = "https://yandex.ru/games";
-//             string[] domains = { "https://yandex.ru"};
-// 		    string jsarray = "[";
-// 		    foreach (string domain in domains) {
-// 			    jsarray += "'"+domain+"',";
-// 		}
-// 		jsarray += "]";
-// 		Application.ExternalEval("function contains(a, obj) { " +
-// 			                       "var i = a.length; " +
-// 			                       "while (i--) { if (a[i] === obj) { return true;}} " +
-// 			                       "return false;" +
-// 			                      "} "+
-// 			                     "if(contains("+jsarray+", document.location.host)) {} else { document.location='"+redirectUrl+"'; }");
-// #endif
-
             foreach (var group in CommonLevelsGroups)
             {
                 foreach (var level in group.Levels)
@@ -300,10 +284,10 @@ namespace CardGrid
             _CommonState.BattleState.LevelProgress = 0;
             _CommonState.BattleState.NumberLevel = 1;
             _CommonState.BattleState.MaxLevelProgress = 10;
-            BattleObjects.FieldRotator.eulerAngles = Vector3.zero;
-            for (int i = 0; i < BattleObjects.Field.transform.childCount; i++)
+            BattleObjects.FieldRotator.localEulerAngles = Vector3.zero;
+            for (int i = 0; i < BattleObjects.Field.ParentCards.childCount; i++)
             {
-                BattleObjects.Field.transform.GetChild(i).eulerAngles = Vector3.zero;
+                BattleObjects.Field.ParentCards.GetChild(i).localEulerAngles = Vector3.zero;
             }
 
             ActiveBattleUI();

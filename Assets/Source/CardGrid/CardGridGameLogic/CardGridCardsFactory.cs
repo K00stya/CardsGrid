@@ -140,10 +140,11 @@ namespace CardGrid
                     if (quantity <= 0)
                         quantity = 1;
                     cardState.Quantity = quantity;
+                    cardState.StartQuantity = quantity;
                     if(chainMap != null)
                         if (chainMap.GetLength(0) > z && chainMap.GetLength(1) > x)
                         {
-                            cardState.Chains = chainMap[z, x];
+                            cardState.Block = chainMap[z, x];
                         }
 
                     _loadedMap[x].Enqueue(cardState);
@@ -236,24 +237,18 @@ namespace CardGrid
             {
                 CardSO = newCard,
                 Quantity = quantity,
-            };
-        }
-
-        CardState CreateCard(CardSO newCard, int quantity)
-        {
-            return new CardState
-            {
-                CardSO = newCard,
-                Quantity = quantity,
+                StartQuantity = quantity
             };
         }
 
         CardState CreateNewRandomItem()
         {
+            int quantity = Random.Range(1, _startMaxCellQuantity);
             var card = new CardState
             {
                 CardSO = Items[Random.Range(0, Items.Length)],
-                Quantity = Random.Range(1, _startMaxCellQuantity)
+                Quantity = quantity,
+                StartQuantity = quantity
             };
             
             return card;
@@ -281,6 +276,7 @@ namespace CardGrid
 
                     cardState.CardSO = newCard;
                     cardState.Quantity = quantity;
+                    cardState.StartQuantity = quantity;
                     cardState.GameObject.gameObject.SetActive(true);
                     SetCommonCardState(ref cardState, ref cardState.GameObject, newCard);
                 }
@@ -327,7 +323,8 @@ namespace CardGrid
 
         CardGameObject SpawnCard(CardState cardState, GridGameObject grid)
         {
-            CardGameObject cardGameObject = Instantiate(BattleObjects.CardPrefab, grid.transform);
+            CardGameObject cardGameObject = Instantiate(BattleObjects.CardPrefab, grid.ParentCards);
+            cardGameObject.transform.localScale = grid.SlotScale;
 
             if (cardState.Grid == CardGrid.Field)
             {
@@ -352,10 +349,7 @@ namespace CardGrid
             }
             _cardMonobehsPool.Add(cardGameObject);
 
-            for (int i = 0; i < cardGameObject.Chains.Length; i++)
-            {
-                cardGameObject.Chains[i].SetActive(cardState.Chains > i);
-            }
+            cardGameObject.Block.SetActive(cardState.Block > 0);
 
             return cardGameObject;
         }

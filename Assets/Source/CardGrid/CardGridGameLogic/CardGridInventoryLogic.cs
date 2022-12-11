@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 
 namespace CardGrid
@@ -29,13 +30,7 @@ namespace CardGrid
 
                 newItems = true;
                 _itemsRecession = true;
-                MoveInventoryAndField(x, cells, items);
-
-                card.Grid = CardGrid.Inventory;
-                card.GameObject.transform.SetParent(BattleObjects.Inventory.transform);
-                card.Position = new Vector2Int(0, 0);
-                items[0, 0] = card;
-                MoveCardToSelfPosition(items[0, 0], BattleObjects.Inventory);
+                GetItemFromFiled(cells, items, card);
                 break;
             }
 
@@ -49,6 +44,17 @@ namespace CardGrid
 
                 yield return new WaitForSeconds(SpeedRecession);
             }
+        }
+
+        void GetItemFromFiled(CardState[,] cells, CardState[,] items, CardState card)
+        {
+            MoveInventoryAndField(card.Position.x, cells, items);
+
+            card.Grid = CardGrid.Inventory;
+            card.GameObject.transform.SetParent(BattleObjects.Inventory.ParentCards);
+            card.Position = new Vector2Int(0, 0);
+            items[0, 0] = card;
+            MoveCardToSelfPosition(items[0, 0], BattleObjects.Inventory);
         }
         
         /*
@@ -83,7 +89,7 @@ namespace CardGrid
                         excessItem.Grid = CardGrid.Field;
                         excessItem.Quantity = 0;
                         excessItem.GameObject.gameObject.SetActive(false);
-                        excessItem.GameObject.transform.SetParent(BattleObjects.Field.transform);
+                        excessItem.GameObject.transform.SetParent(BattleObjects.Field.ParentCards);
                         excessItem.GameObject.Sprite.color = Color.white;
                         excessItem.Position = new Vector2Int(currentX, lowerZ);
                         cells[currentX, lowerZ] = excessItem;
@@ -120,7 +126,7 @@ namespace CardGrid
             }
         }
 
-        void AddItemInInventory(CardState card)
+        void AddItemInInventory(CardState card, bool moveToInventory = false)
         {
             var items = _CommonState.BattleState.Inventory.Items;
 
@@ -135,7 +141,11 @@ namespace CardGrid
             card.GameObject.gameObject.SetActive(true);
             items[0, 0] = card;
 
-            card.GameObject.transform.position = BattleObjects.Inventory.GetCellSpacePosition(new Vector2(-1,0));
+            var pos = BattleObjects.Inventory.GetCellSpacePosition(new Vector2(-1, 0));
+            if(moveToInventory)
+                card.GameObject.transform.DOMove(pos, SpeedRecession);
+            else
+                card.GameObject.transform.position = pos;
         }
 
         void MoveInventory(CardState[,] items)

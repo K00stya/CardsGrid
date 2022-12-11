@@ -51,7 +51,7 @@ namespace CardGrid
                     MoveTutorHandBetween(firstPos, secondPos);
                 }
 
-                if (_dragGameObjectCard != null || _selectedCard != null)
+                if (_selectedCard != null)
                 {
                     Highlight.gameObject.transform.position = secondPos + new Vector3(0, 0.5f,0);
                 }
@@ -60,6 +60,25 @@ namespace CardGrid
                     Highlight.gameObject.transform.position = firstPos + new Vector3(0, 0.5f,0);
                 }
             }
+        }
+
+        void GreyItems()
+        {
+            if (_CommonState.BattleState.Inventory.Items != null)
+                if (!_inputActive)
+                {
+                    foreach (var item in _CommonState.BattleState.Inventory.Items)
+                    {
+                        item.GameObject.Sprite.color = Color.gray;
+                    }
+                }
+                else
+                {
+                    foreach (var item in _CommonState.BattleState.Inventory.Items)
+                    {
+                        item.GameObject.Sprite.color = Color.white;
+                    }
+                }
         }
 
         void MoveTutorHandBetween(Vector3 firstPos, Vector3 secondPos)

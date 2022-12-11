@@ -77,8 +77,9 @@ namespace CardGrid
         public CardSO CardSO;
         public CardGrid Grid;
         public Vector2Int Position;
+        public int StartQuantity;
         public int Quantity;
-        public int Chains;
+        public int Block;
 
         //NonSerialized don't save in save system
         [NonSerialized]

@@ -566,7 +566,6 @@ namespace CardGrid
             if(_CommonState.BattleState.LevelID == 0)
                 Bridge.advertisement.ShowInterstitial();
             _nextLevels = 0;
-            _dragGameObjectCard = null;
             _selectedCard = null;
             TutorHandObj.SetActive(false);
             Highlight.gameObject.SetActive(false);

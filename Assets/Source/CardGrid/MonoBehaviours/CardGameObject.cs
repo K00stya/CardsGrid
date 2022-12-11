@@ -11,6 +11,6 @@ namespace CardGrid
         public TextMeshProUGUI QuantityText;
         public GameObject Highlight;
         public TextMeshProUGUI DebugPosition;
-        public GameObject[] Chains;
+        public GameObject Block;
     }
 }

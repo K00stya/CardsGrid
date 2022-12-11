@@ -15,6 +15,8 @@ namespace CardGrid
     [Serializable]
     public class BattleUI : MonoBehaviour
     {
+        public RotateLineButtonsPanel LeftRows;
+        public RotateLineButtonsPanel RightRows;
         public Button RotateRight;
         public Button RotateLeft;
         public Slider LevelProgress;

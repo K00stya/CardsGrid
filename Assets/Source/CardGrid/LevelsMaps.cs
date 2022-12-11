@@ -47,6 +47,7 @@ namespace CardGrid
         Y5,
         
         Bl,
+        Bt,
     }
 
     public class Level
