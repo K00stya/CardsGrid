@@ -6,16 +6,10 @@ using InstantGamesBridge;
 using InstantGamesBridge.Modules.Storage;
 using UnityEditor;
 using UnityEngine;
+using YG;
 
 namespace CardGrid
 {
-    [Serializable]
-    public class LevelsGroup
-    {
-        public LevelSO[] Levels = new LevelSO[5];
-        public int QuantityStarsToOpen;
-    }
-
     /*
      * The game code is divided into several files.
      * This file is the main script of the game, which is responsible
@@ -34,13 +28,8 @@ namespace CardGrid
         public LocalizationSystem Localization;
         public Tutorials Tutorials;
         public BattleGameObjects BattleObjects;
-        public CommonGameSettings CurrentGameSeetings;
-        public LevelsGroup[] CommonLevelsGroups;
-        public InfiniteLevelSO[] InfiniteLevels;
-
-        public CardSO[] Enemies;
-        public CardSO[] Items;
-        public ParticleSystem[] Effects;
+        public CommonGameSettings GameSetings;
+        public LevelsListSO Levels;
 
         public AudioSource BattleAudioSource;
         public AudioSource MusicAudioSource;
@@ -50,7 +39,6 @@ namespace CardGrid
         public AudioClip WinSound;
         public AudioClip DefeateSound;
         public AudioClip ColorSound;
-        public AudioClip ShapeSound;
         public AudioClip CompleteAchievementSound;
 
         const string SaveName = "CardGrid";
@@ -58,13 +46,12 @@ namespace CardGrid
         const string ONLYWITHCOLOR = "ONLYWITHCOLOR";
 
         Action PlayerClick;
-        int _startMaxCellQuantity;
+        int _startMaxCellQuantity = 10;
         float StandardChanceItemOnField = 0.1f;
         float _chanceItemOnFiled;
         PlayerCommonState _CommonState;
         List<CardGameObject> _cardMonobehsPool;
         Camera _camera;
-        bool WithShape = false;
         bool WithQuantity = true;
         List<ColorType> ColorTypes = new(5);
         int reawardForCompleteTask = 10;
@@ -73,20 +60,11 @@ namespace CardGrid
         {
             Application.targetFrameRate = 30;
             _camera = Camera.main;
-            DebugSystem.Settings = CurrentGameSeetings.Debug;
+            DebugSystem.Settings = GameSetings.Debug;
 
             int length = BattleObjects.Inventory.SizeX * BattleObjects.Inventory.SizeZ
                          + BattleObjects.Field.SizeX * BattleObjects.Field.SizeZ;
             _cardMonobehsPool = new List<CardGameObject>(length);
-
-            foreach (var group in CommonLevelsGroups)
-            {
-                foreach (var level in group.Levels)
-                {
-                    if (level != null)
-                        level.Init();
-                }
-            }
 
             Fade.gameObject.SetActive(true);
 
@@ -96,28 +74,49 @@ namespace CardGrid
         private void Start()
         {
             Bridge.advertisement.ShowInterstitial();
-            Bridge.storage.Get("CrystalFight", (success, data) => 
+            Bridge.storage.Get("CrystalFight", (success, data) =>
             {
-                if (success)
-                {
-                    Load(data);
-                }
-                else
+                // if (success)
+                // {
+                //     Load(data);
+                // }
+                // else
                 {
                     Load(null);
                 }
             }, GetStorageType());
         }
-        
+
+        void Update()
+        {
+            CardMove();
+            TutorHand();
+            GreyItems();
+            if (Input.GetMouseButtonDown(0))
+            {
+                PlayerClick?.Invoke();
+            }
+
+            _saveTimer += Time.deltaTime;
+        }
+
+        void LateUpdate()
+        {
+            UpdateBattlePos();
+        }
+
         private float SaveReload = 5f;
         float _saveTimer;
+
         void Save(bool timer = true)
         {
-            if(_saveTimer < SaveReload && timer) return;
-            
+            if (_saveTimer < SaveReload && timer) return;
+
             _saveTimer = 0;
             string jString = JsonUtility.ToJson(_CommonState);
+#if !UNITY_EDITOR
             Bridge.storage.Set("CrystalFight", jString, null, GetStorageType());
+#endif
         }
 
         StorageType GetStorageType()
@@ -127,324 +126,33 @@ namespace CardGrid
             else
                 return StorageType.LocalStorage;
         }
-        
-        private void Load(string value)
-        {
-            if (string.IsNullOrEmpty(value) || value == "null")
-            {
-                _CommonState = null;
-            }
-            else
-            {
-                DebugSystem.DebugLog("LoadedSave.", DebugSystem.Type.SaveSystem);
-                try
-                {
-                    _CommonState = JsonUtility.FromJson<PlayerCommonState>(value);
-                }
-                catch (Exception e)
-                {
-                    _CommonState = null;
-                }
-            }
-            
-            var levels = (Level[]) typeof(LevelsMaps).GetField("Levels").GetValue(null);
-            if (_CommonState == null)
-            {
-                _CommonState = new PlayerCommonState();
-                LoadLanguage();
-                int quantityLevels = 0;
-                quantityLevels += levels.Length;
-                _CommonState.Levels = new LevelState[quantityLevels];
-
-                int levelIndex = 0;
-                for (int i = 0; i < levels.Length; i++)
-                {
-                    _CommonState.Levels[levelIndex] = new LevelState();
-                    _CommonState.Levels[levelIndex].Group = i;
-
-                    var level = levels[i];
-                    _CommonState.Levels[levelIndex].NeedSpawnNewRandom = level.NeedSpawnNewRandom;
-
-                    levelIndex++;
-                }
-
-                LoadAchievementsStates();
-                StartNewBattle(BattleState.CommonLevelID);
-                DebugSystem.DebugLog("Save no exist. First active.", DebugSystem.Type.SaveSystem);
-            }
-            else if (_CommonState.Levels.Length < levels.Length || _CommonState.Achievements.Length < AchievementsSO.Length)
-            {
-                LoadGameResave(levels);
-            }
-            else
-            {
-                OpenMainMenu();
-            }
-            
-            MenuAudioSource.volume = _CommonState.Volume;
-            BattleAudioSource.volume = _CommonState.Volume;
-            
-            LoadUI();
-            SubscribeOnButtons();
-            UpdateCommonLocalization();
-            
-            Fade.CrossFadeAlpha(0 , 1f, false);
-            StartCoroutine(FadeOff());
-            LoadPools();
-            
-            IEnumerator FadeOff()
-            {
-                yield return new WaitForSeconds(1f);
-                Fade.gameObject.SetActive(false);
-            }
-        }
-        
-        void LoadGameResave(Level[] levels)
-        {
-            LoadLanguage();
-
-            if (_CommonState.Achievements.Length == 0)
-            {
-                _CommonState.Achievements = new AchieveState[AchievementsSO.Length];
-            }
-            else
-            {
-                AchieveState[] l = new AchieveState[AchievementsSO.Length];
-                for (int i = 0; i < _CommonState.Achievements.Length; i++)
-                {
-                    l[i] = _CommonState.Achievements[i];
-                }
-
-                _CommonState.Achievements = l;
-            }
-            
-            for (int i = 0; i < _CommonState.Achievements.Length; i++)
-            {
-                if (_CommonState.Achievements[i] == null)
-                    _CommonState.Achievements[i] = new AchieveState()
-                    {
-                        Key = AchievementsSO[i].name,
-                        Level = 0,
-                        MaxProgress = AchievementsSO[i].Levels[0].MaxProgress,
-                        Reward = AchievementsSO[i].Levels[0].Reward,
-                    };
-            }
-
-            bool firstLevel = false;
-            if (_CommonState.Levels.Length == 0)
-            {
-                firstLevel = true;
-                _CommonState.Levels = new LevelState[levels.Length];
-            }
-            else
-            {
-                LevelState[] l = new LevelState[levels.Length];
-                for (int i = 0; i < _CommonState.Levels.Length; i++)
-                {
-                    l[i] = _CommonState.Levels[i];
-                }
-                _CommonState.Levels = l;
-            }
-            
-            int levelIndex = 0;
-            for (int i = 0; i < levels.Length; i++)
-            {
-                if (_CommonState.Levels[levelIndex] == null)
-                {
-                    _CommonState.Levels[levelIndex] = new LevelState();
-                    _CommonState.Levels[levelIndex].Group = i;
-
-                    var level = levels[i];
-                    _CommonState.Levels[levelIndex].NeedSpawnNewRandom = level.NeedSpawnNewRandom;
-                }
-
-                levelIndex++;
-            }
-
-            if (firstLevel)
-            {
-                StartNewBattle(BattleState.CommonLevelID);
-            }
-            else
-            {
-                OpenMainMenu();
-            }
-        }
 
         void StartNewBattle(int levelID)
         {
             DebugSystem.DebugLog("Start new battle", DebugSystem.Type.Battle);
             StopAllCoroutines();
             DOTween.KillAll();
-            
+            _impactHighlightCards.Clear();
+            TutorHandObj.transform.DOKill();
+            TutorHandObj.SetActive(false);
+
             rewardsLeft = 2;
             _inputActive = true;
             _CommonState.InBattle = true;
             _CommonState.BattleState.LevelID = levelID;
-            _CommonState.BattleState.LevelProgress = 0;
-            _CommonState.BattleState.NumberLevel = 1;
-            _CommonState.BattleState.MaxLevelProgress = 10;
             BattleObjects.FieldRotator.localEulerAngles = Vector3.zero;
             for (int i = 0; i < BattleObjects.Field.ParentCards.childCount; i++)
             {
                 BattleObjects.Field.ParentCards.GetChild(i).localEulerAngles = Vector3.zero;
             }
 
-            ActiveBattleUI();
-            LoadLevelCards(levelID);
+            var level = _CommonState.Levels[levelID];
 
-            if (levelID < BattleState.CommonLevelID)
+            switch (level.Type)
             {
-                if (!WithQuantity && _CommonState.FLClassic)
-                {
-                    _CommonState.FLClassic = false;
-                    ActivateTextTutor();
-                }
-                else if (WithQuantity && _CommonState.FLQuantity)
-                {
-                    _CommonState.FLQuantity = false;
-                    ActivateTextTutor();
-                }
-
-                //Spawn new filed
-                SpawnRandomField(out _CommonState.BattleState.Filed.Cells, CardGrid.Field, CreateNewRandomCard, false);
-
-                //Spawn new inventory
-                SpawnRandomField(out _CommonState.BattleState.Inventory.Items, CardGrid.Inventory, CreateNewRandomItem,
-                    true);
-            }
-            else
-            {
-                SpawnField(out _CommonState.BattleState.Filed.Cells, CardGrid.Field, _loadedMap);
-                SpawnInventory(out _CommonState.BattleState.Inventory.Items, CardGrid.Inventory, _loadedInventory);
-            }
-
-            void SpawnRandomField(out CardState[,] cards, CardGrid gridType, Func<CardState> createCard, bool half)
-            {
-                GridGameObject gridGameObject;
-                if (gridType == CardGrid.Field)
-                {
-                    gridGameObject = BattleObjects.Field;
-                }
-                else
-                {
-                    gridGameObject = BattleObjects.Inventory;
-                }
-
-                cards = new CardState[gridGameObject.SizeX, gridGameObject.SizeZ];
-                for (int z = 0; z < gridGameObject.SizeZ; z++)
-                {
-                    for (int x = 0; x < gridGameObject.SizeX; x++)
-                    {
-                        //Get card
-                        CardState cell;
-                        if (half && z > 0)
-                        {
-                            cell = new CardState();
-                        }
-                        else
-                        {
-                            cell = createCard();
-                            if (x - 1 >= 0 && cards[x - 1, z] != null && cards[x - 1, z].CardSO == cell.CardSO)
-                            {
-                                cell = createCard();
-                            }
-                            else if (z - 1 >= 0 && cards[x, z - 1] != null &&  cards[x,z -1].CardSO == cell.CardSO)
-                            {
-                                cell = createCard();
-                            }
-                        }
-
-                        cell.Grid = gridType;
-                        cell.Position = new Vector2Int(x, z);
-                        cards[x, z] = cell;
-                        var monobeh = SpawnCard(cell, gridGameObject);
-                        cell.GameObject = monobeh;
-                        monobeh.CardState = cell;
-                    }
-                }
-            }
-
-            void SpawnField(out CardState[,] cards, CardGrid gridType, List<Queue<CardState>> mapField)
-            {
-                GridGameObject gridGameObject;
-                if (gridType == CardGrid.Field)
-                {
-                    gridGameObject = BattleObjects.Field;
-                }
-                else
-                {
-                    gridGameObject = BattleObjects.Inventory;
-                }
-
-                cards = new CardState[gridGameObject.SizeX, gridGameObject.SizeZ];
-
-                cards = new CardState[gridGameObject.SizeX, gridGameObject.SizeZ];
-                for (int z = gridGameObject.SizeZ - 1; z >= 0; z--)
-                {
-                    for (int x = 0; x < gridGameObject.SizeX; x++)
-                    {
-                        //Get card
-                        CardState cell;
-                        if (x < mapField.Count && mapField[x].Count > 0 && mapField[x].Peek() != null)
-                        {
-                            var card = mapField[x].Dequeue();
-                            cell = card;
-                        }
-                        else
-                        {
-                            cell = new CardState();
-                        }
-
-                        cell.Grid = gridType;
-                        cell.Position = new Vector2Int(x, z);
-                        cards[x, z] = cell;
-                        var monobeh = SpawnCard(cell, gridGameObject);
-                        cell.GameObject = monobeh;
-                        monobeh.CardState = cell;
-                    }
-                }
-            }
-
-            void SpawnInventory(out CardState[,] cards, CardGrid gridType, Queue<CardState> mapField)
-            {
-                GridGameObject gridGameObject;
-                if (gridType == CardGrid.Field)
-                {
-                    gridGameObject = BattleObjects.Field;
-                }
-                else
-                {
-                    gridGameObject = BattleObjects.Inventory;
-                }
-
-                cards = new CardState[gridGameObject.SizeX, gridGameObject.SizeZ];
-
-                cards = new CardState[gridGameObject.SizeX, gridGameObject.SizeZ];
-                for (int z = 0; z < gridGameObject.SizeZ; z++)
-                {
-                    for (int x = 0; x < gridGameObject.SizeX; x++)
-                    {
-                        CardState cell;
-                        if (mapField.Count > 0)
-                        {
-                            var card = mapField.Dequeue();
-                            cell = card;
-                        }
-                        else
-                        {
-                            cell = new CardState();
-                        }
-
-                        //Get card
-                        cell.Grid = gridType;
-                        cell.Position = new Vector2Int(x, z);
-                        cards[x, z] = cell;
-                        var monobeh = SpawnCard(cell, gridGameObject);
-                        cell.GameObject = monobeh;
-                        monobeh.CardState = cell;
-                    }
-                }
+                case LevelType.Exploration:
+                    LoadExploration((LevelExplorationSO) level.ScrObj);
+                    break;
             }
         }
 
@@ -453,12 +161,15 @@ namespace CardGrid
             switch (language)
             {
                 case 0:
+                    YandexGame.SwitchLanguage("en");
                     _CommonState.Language = Language.English;
                     break;
                 case 1:
+                    YandexGame.SwitchLanguage("ru");
                     _CommonState.Language = Language.Russian;
                     break;
                 case 2:
+                    YandexGame.SwitchLanguage("tr");
                     _CommonState.Language = Language.Turk;
                     break;
             }
@@ -487,7 +198,15 @@ namespace CardGrid
                 {
                     if (loc.Language == _CommonState.Language)
                     {
-                        loctext.View.text = loc.Text;
+                        if (loctext.View != null)
+                        {
+                            loctext.View.text = loc.Text;
+                        }
+                        else
+                        {
+                            Debug.LogWarning("NoTextMesh");
+                        }
+
                         return;
                     }
                 }
@@ -506,7 +225,7 @@ namespace CardGrid
         public void NotRewardPlayer()
         {
             BattleUI.EndItemsReward.gameObject.SetActive(false);
-            OpenDefeat(BattleUI.BattleMenu);
+            OpenDefeat();
         }
 
 #if UNITY_EDITOR
@@ -521,31 +240,52 @@ namespace CardGrid
         void LoadLanguage()
         {
             switch (Bridge.platform.language)
-                {
-                    case "ru":
-                        _CommonState.Language = Language.Russian;
-                        break;
-                    case "be":
-                        _CommonState.Language = Language.Russian;
-                        break;
-                    case "kk":
-                        _CommonState.Language = Language.Russian;
-                        break;
-                    case "uk":
-                        _CommonState.Language = Language.Russian;
-                        break;
-                    case "uz":
-                        _CommonState.Language = Language.Russian;
-                        break;
-                    
-                    case "tr":
-                        _CommonState.Language = Language.Turk;
-                        break;
-                    
-                    default:
-                        _CommonState.Language = Language.English;
-                        break;
-                }
+            {
+                case "ru":
+                    _CommonState.Language = Language.Russian;
+                    break;
+                case "be":
+                    _CommonState.Language = Language.Russian;
+                    break;
+                case "kk":
+                    _CommonState.Language = Language.Russian;
+                    break;
+                case "uk":
+                    _CommonState.Language = Language.Russian;
+                    break;
+                case "uz":
+                    _CommonState.Language = Language.Russian;
+                    break;
+
+                case "tr":
+                    _CommonState.Language = Language.Turk;
+                    break;
+
+                default:
+                    _CommonState.Language = Language.English;
+                    break;
+            }
+        }
+
+        CardSO GetCardSO(CT card)
+        {
+            if (card == CT.Empty)
+                return null;
+
+            foreach (var enemy in GameSetings.Enemies)
+            {
+                if (enemy.CardType == card)
+                    return enemy;
+            }
+
+            foreach (var item in GameSetings.Items)
+            {
+                if (item.CardType == card)
+                    return item;
+            }
+
+            DebugSystem.DebugLog($"On spawn card SO whit name {name} does not found", DebugSystem.Type.Error);
+            return null;
         }
     }
 }

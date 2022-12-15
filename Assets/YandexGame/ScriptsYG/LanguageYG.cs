@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +15,7 @@ namespace YG
     public class LanguageYG : MonoBehaviour
     {
         public Text textUIComponent;
-        public TextMesh textMeshComponent;
+        public TextMeshProUGUI textMeshComponent;
         public InfoYG infoYG;
         [Space(10)]
         public string text;
@@ -28,19 +29,19 @@ namespace YG
         {
             // Раскомментируйте нижнюю строку, если вы получаете какие-либо ошибки связанные с InfoYG. В каких то случаях, это может помочь.
             // Uncomment the bottom line if you get any errors related to infoYG. In some cases, it may help.
-            //Serialize();
+            Serialize();
 
             if (textUIComponent)
                 baseFontSize = textUIComponent.fontSize;
-            else if (textMeshComponent)
-                baseFontSize = textMeshComponent.fontSize;
+            // else if (textMeshComponent)
+            //     baseFontSize = textMeshComponent.fontSize;
         }
 
         [ContextMenu("Reserialize")]
         public void Serialize()
         {
             textUIComponent = GetComponent<Text>();
-            textMeshComponent = GetComponent<TextMesh>();
+            textMeshComponent = GetComponent<TextMeshProUGUI>();
             infoYG = GameObject.Find("YandexGame").GetComponent<YandexGame>().infoYG;
         }
 
@@ -58,6 +59,7 @@ namespace YG
             {
                 if (lang == infoYG.LangName(i))
                 {
+                    Debug.Log(lang);
                     AssignTranslate(languages[i]);
                     ChangeFont(infoYG.GetFont(i));
                     FontSizeCorrect(infoYG.GetFontSize(i));
@@ -103,8 +105,8 @@ namespace YG
             {
                 if (textUIComponent)
                     textUIComponent.font = font;
-                else if (textMeshComponent)
-                    textMeshComponent.font = font;
+                // else if (textMeshComponent)
+                //     textMeshComponent.font = font;
             }
         }
 

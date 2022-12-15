@@ -21,20 +21,13 @@ namespace CardGrid
         public Button RotateLeft;
         public Slider LevelProgress;
         public TextMeshProUGUI LevelNumber;
-        public Button OpenMenu;
-        public Button TutorButton;
         public GameObject RotateButtons;
-        public BattleMenu BattleMenu;
         public LeftCardsPanel LeftCardsPanel;
         public Button GetAdItems;
         public Button EndAttempt;
         public PanelWithItems NewLevelPanel;
         public PanelWithItems EndItemsReward;
 
-        public QuestComplete QuestCompletePanel;
-        public Transform LevelCompletePanel;
-        public TextMeshProUGUI LevelNumberComplete;
-        
         public Require[] Requires = new Require[4];
         public SpriteColorType[] Colors;
 

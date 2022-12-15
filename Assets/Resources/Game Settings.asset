@@ -25,3 +25,17 @@ MonoBehaviour:
       Active: 1
   Front:
     TextTypeSettingsArray: []
+  Enemies:
+  - {fileID: 11400000, guid: f849be4ab14bad44c95d083f414089c0, type: 2}
+  - {fileID: 11400000, guid: 0816fcf67fbc91e409280889435ce49e, type: 2}
+  - {fileID: 11400000, guid: 46363136644e6194a9e1d1c2f8182f18, type: 2}
+  - {fileID: 11400000, guid: 63dfef076219e9d42be6c8a476dfb800, type: 2}
+  - {fileID: 11400000, guid: 693fe5e35581c8a45aa6b1d4c598344a, type: 2}
+  Items:
+  - {fileID: 11400000, guid: 0c8aec5e3c552f743bf122600ea686d9, type: 2}
+  - {fileID: 11400000, guid: 49adbae435c199e4099b6be173f36cb2, type: 2}
+  - {fileID: 11400000, guid: c3572808e8cf27047bac9b13bf149d63, type: 2}
+  - {fileID: 11400000, guid: 9b819fbcca4a462478d8e1f14ce912c2, type: 2}
+  - {fileID: 11400000, guid: 5e6f399551f93e54ab7b643ac92bc65a, type: 2}
+  - {fileID: 11400000, guid: 2ae43fdea755a0846ab543e792cd446d, type: 2}
+  - {fileID: 11400000, guid: e212ebbc875fbc94590996063524da91, type: 2}

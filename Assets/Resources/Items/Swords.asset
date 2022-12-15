@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b26851e477919349bd395d9d6a6690e, type: 3}
+  m_Name: Swords
+  m_EditorClassIdentifier: 
+  Name: Sword
+  CardType: 12
+  Type: 1
+  Shape: 0
+  ColorType: 0
+  Sprite: {fileID: 21300000, guid: 5abea82bc527e8048aa6d595c0730200, type: 3}
+  ImpactMap: 4
+  Effect: {fileID: 7431265563841405139, guid: 255c4198f61d80d40bf107538f14809d, type: 3}
+  SoundEffect: {fileID: 8300000, guid: 2d0d53166acc29946aa05fb7860bddec, type: 3}

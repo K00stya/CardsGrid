@@ -6,48 +6,23 @@ namespace CardGrid
 {
     public enum CT
     {
-        Em,
+        Empty,
+        Block,
         
-        Ha,
-        SH,
-        SV,
-        SLR,
-        SRL,
-        Sw,
-        Bo,
-
-        B1,
-        G1,
-        P1,
-        R1,
-        Y1,
-
-        B2,
-        G2,
-        P2,
-        R2,
-        Y2,
-
-        B3,
-        G3,
-        P3,
-        R3,
-        Y3,
-
-        B4,
-        G4,
-        P4,
-        R4,
-        Y4,
-
-        B5,
-        G5,
-        P5,
-        R5,
-        Y5,
+        Blue,
+        Green,
+        Purple,
+        Red,
+        Yellow,
         
-        Bl,
-        Bt,
+        Hammer,
+        SwordHor,
+        SwordVer,
+        SwordL_R,
+        SwordR_L,
+        Swords,
+        Bomb,
+        Boots,
     }
 
     public class Level
@@ -78,7 +53,7 @@ namespace CardGrid
         public bool Rotation;
     }
 
-    public static class LevelsMaps
+    public static class LevelsMapsDeprecade
     {
         public static Level[] Levels =
         {
@@ -117,16 +92,16 @@ namespace CardGrid
 
                 new (CT, int)[]
                 {
-                    (CT.Ha, 1), (CT.Ha, 1), (CT.Ha, 1), (CT.Ha, 1),
+                    (CT.Hammer, 1), (CT.Hammer, 1), (CT.Hammer, 1), (CT.Hammer, 1),
                 },
 
                 new (CT, int)[,]
                 {
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.P3, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.B1, 1), (CT.P3, 1),},
-                    {(CT.Em, 1), (CT.P3, 1), (CT.P3, 1), (CT.Em, 1), (CT.R4, 1), (CT.R4, 1),},
-                    {(CT.Em, 1), (CT.B1, 1), (CT.R4, 1), (CT.Em, 1), (CT.B1, 1), (CT.P3, 1),},
-                    {(CT.B1, 1), (CT.G2, 1), (CT.B1, 1), (CT.P3, 1), (CT.B1, 1), (CT.P3, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Purple, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Blue, 1), (CT.Purple, 1),},
+                    {(CT.Empty, 1), (CT.Purple, 1), (CT.Purple, 1), (CT.Empty, 1), (CT.Red, 1), (CT.Red, 1),},
+                    {(CT.Empty, 1), (CT.Blue, 1), (CT.Red, 1), (CT.Empty, 1), (CT.Blue, 1), (CT.Purple, 1),},
+                    {(CT.Blue, 1), (CT.Green, 1), (CT.Blue, 1), (CT.Purple, 1), (CT.Blue, 1), (CT.Purple, 1),},
                 },
                 
                 new (ColorType, int)[]
@@ -143,15 +118,15 @@ namespace CardGrid
                 Array.Empty<TutorCardInfo>(),
 
                 new (CT, int)[]
-                    {(CT.Ha, 1), (CT.Ha, 1)},
+                    {(CT.Hammer, 1), (CT.Hammer, 1)},
 
                 new (CT, int)[,]
                 {
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.P3, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.G2, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.G2, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.R4, 1), (CT.Em, 1), (CT.Em, 1), (CT.Y5, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.B1, 1), (CT.R4, 1), (CT.R4, 1), (CT.G2, 1), (CT.P3, 1), (CT.P3, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Purple, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Green, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Green, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Red, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Yellow, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Blue, 1), (CT.Red, 1), (CT.Red, 1), (CT.Green, 1), (CT.Purple, 1), (CT.Purple, 1),},
                 },
                 
                 new (ColorType, int)[]
@@ -169,16 +144,16 @@ namespace CardGrid
                 Array.Empty<TutorCardInfo>(),
 
                 new (CT, int)[]
-                    {(CT.Ha, 1), (CT.Ha, 1), (CT.Ha, 1), (CT.Ha, 1)},
+                    {(CT.Hammer, 1), (CT.Hammer, 1), (CT.Hammer, 1), (CT.Hammer, 1)},
 
                 new (CT, int)[,]
                 {
-                    {(CT.G2, 1), (CT.Em, 1), (CT.Em, 1), (CT.B1, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.R4, 1), (CT.Em, 1), (CT.Em, 1), (CT.P3, 1), (CT.Em, 1), (CT.G2, 1),},
-                    {(CT.G2, 1), (CT.Em, 1), (CT.Em, 1), (CT.R4, 1), (CT.Em, 1), (CT.G2, 1),},
-                    {(CT.G2, 1), (CT.Em, 1), (CT.Em, 1), (CT.R4, 1), (CT.Em, 1), (CT.P3, 1),},
-                    {(CT.Y5, 1), (CT.B1, 1), (CT.B1, 1), (CT.G2, 1), (CT.Em, 1), (CT.G2, 1),},
-                    {(CT.B1, 1), (CT.Y5, 1), (CT.Y5, 1), (CT.R4, 1), (CT.P3, 1), (CT.P3, 1),},
+                    {(CT.Green, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Blue, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Red, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Purple, 1), (CT.Empty, 1), (CT.Green, 1),},
+                    {(CT.Green, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Red, 1), (CT.Empty, 1), (CT.Green, 1),},
+                    {(CT.Green, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Red, 1), (CT.Empty, 1), (CT.Purple, 1),},
+                    {(CT.Yellow, 1), (CT.Blue, 1), (CT.Blue, 1), (CT.Green, 1), (CT.Empty, 1), (CT.Green, 1),},
+                    {(CT.Blue, 1), (CT.Yellow, 1), (CT.Yellow, 1), (CT.Red, 1), (CT.Purple, 1), (CT.Purple, 1),},
                 },
                 
                 new (ColorType, int)[]
@@ -220,18 +195,18 @@ namespace CardGrid
                 },
 
                 new (CT, int)[]
-                    {(CT.SH, 1), (CT.SV, 2), (CT.SH, 2)},
+                    {(CT.SwordHor, 1), (CT.SwordVer, 2), (CT.SwordHor, 2)},
 
                 new (CT, int)[,]
                     {
-                        {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.R4, 1),},
-                        {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Y5, 1),},
-                        {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.B1, 1),},
-                        {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.B1, 1)},
-                        {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.P3, 2),},
-                        {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 3), (CT.Y5, 2),},
-                        {(CT.Em, 1), (CT.B1, 1), (CT.B1, 1), (CT.R4, 1), (CT.R4, 1), (CT.G2, 2),},
-                        {(CT.R4, 1), (CT.G2, 1), (CT.P3, 1), (CT.B1, 1), (CT.Y5, 1), (CT.B1, 1),},
+                        {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Red, 1),},
+                        {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Yellow, 1),},
+                        {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Blue, 1),},
+                        {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Blue, 1)},
+                        {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Purple, 2),},
+                        {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 3), (CT.Yellow, 2),},
+                        {(CT.Empty, 1), (CT.Blue, 1), (CT.Blue, 1), (CT.Red, 1), (CT.Red, 1), (CT.Green, 2),},
+                        {(CT.Red, 1), (CT.Green, 1), (CT.Purple, 1), (CT.Blue, 1), (CT.Yellow, 1), (CT.Blue, 1),},
                     },
                 
                 new (ColorType, int)[]
@@ -263,18 +238,18 @@ namespace CardGrid
                 },
 
                 new (CT, int)[]
-                    {(CT.SRL, 1), (CT.SLR, 1),},
+                    {(CT.SwordR_L, 1), (CT.SwordL_R, 1),},
 
                 new (CT, int)[,]
                 {
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1)},
-                    {(CT.Em, 1), (CT.G2, 1), (CT.P3, 1), (CT.B1, 1), (CT.Y5, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.G2, 1), (CT.R4, 1), (CT.R4, 1), (CT.Y5, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.R4, 1), (CT.P3, 1), (CT.B1, 1), (CT.R4, 1), (CT.Em, 1),},
-                    {(CT.R4, 1), (CT.G2, 1), (CT.P3, 1), (CT.B1, 1), (CT.Y5, 1), (CT.R4, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1)},
+                    {(CT.Empty, 1), (CT.Green, 1), (CT.Purple, 1), (CT.Blue, 1), (CT.Yellow, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Green, 1), (CT.Red, 1), (CT.Red, 1), (CT.Yellow, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Red, 1), (CT.Purple, 1), (CT.Blue, 1), (CT.Red, 1), (CT.Empty, 1),},
+                    {(CT.Red, 1), (CT.Green, 1), (CT.Purple, 1), (CT.Blue, 1), (CT.Yellow, 1), (CT.Red, 1),},
                 },
                 
                 new (ColorType, int)[]
@@ -292,18 +267,18 @@ namespace CardGrid
                 Array.Empty<TutorCardInfo>(),
 
                 new (CT, int)[]
-                    {(CT.SRL, 1), (CT.SLR, 1),},
+                    {(CT.SwordR_L, 1), (CT.SwordL_R, 1),},
 
                 new (CT, int)[,]
                 {
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.R4, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1) },
-                    {(CT.B1, 1), (CT.G2, 1), (CT.Y5, 1), (CT.G2, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.B1, 1), (CT.Y5, 1), (CT.B1, 1), (CT.G2, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Y5, 1), (CT.G2, 1), (CT.R4, 1), (CT.B1, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.B1, 1), (CT.G2, 1), (CT.R4, 1), (CT.G2, 1), (CT.B1, 1), (CT.Em, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Red, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1) },
+                    {(CT.Blue, 1), (CT.Green, 1), (CT.Yellow, 1), (CT.Green, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Blue, 1), (CT.Yellow, 1), (CT.Blue, 1), (CT.Green, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Yellow, 1), (CT.Green, 1), (CT.Red, 1), (CT.Blue, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Blue, 1), (CT.Green, 1), (CT.Red, 1), (CT.Green, 1), (CT.Blue, 1), (CT.Empty, 1),},
                 },
                 
                 new (ColorType, int)[]
@@ -335,18 +310,18 @@ namespace CardGrid
                 },
 
                 new (CT, int)[]
-                    {(CT.Sw, 1), (CT.Bo, 1),},
+                    {(CT.Swords, 1), (CT.Bomb, 1),},
 
                 new (CT, int)[,]
                 {
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.B1, 1), (CT.Em, 1), (CT.P3, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1)},
-                    {(CT.B1, 1), (CT.G2, 1), (CT.P3, 1), (CT.B1, 1), (CT.Em, 1), (CT.G2, 1),},
-                    {(CT.R4, 1), (CT.G2, 1), (CT.R4, 1), (CT.B1, 1), (CT.R4, 1), (CT.G2, 1),},
-                    {(CT.B1, 1), (CT.R4, 1), (CT.P3, 1), (CT.R4, 1), (CT.Y5, 1), (CT.R4, 1),},
-                    {(CT.R4, 1), (CT.G2, 1), (CT.R4, 1), (CT.B1, 1), (CT.R4, 1), (CT.G2, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Blue, 1), (CT.Empty, 1), (CT.Purple, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1)},
+                    {(CT.Blue, 1), (CT.Green, 1), (CT.Purple, 1), (CT.Blue, 1), (CT.Empty, 1), (CT.Green, 1),},
+                    {(CT.Red, 1), (CT.Green, 1), (CT.Red, 1), (CT.Blue, 1), (CT.Red, 1), (CT.Green, 1),},
+                    {(CT.Blue, 1), (CT.Red, 1), (CT.Purple, 1), (CT.Red, 1), (CT.Yellow, 1), (CT.Red, 1),},
+                    {(CT.Red, 1), (CT.Green, 1), (CT.Red, 1), (CT.Blue, 1), (CT.Red, 1), (CT.Green, 1),},
                 },
                 
                 new (ColorType, int)[]
@@ -375,16 +350,16 @@ namespace CardGrid
                 },
 
                 new (CT, int)[]
-                    {(CT.Ha, 1),},
+                    {(CT.Hammer, 1),},
 
                 new (CT, int)[,]
                 {
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.B1, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Ha, 10), (CT.Em, 1), (CT.R4, 10), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Em, 1), (CT.G2, 1), (CT.Em, 1), (CT.B1, 1), (CT.Em, 1),},
-                    {(CT.G2, 1), (CT.G2, 1), (CT.Y5, 1), (CT.Em, 1), (CT.B1, 1), (CT.Em, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Blue, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Hammer, 10), (CT.Empty, 1), (CT.Red, 10), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Green, 1), (CT.Empty, 1), (CT.Blue, 1), (CT.Empty, 1),},
+                    {(CT.Green, 1), (CT.Green, 1), (CT.Yellow, 1), (CT.Empty, 1), (CT.Blue, 1), (CT.Empty, 1),},
                 },
                 
                 new (ColorType, int)[]
@@ -400,20 +375,20 @@ namespace CardGrid
                 Array.Empty<TutorCardInfo>(),
 
                 new (CT, int)[]
-                    {(CT.Ha, 1),(CT.Ha, 2),(CT.Ha,3),},
+                    {(CT.Hammer, 1),(CT.Hammer, 2),(CT.Hammer,3),},
 
                 new (CT, int)[,]
                 {
-                    {(CT.Em, 1), (CT.P3, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.Y5, 6), (CT.Em, 1), (CT.Em, 1), (CT.Ha, 3), (CT.Em, 1),},
-                    {(CT.Em, 1), (CT.R4, 5), (CT.Ha, 6), (CT.Em, 1), (CT.R4, 2), (CT.Em, 1),},
-                    {(CT.P3, 4), (CT.Y5, 1), (CT.G2, 1), (CT.R4, 2), (CT.P3, 9), (CT.R4, 1),},
+                    {(CT.Empty, 1), (CT.Purple, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Yellow, 6), (CT.Empty, 1), (CT.Empty, 1), (CT.Hammer, 3), (CT.Empty, 1),},
+                    {(CT.Empty, 1), (CT.Red, 5), (CT.Hammer, 6), (CT.Empty, 1), (CT.Red, 2), (CT.Empty, 1),},
+                    {(CT.Purple, 4), (CT.Yellow, 1), (CT.Green, 1), (CT.Red, 2), (CT.Purple, 9), (CT.Red, 1),},
                     
-                    {(CT.Ha, 2), (CT.Em, 2), (CT.Em, 4), (CT.Ha, 8), (CT.Em, 1), (CT.Ha, 2),},
-                    {(CT.B1, 4), (CT.R4, 10), (CT.G2, 8), (CT.Y5, 8), (CT.P3, 5), (CT.P3, 6),},
-                    {(CT.R4, 2), (CT.R4, 7), (CT.B1, 2), (CT.Y5,5), (CT.R4, 1), (CT.P3, 6),},
-                    {(CT.B1, 6), (CT.Y5, 3), (CT.G2, 5), (CT.B1, 2), (CT.P3, 4), (CT.Y5, 1),},
-                    {(CT.B1, 1), (CT.Y5, 8), (CT.P3, 5), (CT.Y5, 8), (CT.P3, 4), (CT.P3, 9),},
+                    {(CT.Hammer, 2), (CT.Empty, 2), (CT.Empty, 4), (CT.Hammer, 8), (CT.Empty, 1), (CT.Hammer, 2),},
+                    {(CT.Blue, 4), (CT.Red, 10), (CT.Green, 8), (CT.Yellow, 8), (CT.Purple, 5), (CT.Purple, 6),},
+                    {(CT.Red, 2), (CT.Red, 7), (CT.Blue, 2), (CT.Yellow,5), (CT.Red, 1), (CT.Purple, 6),},
+                    {(CT.Blue, 6), (CT.Yellow, 3), (CT.Green, 5), (CT.Blue, 2), (CT.Purple, 4), (CT.Yellow, 1),},
+                    {(CT.Blue, 1), (CT.Yellow, 8), (CT.Purple, 5), (CT.Yellow, 8), (CT.Purple, 4), (CT.Purple, 9),},
                 },
                 
                 new (ColorType, int)[]
@@ -435,16 +410,16 @@ namespace CardGrid
                 Array.Empty<TutorCardInfo>(),
 
                 new (CT, int)[]  {
-                    (CT.Ha, 1),(CT.Ha, 1),(CT.Ha, 1)},
+                    (CT.Hammer, 1),(CT.Hammer, 1),(CT.Hammer, 1)},
 
                 new (CT, int)[,]
                 {
-                    {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-                    {(CT.Ha, 1), (CT.Ha, 1), (CT.Ha, 1), (CT.Ha, 1), (CT.Ha, 1), (CT.Ha, 1),},
-                    {(CT.Y5, 1), (CT.B1, 1), (CT.Y5, 1), (CT.B1, 1), (CT.Y5, 1), (CT.B1, 1),},
-                    {(CT.B1, 1), (CT.Y5, 1), (CT.B1, 1), (CT.Y5, 1), (CT.B1, 1), (CT.Y5, 1),},
-                    {(CT.Y5, 1), (CT.B1, 1), (CT.Y5, 1), (CT.B1, 1), (CT.Y5, 1), (CT.B1, 1),},
-                    {(CT.B1, 1), (CT.Y5, 1), (CT.B1, 1), (CT.Y5, 1), (CT.B1, 1), (CT.Y5, 1),},
+                    {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+                    {(CT.Hammer, 1), (CT.Hammer, 1), (CT.Hammer, 1), (CT.Hammer, 1), (CT.Hammer, 1), (CT.Hammer, 1),},
+                    {(CT.Yellow, 1), (CT.Blue, 1), (CT.Yellow, 1), (CT.Blue, 1), (CT.Yellow, 1), (CT.Blue, 1),},
+                    {(CT.Blue, 1), (CT.Yellow, 1), (CT.Blue, 1), (CT.Yellow, 1), (CT.Blue, 1), (CT.Yellow, 1),},
+                    {(CT.Yellow, 1), (CT.Blue, 1), (CT.Yellow, 1), (CT.Blue, 1), (CT.Yellow, 1), (CT.Blue, 1),},
+                    {(CT.Blue, 1), (CT.Yellow, 1), (CT.Blue, 1), (CT.Yellow, 1), (CT.Blue, 1), (CT.Yellow, 1),},
                 },
                 
                 new (ColorType, int)[]
@@ -486,16 +461,16 @@ namespace CardGrid
                 },
 
                 new (CT, int)[]  {
-                    (CT.Ha, 1),(CT.Ha, 1),(CT.Ha, 1),(CT.Ha, 1),(CT.Ha, 1),(CT.Ha, 1)},
+                    (CT.Hammer, 1),(CT.Hammer, 1),(CT.Hammer, 1),(CT.Hammer, 1),(CT.Hammer, 1),(CT.Hammer, 1)},
 
                 new (CT, int)[,]
                 {
-                    {(CT.R4, 1), (CT.P3, 1), (CT.G2, 1), (CT.B1, 1), (CT.R4, 1), (CT.Y5, 1),},
-                    {(CT.B1, 1), (CT.Y5, 1), (CT.R4, 1), (CT.Y5, 1), (CT.B1, 1), (CT.R4, 1),},
-                    {(CT.R4, 1), (CT.B1, 1), (CT.P3, 1), (CT.P3, 1), (CT.R4, 1), (CT.G2, 1),},
-                    {(CT.R4, 1), (CT.P3, 1), (CT.R4, 1), (CT.G2, 1), (CT.Y5, 1), (CT.P3, 1),},
-                    {(CT.P3, 1), (CT.B1, 1), (CT.G2, 1), (CT.B1, 1), (CT.B1, 1), (CT.R4, 1),},
-                    {(CT.Y5, 1), (CT.Y5, 1), (CT.R4, 1), (CT.P3, 1), (CT.Y5, 1), (CT.P3, 1),},
+                    {(CT.Red, 1), (CT.Purple, 1), (CT.Green, 1), (CT.Blue, 1), (CT.Red, 1), (CT.Yellow, 1),},
+                    {(CT.Blue, 1), (CT.Yellow, 1), (CT.Red, 1), (CT.Yellow, 1), (CT.Blue, 1), (CT.Red, 1),},
+                    {(CT.Red, 1), (CT.Blue, 1), (CT.Purple, 1), (CT.Purple, 1), (CT.Red, 1), (CT.Green, 1),},
+                    {(CT.Red, 1), (CT.Purple, 1), (CT.Red, 1), (CT.Green, 1), (CT.Yellow, 1), (CT.Purple, 1),},
+                    {(CT.Purple, 1), (CT.Blue, 1), (CT.Green, 1), (CT.Blue, 1), (CT.Blue, 1), (CT.Red, 1),},
+                    {(CT.Yellow, 1), (CT.Yellow, 1), (CT.Red, 1), (CT.Purple, 1), (CT.Yellow, 1), (CT.Purple, 1),},
                 },
                 
                 new (ColorType, int)[]
@@ -525,17 +500,17 @@ namespace CardGrid
 
         public static (CT, int)[] Inventory =
         {
-            (CT.Ha, 1),
+            (CT.Hammer, 1),
         };
 
         public static (CT, int)[,] Field =
         {
-            {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-            {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-            {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-            {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-            {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
-            {(CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1), (CT.Em, 1),},
+            {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+            {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+            {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+            {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+            {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
+            {(CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1), (CT.Empty, 1),},
         };
     }
 }

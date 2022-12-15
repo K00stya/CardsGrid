@@ -48,8 +48,7 @@ namespace CardGrid
         
         IEnumerator RotateRight()
         {
-            if (_CommonState.BattleState.LevelID >= BattleState.CommonLevelID &&
-                _CommonState.BattleState.CurrentTutorial != null && _CommonState.BattleState.CurrentTutorial.Count > 0)
+            if (_CommonState.BattleState.CurrentTutorial != null && _CommonState.BattleState.CurrentTutorial.Count > 0)
             {
                 var tutor = _CommonState.BattleState.CurrentTutorial.First();
                 if (tutor.RotateRight)
@@ -96,8 +95,7 @@ namespace CardGrid
 
         IEnumerator RotateLeft()
         {
-            if (_CommonState.BattleState.LevelID >= BattleState.CommonLevelID &&
-                _CommonState.BattleState.CurrentTutorial != null && _CommonState.BattleState.CurrentTutorial.Count > 0)
+            if (_CommonState.BattleState.CurrentTutorial != null && _CommonState.BattleState.CurrentTutorial.Count > 0)
             {
                 var tutor = _CommonState.BattleState.CurrentTutorial.First();
                 if (tutor.RotateLeft)

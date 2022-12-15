@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
@@ -38,12 +39,12 @@ namespace YG
                 if (GUILayout.Button("Identify Text/TextMesh"))
                 {
                     scr.textUIComponent = scr.GetComponent<Text>();
-                    scr.textMeshComponent = scr.GetComponent<TextMesh>();
+                    scr.textMeshComponent = scr.GetComponent<TextMeshProUGUI>();
                 }
-                if (GUILayout.Button("Create Text компонент"))
+                if (GUILayout.Button("Create Text пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"))
                     scr.textUIComponent = scr.gameObject.AddComponent<Text>();
-                if (GUILayout.Button("Create TextMesh компонент"))
-                    scr.textMeshComponent = scr.gameObject.AddComponent<TextMesh>();
+                if (GUILayout.Button("Create TextMesh пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"))
+                    scr.textMeshComponent = scr.gameObject.AddComponent<TextMeshProUGUI>();
 
                 GUILayout.Space(10);
             }
@@ -54,7 +55,7 @@ namespace YG
                 {
                     scr.infoYG = GameObject.Find("YandexGame").GetComponent<YandexGame>().infoYG;
                     if (scr.infoYG == null)
-                        Debug.LogError("InfoYG not found!  (ru) InfoYG не найден!");
+                        Debug.LogError("InfoYG not found!  (ru) InfoYG пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!");
                 }
             }
 
@@ -297,12 +298,12 @@ namespace YG
                     {
                         if (scr.textUIComponent)
                             scr.textUIComponent.font = scr.infoYG.fonts.defaultFont[scr.fontNumber];
-                        else if (scr.textMeshComponent)
-                            scr.textMeshComponent.font = scr.infoYG.fonts.defaultFont[scr.fontNumber];
+                        // else if (scr.textMeshComponent)
+                        //     scr.textMeshComponent.font = scr.infoYG.fonts.defaultFont[scr.fontNumber];
                     }
                     else
                     {
-                        Debug.LogError("The standard font is not specified! Specify it in the InfoYG plugin settings.  (ru) Не указан стандартный шрифт! Укажите его в настройках плагина InfoYG", scr.gameObject);
+                        Debug.LogError("The standard font is not specified! Specify it in the InfoYG plugin settings.  (ru) пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ InfoYG", scr.gameObject);
                     }
                 }
 

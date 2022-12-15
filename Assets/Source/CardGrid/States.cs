@@ -27,44 +27,41 @@ namespace CardGrid
 
         public LevelState GetCurrentLevel()
         {
-            return Levels[BattleState.GetRealLevelID()];
+            return Levels[BattleState.LevelID];
         }
+    }
+
+    public enum LevelType
+    {
+        Tutor,
+        Exploration,
+        Extraction,
+        Battle
     }
 
     [Serializable]
     public class LevelState
     {
         public bool IsOpen;
-        public int Group;
-        public int Stars;
-        public bool Complete;
-        public bool NeedSpawnNewRandom;
+        //public int QuantityCompleted; //future
+        public LevelType Type;
+        public int Complete;
+
+        [NonSerialized]
+        public LevelSO ScrObj;
     }
     
     #region Battle
 
     public class BattleState
     {
-        public const int CommonLevelID = 100;
         public int LevelID;
-        public int NumberLevel = 1;
-        public int LevelProgress;
-        public int MaxLevelProgress = 13;
-        public (ColorType, int)[] CollectColors;
 
         public Field Filed = new Field();
         public Inventory Inventory = new Inventory();
 
         [NonSerialized] 
         public List<TutorCardInfo> CurrentTutorial = new List<TutorCardInfo>();
-
-        public int GetRealLevelID()
-        {
-            if (LevelID >= CommonLevelID)
-                return LevelID - CommonLevelID;
-            else
-                return LevelID;
-        }
     }
 
     public class Field
@@ -74,14 +71,15 @@ namespace CardGrid
 
     public class CardState
     {
-        public CardSO CardSO;
         public CardGrid Grid;
         public Vector2Int Position;
-        public int StartQuantity;
-        public int Quantity;
+        public int StartQuantity = 1;
+        public int Quantity = 1;
         public int Block;
 
         //NonSerialized don't save in save system
+        [NonSerialized]
+        public CardSO ScrObj;
         [NonSerialized]
         public CardGameObject GameObject;
     }
@@ -113,18 +111,10 @@ namespace CardGrid
 
     public enum TypeCard
     {
-        Enemy,
+        Crystal,
         Item,
+        Resource,
         Block
-    }
-
-    public enum ShapeType
-    {
-        Rhomb,
-        Diamond,
-        Hexagonal,
-        Octagonal,
-        Pearl
     }
 
     public enum ColorType

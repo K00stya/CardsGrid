@@ -14,11 +14,8 @@ namespace CardGrid
         
         public DebugSettings Debug;
         public FrontSettings Front;
-
-        private void Awake()
-        {
-            
-        }
+        public CardSO[] Enemies;
+        public CardSO[] Items;
 
         [Serializable]
         public class DebugSettings
